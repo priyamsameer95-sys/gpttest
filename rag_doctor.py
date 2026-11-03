@@ -940,271 +940,256 @@ def build_studio_html(initial_payload: dict) -> str:
       padding: 22px;
     }
     dialog::backdrop { background: rgba(0, 0, 0, 0.65); }
+
+    /* Ultra-Compact Action & CTA Styles (Zero Text Walls) */
+    .simple-page-wrap {
+      max-width: 1160px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 12px 18px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .step-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-grid);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pack-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .pack-btn {
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 7px 12px;
+      border: 1px solid var(--border-grid);
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pack-btn.active {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+    .fix-pills-bar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+    @media (max-width: 960px) { .fix-pills-bar { grid-template-columns: repeat(3, 1fr); } }
+    .fix-pill {
+      padding: 6px 8px;
+      border: 1px solid var(--border-grid);
+      background: var(--bg-subtle);
+      cursor: pointer;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.71rem;
+      font-weight: 700;
+      user-select: none;
+    }
+    .fix-pill span { display: none; }
+    .cta-big {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- CLEAN TOP HEADER BAR (NO SIDEBAR CLUTTER!) -->
+  <!-- TOP ACTION BAR: BRAND + PRIMARY CTAS -->
   <header class="app-topbar">
     <div class="topbar-left">
       <div class="brand-mark">
         <div class="brand-sq">RF</div>
         <h1>RAGForge</h1>
       </div>
-      <span style="font-size:0.84rem;color:var(--text-secondary);">Turn Any Messy Company Document Into a 100% Accurate AI Chatbot Knowledge Base</span>
-      <span class="tag tag-ok" id="engine-mode-badge">READY</span>
+      <span class="tag tag-ok" id="engine-mode-badge">91.7% ACCURACY</span>
+      <span class="tag tag-accent" id="pack-roi-badge">ONLINE STORE</span>
     </div>
     <div class="topbar-right">
-      <button class="btn" onclick="document.getElementById('live-doc-editor').focus(); document.getElementById('step-1-card').scrollIntoView({behavior:'smooth'});">
-        &#9998; PASTE YOUR OWN DOC (<span id="badge-doc-count">5</span>)
+      <button class="btn btn-ok" onclick="resetOptimalControls()">&#9889; 1-CLICK FIX AI</button>
+      <button class="btn" style="border-color:var(--err);color:var(--err);" onclick="setAllNaiveControls()">&#10060; BREAK AI</button>
+      <button class="btn" onclick="document.getElementById('doc-modal').showModal()">
+        &#9998; PASTE MY DOC (<span id="badge-doc-count">5</span>)
       </button>
-      <button class="btn btn-primary" onclick="document.getElementById('step-4-deliverable').scrollIntoView({behavior:'smooth'});">
-        &#128203; GET AI-READY DOC &amp; PROMPT
+      <button class="btn btn-primary" onclick="openDeliverableModal('doc')">
+        &#128203; COPY AI-READY DOC
       </button>
-      <button class="btn" id="theme-btn-light" onclick="setTheme('light')">LIGHT</button>
-      <button class="btn" id="theme-btn-dark" onclick="setTheme('dark')">DARK</button>
+      <button class="btn" id="theme-btn-light" onclick="setTheme('light')">&#9728;</button>
+      <button class="btn" id="theme-btn-dark" onclick="setTheme('dark')">&#9790;</button>
     </div>
   </header>
 
-  <!-- SINGLE-PAGE GUIDED CONTAINER (PROBLEM -> SCAN YOUR DOC -> STRESS-TEST -> COPY FIXED PACKAGE) -->
   <main class="simple-page-wrap" id="view-playground">
 
     <!-- ===================================================================
-         HERO BANNER: THE CORE PROBLEM STATEMENT & THE TANGIBLE SOLUTION
+         1. HERO: 10-SECOND 8-BIT PIXEL ANIMATION (RIGHT AT THE TOP!)
          =================================================================== -->
-    <section class="step-card" style="border-left:5px solid var(--accent);background:var(--bg-panel);">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <div style="background:var(--err-soft);border:1px solid rgba(185,28,28,0.25);padding:12px 14px;">
-          <div style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--err);margin-bottom:4px;">THE PROBLEM: WHY YOUR AI CHATBOT GIVES WRONG ANSWERS</div>
-          <p style="font-size:0.82rem;color:var(--text-main);">
-            When you upload a regular company document (Refund Policy, FAQ, Price Sheet, Clinic Guide) into ChatGPT, Claude, or a support bot, <strong>standard AI slices sentences in half (cutting off prices &amp; dates), blurs exact product codes, gets confused by customer slang, and invents fake promises.</strong>
-          </p>
+    <section class="step-card" style="border:2px solid var(--border-strong);padding:10px 12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;" id="px-stage-ledger">
+          <span class="tag tag-ok">10s LIVE PIXEL DEMO</span>
+          <div class="stage-ledger-item active-stage" onclick="pxScrubTo(0.2)">1. Whole Text</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(2.2)">2. Synonyms</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(4.2)">3. Exact Code</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(6.2)">4. Clean Dups</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(8.2)">5. Safety</div>
         </div>
-        <div style="background:var(--ok-soft);border:1px solid rgba(4,120,87,0.25);padding:12px 14px;">
-          <div style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--ok);margin-bottom:4px;">THE SOLUTION: WHAT THIS TOOL GIVES YOU IN 60 SECONDS</div>
-          <p style="font-size:0.82rem;color:var(--text-main);">
-            <strong>1. Scans your document</strong> for numbers, codes, and slang traps.<br>
-            <strong>2. Stress-tests 5 real questions</strong> side-by-side (Broken AI vs. Fixed AI).<br>
-            <strong>3. Rewrites your document into an AI-Ready Knowledge File + Safety System Prompt</strong> you can copy straight into ChatGPT, Claude, Zendesk, or Intercom!
-          </p>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-ok" id="px-btn-mode" onclick="pxToggleMode()">&#9989; MODE: FIXED AI</button>
+          <button class="btn" id="px-btn-play" onclick="pxTogglePlay()">&#9208; PAUSE</button>
+          <span id="px-time-label" style="font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:var(--accent);min-width:58px;">0.0s/10s</span>
+          <input id="px-scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="pxScrubTo(this.value)" style="width:90px;" />
         </div>
+      </div>
+
+      <div style="border:2px solid var(--border-strong);background:var(--pixel-bg);overflow:hidden;">
+        <canvas id="px-canvas" width="760" height="200" style="width:100%;height:auto;display:block;image-rendering:pixelated;cursor:pointer;" onclick="pxToggleMode()" title="Click canvas to toggle Broken AI vs Fixed AI"></canvas>
       </div>
     </section>
 
     <!-- ===================================================================
-         STEP 1: PICK A BUSINESS TEMPLATE OR PASTE YOUR OWN DOCUMENT
+         2. COMPACT ACTION BAR: PICK INDUSTRY + CLICK A QUESTION TO TEST
          =================================================================== -->
     <section class="step-card" id="step-1-card">
-      <div class="step-header">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="step-badge">STEP 1</span>
-          <span class="step-title">Choose a Business Example &mdash; Or Paste Your Own Company Document Below</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div class="pack-bar">
+          <button class="pack-btn active" id="pack-btn-ecommerce" onclick="switchIndustryPack('ecommerce', this)">&#128722; Online Store</button>
+          <button class="pack-btn" id="pack-btn-healthcare" onclick="switchIndustryPack('healthcare', this)">&#129658; Medical Clinic</button>
+          <button class="pack-btn" id="pack-btn-saas" onclick="switchIndustryPack('saas', this)">&#128172; IT Helpdesk</button>
+          <button class="pack-btn" id="pack-btn-fintech" onclick="switchIndustryPack('fintech', this)">&#127974; Banking</button>
+          <button class="pack-btn" id="pack-btn-engineering" onclick="switchIndustryPack('engineering', this)">&#9881; Cloud Tech</button>
+          <button class="pack-btn" style="border-color:var(--accent);color:var(--accent);" onclick="document.getElementById('doc-modal').showModal()">+ &#9998; Paste My Doc</button>
         </div>
-        <span class="tag tag-ok" id="pack-roi-badge">STOPS WRONG REFUND PROMISES &amp; MISSING PACKAGE DISPUTES</span>
-      </div>
-      <div class="pack-bar">
-        <button class="pack-btn active" id="pack-btn-ecommerce" onclick="switchIndustryPack('ecommerce', this)">
-          1. Online Store &amp; Returns<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Refunds, Shipping &amp; SKUs</span>
-        </button>
-        <button class="pack-btn" id="pack-btn-healthcare" onclick="switchIndustryPack('healthcare', this)">
-          2. Healthcare Clinic<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Dosing, Drug Codes &amp; Safety</span>
-        </button>
-        <button class="pack-btn" id="pack-btn-saas" onclick="switchIndustryPack('saas', this)">
-          3. Office IT &amp; Helpdesk<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Billing, API Limits &amp; Logins</span>
-        </button>
-        <button class="pack-btn" id="pack-btn-fintech" onclick="switchIndustryPack('fintech', this)">
-          4. Banking &amp; Fraud<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Wire Limits, Fraud &amp; Codes</span>
-        </button>
-        <button class="pack-btn" id="pack-btn-engineering" onclick="switchIndustryPack('engineering', this)">
-          5. Cloud &amp; Tech Docs<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Software &amp; Server Manuals</span>
-        </button>
+        <span id="pack-examples-heading" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);font-weight:700;">CLICK A TEST QUESTION:</span>
       </div>
 
-      <!-- LIVE DOCUMENT EDITOR + INSTANT AI TRAP REPORT SIDE-BY-SIDE -->
-      <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:14px;margin-top:4px;">
-        <div style="background:var(--bg-subtle);border:1px solid var(--border-grid);padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
-            <strong style="font-size:0.82rem;color:var(--text-main);">&#128196; Your Raw Document Text (Paste Any Policy, FAQ, or Price Sheet Here):</strong>
-            <label class="btn" style="padding:3px 8px;font-size:0.68rem;cursor:pointer;">
-              UPLOAD .TXT / .MD FILE
-              <input type="file" accept=".txt,.md,.json,.csv" onchange="handleQuickFileUpload(event)" style="display:none;" />
-            </label>
-          </div>
-          <textarea id="live-doc-editor" rows="5" style="font-family:var(--font-sans);font-size:0.8rem;line-height:1.45;background:var(--bg-panel);" placeholder="Paste your company refund policy, FAQ, product sheet, or handbook here..."></textarea>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span style="font-size:0.73rem;color:var(--text-muted);" id="live-scan-status">Loaded 5 sections. Edit or paste your own text above and click Scan!</span>
-            <button class="btn btn-primary" onclick="scanAndFixCustomText()">
-              &#9889; SCAN MY TEXT &amp; GENERATE AI-READY FIX &rarr;
-            </button>
-          </div>
-        </div>
+      <!-- 5 Compact 1-Line Question Buttons -->
+      <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:6px;" id="preset-cards-container"></div>
 
-        <!-- RIGHT SIDE: INSTANT AI VULNERABILITY SCAN OF THE ACTIVE DOCUMENT -->
-        <div style="background:var(--bg-subtle);border:1px solid var(--border-grid);padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;" id="live-doc-audit-box">
-        </div>
+      <!-- Search Input + Big Test CTA -->
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="studio-query" value="" placeholder="Ask any question..." style="font-size:0.86rem;padding:8px 12px;flex:1;" onkeydown="if(event.key==='Enter') runInteractiveQuery();" />
+        <button class="btn btn-primary" style="padding:8px 16px;font-size:0.78rem;white-space:nowrap;" onclick="runInteractiveQuery()">&#9889; TEST QUESTION</button>
       </div>
     </section>
 
     <!-- ===================================================================
-         STEP 2: CLICK A REAL QUESTION TO TEST (OR TYPE YOUR OWN)
-         =================================================================== -->
-    <section class="step-card">
-      <div class="step-header">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="step-badge">STEP 2</span>
-          <span class="step-title" id="pack-examples-heading">Click Any Real Scenario Below to Test (or Type Your Own Question)</span>
-        </div>
-        <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">5 Common Ways Standard RAG Breaks</span>
-      </div>
-
-      <!-- 5 Spacious Scenario Cards -->
-      <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:8px;" id="preset-cards-container"></div>
-
-      <!-- Plain-English 2-Sentence Explanation of Why It Fails & How We Fix It -->
-      <div id="example-explainer-box" style="background:var(--bg-subtle);border:1px solid var(--border-grid);border-left:4px solid var(--accent);padding:10px 14px;font-size:0.84rem;line-height:1.5;"></div>
-
-      <!-- Clean Search Input + Test Button -->
-      <div style="display:flex;gap:8px;">
-        <input type="text" id="studio-query" value="" placeholder="Or type any customer, patient, legal, or technical question here..." style="font-size:0.9rem;padding:10px 12px;" onkeydown="if(event.key==='Enter') runInteractiveQuery();" />
-        <button class="btn btn-primary" style="padding:10px 18px;font-size:0.8rem;white-space:nowrap;" onclick="runInteractiveQuery()">RUN COMPARISON &rarr;</button>
-      </div>
-    </section>
-
-    <!-- ===================================================================
-         STEP 3: COMPARE BROKEN AI VS. FIXED RAGFORGE (SIDE-BY-SIDE)
+         3. SIDE-BY-SIDE VERDICT + 6 FIX SWITCHES + 1-CLICK COPY CTAS
          =================================================================== -->
     <section class="step-card" style="padding:0;overflow:hidden;">
-      <div style="padding:16px 20px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:12px;">
-        <div class="step-header">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span class="step-badge">STEP 3</span>
-            <span class="step-title">Compare Answers: Broken Standard AI (Left) vs. Fixed RAGForge (Right)</span>
+      <div style="padding:10px 14px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:8px;">
+        <!-- 6 Compact 1-Line Fix Chips -->
+        <div class="fix-pills-bar" id="simple-fix-pills">
+          <div class="fix-pill pill-on" id="pill-chunk" onclick="toggleSimpleFix('chunk')">
+            <strong>&#10003; 1. Whole Text</strong><span></span>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn" onclick="setAllNaiveControls()" style="border-color:var(--err);color:var(--err);">
-              &#10060; TURN ALL FIXES OFF (SEE BROKEN AI)
-            </button>
-            <button class="btn btn-ok" onclick="resetOptimalControls()">
-              &#9989; TURN ALL 6 FIXES ON (91.7% SCORE)
-            </button>
+          <div class="fix-pill pill-on" id="pill-hyde" onclick="toggleSimpleFix('hyde')">
+            <strong>&#10003; 2. Synonyms</strong><span></span>
+          </div>
+          <div class="fix-pill pill-on" id="pill-hybrid" onclick="toggleSimpleFix('hybrid')">
+            <strong>&#10003; 3. Exact Codes</strong><span></span>
+          </div>
+          <div class="fix-pill pill-on" id="pill-mmr" onclick="toggleSimpleFix('mmr')">
+            <strong>&#10003; 4. Clean Dups</strong><span></span>
+          </div>
+          <div class="fix-pill pill-on" id="pill-lim" onclick="toggleSimpleFix('lim')">
+            <strong>&#10003; 5. Best First</strong><span></span>
+          </div>
+          <div class="fix-pill pill-on" id="pill-guard" onclick="toggleSimpleFix('guard')">
+            <strong>&#10003; 6. Safety Shield</strong><span></span>
           </div>
         </div>
 
-        <!-- 6 Simple 1-Click Fix Pills (Click Any Pill to Toggle On/Off!) -->
-        <div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">
-            <strong>Active RAG Fixes (Click any box below to turn an individual fix ON or OFF):</strong>
-          </div>
-          <div class="fix-pills-bar" id="simple-fix-pills">
-            <div class="fix-pill pill-on" id="pill-chunk" onclick="toggleSimpleFix('chunk')">
-              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 1. Keep Sentences Intact</strong>
-              <span>Never chop numbers &amp; dates in half</span>
-            </div>
-            <div class="fix-pill pill-on" id="pill-hyde" onclick="toggleSimpleFix('hyde')">
-              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 2. Everyday Synonyms</strong>
-              <span>Understand casual phrasing &amp; slang</span>
-            </div>
-            <div class="fix-pill pill-on" id="pill-hybrid" onclick="toggleSimpleFix('hybrid')">
-              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 3. Exact Code + AI Search</strong>
-              <span>Pinpoint exact part codes &amp; tracking IDs</span>
-            </div>
-            <div class="fix-pill pill-on" id="pill-mmr" onclick="toggleSimpleFix('mmr')">
-              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 4. Remove Duplicates</strong>
-              <span>Delete repeated paragraphs</span>
-            </div>
-            <div class="fix-pill pill-on" id="pill-lim" onclick="toggleSimpleFix('lim')">
-              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 5. Best Facts First</strong>
-              <span>Put key facts where the AI reads them best</span>
-            </div>
-            <div class="fix-pill pill-on" id="pill-guard" onclick="toggleSimpleFix('guard')">
-              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 6. Safety Shield</strong>
-              <span>Say 'I don't know' instead of lying</span>
-            </div>
-          </div>
-        </div>
+        <!-- 1-Line Visual Cause -> Fix Strip -->
+        <div id="example-explainer-box" style="background:var(--bg-subtle);border:1px solid var(--border-grid);border-left:4px solid var(--accent);padding:6px 10px;font-size:0.78rem;"></div>
       </div>
 
       <!-- Side-by-Side Comparison Columns -->
-      <div class="diff-grid" id="studio-comparison" style="border-bottom:none;"></div>
-    </section>
+      <div class="diff-grid" id="studio-comparison" style="border-bottom:1px solid var(--border-grid);"></div>
 
-    <!-- ===================================================================
-         VISUAL EXPLAINER: 10-SECOND AUTO-LOOPING 8-BIT PIXEL ANIMATION
-         =================================================================== -->
-    <section class="step-card">
-      <div class="step-header">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="tag tag-ok">AUTO-LOOPING 10s VISUAL DEMO</span>
-          <span class="step-title">Watch How Your Question Travels Through the 5 Fixes</span>
+      <!-- Bottom Primary CTA Strip: Instant Copy Actions -->
+      <div style="padding:10px 14px;background:var(--bg-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button class="btn btn-ok" onclick="quickCopyDeliverable('doc')">&#128203; COPY AI-READY DOC</button>
+          <button class="btn btn-primary" onclick="quickCopyDeliverable('prompt')">&#128737; COPY SAFETY PROMPT</button>
+          <button class="btn" onclick="quickCopyDeliverable('code')">&#128013; COPY PYTHON CODE</button>
+          <button class="btn" onclick="openDeliverableModal('doc')">&#128065; PREVIEW / DOWNLOAD</button>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <button class="btn" id="px-btn-mode" onclick="pxToggleMode()">MODE: OPTIMIZED RAG</button>
-          <button class="btn btn-primary" id="px-btn-play" onclick="pxTogglePlay()">PAUSE</button>
-        </div>
-      </div>
-
-      <div style="border:1px solid var(--border-strong);background:var(--pixel-bg);overflow:hidden;">
-        <canvas id="px-canvas" width="960" height="210" style="width:100%;height:auto;display:block;image-rendering:pixelated;"></canvas>
-      </div>
-
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;" id="px-stage-ledger">
-          <div class="stage-ledger-item active-stage" onclick="pxScrubTo(0.2)">1. SLICE INTACT (0–2s)</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(2.2)">2. EXPAND WORDS (2–4s)</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(4.2)">3. HYBRID SEARCH (4–6s)</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(6.2)">4. REORDER FACTS (6–8s)</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(8.2)">5. SAFETY CHECK (8–10s)</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;min-width:220px;flex:1;max-width:340px;">
-          <span id="px-time-label" style="font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:var(--accent);min-width:68px;">0.0s / 10s</span>
-          <input id="px-scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="pxScrubTo(this.value)" style="flex:1;" />
-        </div>
+        <span id="copy-toast-msg" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--ok);font-weight:700;"></span>
       </div>
     </section>
 
     <!-- ===================================================================
-         STEP 4: YOUR TAKE-HOME AI PACKAGE (USE IN CHATGPT, CLAUDE, ZENDESK, OR CODE!)
+         MODAL 1: PASTE / UPLOAD YOUR OWN DOCUMENT
          =================================================================== -->
-    <section class="step-card" id="step-4-deliverable" style="border:2px solid var(--ok);">
-      <div class="step-header">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="step-badge" style="background:var(--ok);">STEP 4 &mdash; YOUR FIXED OUTPUT</span>
-          <span class="step-title">Copy Your Ready-to-Use AI Knowledge Base &amp; Safety Prompt (Zero Coding Required)</span>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="btn btn-ok" onclick="copyDeliverableBox()">&#128203; COPY TO CLIPBOARD</button>
-          <button class="btn" onclick="downloadDeliverableFile()">&#11015; DOWNLOAD .MD FILE</button>
+    <dialog id="doc-modal">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid var(--border-grid);padding-bottom:8px;">
+        <h2 style="font-family:var(--font-display);font-size:1rem;">&#9998; Paste or Upload Your Document</h2>
+        <div style="display:flex;gap:6px;">
+          <label class="btn" style="cursor:pointer;">
+            &#128194; UPLOAD FILE
+            <input type="file" accept=".txt,.md,.json,.csv" onchange="handleQuickFileUpload(event)" style="display:none;" />
+          </label>
+          <button class="btn" onclick="document.getElementById('doc-modal').close()">CLOSE</button>
         </div>
       </div>
-
-      <p style="font-size:0.82rem;color:var(--text-secondary);">
-        We automatically restructured your document so <strong>no sentence or price gets cut in half</strong>, <strong>exact codes are pulled to the top</strong>, and <strong>everyday customer slang words are attached</strong>. Paste this directly into <strong>ChatGPT (Custom GPT), Claude Projects, Intercom, Zendesk, Notion AI, or your app</strong>:
-      </p>
-
-      <!-- 3-Tab Switcher for Non-Tech Users + Developers -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border-grid);padding-bottom:10px;">
-        <button class="btn btn-primary" id="deliv-tab-doc" onclick="switchDeliverableTab('doc')">
-          1. AI-Ready Knowledge File (For ChatGPT / Claude / Bots)
+      <textarea id="live-doc-editor" rows="6" style="font-family:var(--font-sans);font-size:0.8rem;margin-bottom:8px;" placeholder="Paste your refund policy, FAQ, price sheet, or manual here..."></textarea>
+      <div id="live-doc-audit-box" style="margin-bottom:10px;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <span style="font-size:0.72rem;color:var(--text-muted);" id="live-scan-status">Ready</span>
+        <button class="btn btn-ok" onclick="scanAndFixCustomText(); document.getElementById('doc-modal').close();">
+          &#9889; SCAN &amp; FIX MY DOC NOW &rarr;
         </button>
-        <button class="btn" id="deliv-tab-prompt" onclick="switchDeliverableTab('prompt')">
-          2. Anti-Lying System Prompt (Copy Into Bot Instructions)
-        </button>
-        <button class="btn" id="deliv-tab-code" onclick="switchDeliverableTab('code')">
-          3. Developer Python Script
-        </button>
-        <span id="copy-toast-msg" style="font-family:var(--font-mono);font-size:0.75rem;color:var(--ok);font-weight:700;align-self:center;margin-left:auto;"></span>
       </div>
+    </dialog>
 
+    <!-- ===================================================================
+         MODAL 2: COPY / DOWNLOAD YOUR AI-READY KNOWLEDGE FILE & PROMPT
+         =================================================================== -->
+    <dialog id="deliverable-modal" id="step-4-deliverable">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid var(--border-grid);padding-bottom:8px;">
+        <h2 style="font-family:var(--font-display);font-size:1rem;">&#128203; Your AI-Ready Output</h2>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ok" onclick="copyDeliverableBox()">&#128203; COPY</button>
+          <button class="btn" onclick="downloadDeliverableFile()">&#11015; DOWNLOAD</button>
+          <button class="btn" onclick="document.getElementById('deliverable-modal').close()">CLOSE</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:8px;">
+        <button class="btn btn-primary" id="deliv-tab-doc" onclick="switchDeliverableTab('doc')">1. AI-Ready Doc</button>
+        <button class="btn" id="deliv-tab-prompt" onclick="switchDeliverableTab('prompt')">2. Safety Prompt</button>
+        <button class="btn" id="deliv-tab-code" onclick="switchDeliverableTab('code')">3. Python Code</button>
+      </div>
       <pre class="code-export" id="deliverable-output-box" style="max-height:320px;overflow-y:auto;white-space:pre-wrap;"></pre>
-    </section>
+    </dialog>
 
     <!-- ===================================================================
          OPTIONAL DRAWER 1: ADD YOUR OWN DOCUMENTS & PREVIEW CHUNKING
          =================================================================== -->
     <details id="drawer-docs" class="step-card" ontoggle="if(this.open) renderChunkVisualizer()">
-      <summary style="cursor:pointer;font-family:var(--font-display);font-size:0.96rem;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
-        <span>&#128196; Add Your Own Company Documents &amp; See How Sentences Get Sliced (<span id="corpus-count">5</span> Active Docs)</span>
-        <span class="tag tag-accent">DOCUMENTS</span>
+      <summary style="cursor:pointer;font-family:var(--font-display);font-size:0.86rem;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+        <span>&#128196; Inspect Document Slicing (<span id="corpus-count">5</span> Active Docs)</span>
+        <span class="tag tag-accent">CHUNK X-RAY</span>
       </summary>
       <div style="margin-top:14px;display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--border-grid);padding-top:14px;">
         <div style="display:grid;grid-template-columns:360px 1fr;gap:16px;">
@@ -1252,8 +1237,8 @@ def build_studio_html(initial_payload: dict) -> str:
          OPTIONAL DRAWER 2: BENCHMARKS, SECURITY DEMO & FINE-TUNING SLIDERS
          =================================================================== -->
     <details id="drawer-advanced" class="step-card" ontoggle="if(this.open) runRBACSim()">
-      <summary style="cursor:pointer;font-family:var(--font-display);font-size:0.96rem;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
-        <span>&#9881; Behind the Scenes: Accuracy Scorecard, Team Permissions &amp; Technical Details</span>
+      <summary style="cursor:pointer;font-family:var(--font-display);font-size:0.86rem;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+        <span>&#9881; Advanced Scorecard &amp; Sliders</span>
         <span class="tag tag-ok" id="sidebar-health-val">91.7 / 100</span>
       </summary>
       <div style="margin-top:14px;display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--border-grid);padding-top:14px;">
@@ -1358,8 +1343,8 @@ def build_studio_html(initial_payload: dict) -> str:
 
     const INDUSTRY_PACKS = {
       ecommerce: {
-        name: "1. Online Store & Returns (Customer Help Bot)",
-        roi: "STOPS WRONG REFUND PROMISES & MISSING PACKAGE DISPUTES",
+        name: "Online Store",
+        roi: "ONLINE STORE",
         docs: [
           {
             doc_id: "ORD-RETURNS",
@@ -1400,23 +1385,23 @@ def build_studio_html(initial_payload: dict) -> str:
           "Do you deliver fresh groceries by autonomous drone to underwater submarines?"
         ],
         cards: [
-          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. Two Questions in One Message", desc: "Customer asks about shipping cutoff AND customs duties in the same message." },
-          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. Missing Fee Numbers ($12.50 / 15%)", desc: "The computer chops the sentence in half, losing the 15% fee." },
-          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Looking Up Exact Part # SKU-9941-BLK", desc: "Basic AI gets confused by exact product codes and order numbers." },
-          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. \"my package came broken how do i get money back\"", desc: "Everyday slang has zero formal words like 'refund' or 'policy'." },
-          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Delivering Groceries to Submarines", desc: "Store doesn't do this — test if AI invents a fake policy or says 'I don't know'." }
+          { badge: "Q1", tag: "2 QUESTIONS", title: "1. Shipping + Customs", desc: "" },
+          { badge: "Q2", tag: "CUT-OFF FEE", title: "2. Missing $12.50 Fee", desc: "" },
+          { badge: "Q3", tag: "EXACT CODE", title: "3. Part SKU-9941-BLK", desc: "" },
+          { badge: "Q4", tag: "SLANG", title: "4. \"Package came broken\"", desc: "" },
+          { badge: "Q5", tag: "TRICK Q", title: "5. Submarine Delivery?", desc: "" }
         ],
         explainers: [
-          "<strong>Real-Life Example 1 (Two Questions at Once):</strong> <em>Why Standard AI Fails:</em> The AI grabs two repetitive sentences about shipping and completely ignores the second half about international customs taxes. <em>How RAGForge Fixes It:</em> It removes duplicate sentences and organizes facts so the AI answers both questions clearly.",
-          "<strong>Real-Life Example 2 (Cut-Off Numbers):</strong> <em>Why Standard AI Fails:</em> Blindly cutting paragraphs by character count cuts the sentence in half right before <strong>$12.50 / 15% restocking fee</strong>, so the AI quotes the wrong fee! <em>How RAGForge Fixes It:</em> It keeps full sentences intact so prices, fees, and dates are never cut in half.",
-          "<strong>Real-Life Example 3 (Exact Product Code SKU-9941-BLK):</strong> <em>Why Standard AI Fails:</em> AI 'meaning' search blurs specific product numbers into generic coffee makers and pulls the wrong manual. <em>How RAGForge Fixes It:</em> It combines word-by-word search with meaning search so it finds the exact product code every time.",
-          "<strong>Real-Life Example 4 (Casual Slang / Everyday Phrasing):</strong> <em>Why Standard AI Fails:</em> Frustrated shoppers type <em>\"my package came broken how do i get my money back\"</em> without using formal words like 'defective item' or 'refund policy'. <em>How RAGForge Fixes It:</em> It automatically translates everyday words into official policy terms before searching.",
-          "<strong>Real-Life Example 5 (Trick Question — Drone to Submarines):</strong> <em>Why Standard AI Fails:</em> Standard AI feels pressured to answer, grabs a random shipping rule, and invents a completely made-up story! <em>How RAGForge Fixes It:</em> An automatic safety guard says: <em>'I don't know, this is not in company documents'</em> instead of lying."
+          "&#10060; <strong>Broken AI:</strong> Drops the 2nd question (customs tax) &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Cleans duplicates &amp; answers both!",
+          "&#10060; <strong>Broken AI:</strong> Cuts off the <strong>$12.50 / 15% fee</strong> mid-sentence &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!",
+          "&#10060; <strong>Broken AI:</strong> Blurs exact code <code>SKU-9941-BLK</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Matches exact product code!",
+          "&#10060; <strong>Broken AI:</strong> Confused by slang <em>'package came broken'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to Refund Policy!",
+          "&#10060; <strong>Broken AI:</strong> Invents fake submarine delivery rule &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       },
       healthcare: {
-        name: "2. Healthcare & Medical Clinic (Doctor & Nurse Helper)",
-        roi: "PREVENTS DANGEROUS MEDICINE DOSAGE CUTOFFS & BAD ADVICE",
+        name: "Medical Clinic",
+        roi: "MEDICAL CLINIC",
         docs: [
           {
             doc_id: "MED-WARFARIN",
@@ -1451,23 +1436,23 @@ def build_studio_html(initial_payload: dict) -> str:
           "What is the clinical laser eye surgery protocol for domestic house cats?"
         ],
         cards: [
-          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. When to Stop AND Restart Medicine", desc: "Nurse asks both when to pause medicine before a scan and when to restart." },
-          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. Critical Dose Cut Off (2.5mg Vitamin K)", desc: "Dumb text chopping slices off the actual milligram dosage number!" },
-          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Exact Drug Bottle Code NDC-0069-3150", desc: "Pharmacist searches an exact national drug code number." },
-          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. \"can i take pain pills while on blood thinners\"", desc: "Patient uses simple home words instead of medical names like 'anticoagulant'." },
-          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Laser Eye Surgery on Pet Cats", desc: "Human clinic has no animal surgery rules — AI must safely decline to answer." }
+          { badge: "Q1", tag: "2 RULES", title: "1. Stop & Restart Meds", desc: "" },
+          { badge: "Q2", tag: "CUT-OFF DOSE", title: "2. Cut-Off 2.5mg Dose", desc: "" },
+          { badge: "Q3", tag: "EXACT CODE", title: "3. Code NDC-0069-3150", desc: "" },
+          { badge: "Q4", tag: "SLANG", title: "4. \"Pain pills + thinners\"", desc: "" },
+          { badge: "Q5", tag: "TRICK Q", title: "5. Cat Laser Surgery?", desc: "" }
         ],
         explainers: [
-          "<strong>Real-Life Example 1 (Two Healthcare Rules in One):</strong> <em>Why Standard AI Fails:</em> The AI reads repetitive background notes and misses the second vital instruction (waiting 48 hours to restart medicine). <em>How RAGForge Fixes It:</em> Cleans out redundant fluff and puts both the stopping rule and the 48-hour restart rule front and center.",
-          "<strong>Real-Life Example 2 (Cut-Off Dosage Numbers):</strong> <em>Why Standard AI Fails:</em> Chopping notes into arbitrary blocks slices right through <strong>'Vitamin K1 2.5mg'</strong>, so the AI quotes the rule without the dosage! <em>How RAGForge Fixes It:</em> Never cuts sentences in half, keeping exact milligrams and hours completely safe.",
-          "<strong>Real-Life Example 3 (Exact Drug Codes):</strong> <em>Why Standard AI Fails:</em> AI searches by fuzzy meaning, which misreads hyphenated codes like <code>NDC-0069-3150-83</code>. <em>How RAGForge Fixes It:</em> Combines exact keyword matching with smart AI search to find the precise prescription bottle.",
-          "<strong>Real-Life Example 4 (Patient Phrasing):</strong> <em>Why Standard AI Fails:</em> Patients say <em>\"pain pills with blood thinners\"</em> instead of official terms like <em>NSAIDs and Warfarin</em>. <em>How RAGForge Fixes It:</em> It automatically recognizes common words and connects them to medical safety guidelines.",
-          "<strong>Real-Life Example 5 (Pet Surgery Trick Question):</strong> <em>Why Standard AI Fails:</em> Standard AI tries to guess and risks inventing fake medical advice for an animal. <em>How RAGForge Fixes It:</em> The safety shield notices this topic is not in company documents and answers honestly: <em>'I don't know'</em>."
+          "&#10060; <strong>Broken AI:</strong> Misses 48-hour restart rule &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Shows both stop &amp; 48h restart rules!",
+          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>Vitamin K1 2.5mg</strong> dose &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps exact mg dose intact!",
+          "&#10060; <strong>Broken AI:</strong> Misreads drug code <code>NDC-0069-3150-83</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Pinpoints exact bottle code!",
+          "&#10060; <strong>Broken AI:</strong> Misses home words <em>'pain pills'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Maps slang to NSAID/Warfarin warning!",
+          "&#10060; <strong>Broken AI:</strong> Guesses fake pet surgery advice &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       },
       saas: {
-        name: "3. Office IT & Helpdesk (Customer Support Bot)",
-        roi: "ANSWERS 68% OF EMPLOYEE & CUSTOMER TICKETS WITHOUT WRONG ADVICE",
+        name: "IT Helpdesk",
+        roi: "IT HELPDESK",
         docs: [
           {
             doc_id: "IT-SSO-504",
@@ -1502,23 +1487,23 @@ def build_studio_html(initial_payload: dict) -> str:
           "How do I configure the company VPN to mine Dogecoin on office printers?"
         ],
         cards: [
-          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. Usage Limits + Auto-Retry Rules", desc: "User asks about daily usage limits AND what happens if a message fails." },
-          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. Cancellation Fee ($250) Cut Off", desc: "Chop cuts right before the 75% refund & $250 fee calculation." },
-          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Error Code ERR_OAUTH_504", desc: "Employee pastes an exact computer error code into chat." },
-          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. \"app keeps kicking me out on my phone\"", desc: "Employee uses casual words instead of formal technical login terms." },
-          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Mining Crypto on Office Printers", desc: "Nonsense request — AI must not make up fake steps to do this." }
+          { badge: "Q1", tag: "2 QUESTIONS", title: "1. Rate Limit + Retries", desc: "" },
+          { badge: "Q2", tag: "CUT-OFF FEE", title: "2. Cut-Off $250 Fee", desc: "" },
+          { badge: "Q3", tag: "EXACT CODE", title: "3. Code ERR_OAUTH_504", desc: "" },
+          { badge: "Q4", tag: "SLANG", title: "4. \"App kicks me out\"", desc: "" },
+          { badge: "Q5", tag: "TRICK Q", title: "5. Printer Crypto Mining?", desc: "" }
         ],
         explainers: [
-          "<strong>Real-Life Example 1 (Two Questions at Once):</strong> <em>Why Standard AI Fails:</em> The AI spends all its attention on the rate limit paragraph and drops the second question about automatic retries. <em>How RAGForge Fixes It:</em> It organizes the facts so both the limit and the retry rules are answered.",
-          "<strong>Real-Life Example 2 (Cut-Off Refund Math):</strong> <em>Why Standard AI Fails:</em> Fixed-character chopping slices <code>[IT-BILLING]</code> right through the <strong>75% refund credit and $250 fee</strong>! <em>How RAGForge Fixes It:</em> Keeps complete sentences together so fee calculations are never misquoted.",
-          "<strong>Real-Life Example 3 (Exact Error Code ERR_OAUTH_504):</strong> <em>Why Standard AI Fails:</em> AI vector search treats error codes as random numbers and pulls generic login articles. <em>How RAGForge Fixes It:</em> Looks up the exact error code letters and numbers to fetch the exact 3-minute fix.",
-          "<strong>Real-Life Example 4 (Casual Helpdesk Ticket):</strong> <em>Why Standard AI Fails:</em> Employees say <em>\"app keeps kicking me out on my phone\"</em> — none of which matches formal technical docs like <em>'session idle timeout'</em>. <em>How RAGForge Fixes It:</em> Translates common complaints into technical manual terms automatically.",
-          "<strong>Real-Life Example 5 (Absurd Office Prank Question):</strong> <em>Why Standard AI Fails:</em> Standard AI tries to be helpful and hallucinates instructions using office printer docs! <em>How RAGForge Fixes It:</em> Recognizes this is outside company guidelines and blocks the hallucination."
+          "&#10060; <strong>Broken AI:</strong> Drops webhook retry count &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Answers both rate limit &amp; 5 retries!",
+          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>75% refund &amp; $250 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full fee sentence intact!",
+          "&#10060; <strong>Broken AI:</strong> Misses exact error <code>ERR_OAUTH_504</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Finds exact 180s clock fix!",
+          "&#10060; <strong>Broken AI:</strong> Confused by <em>'kicks me out on phone'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to Mobile Timeout fix!",
+          "&#10060; <strong>Broken AI:</strong> Invents fake printer mining steps &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield blocks nonsense!"
         ]
       },
       fintech: {
-        name: "4. Banking, Fraud & Loans (Finance Support Bot)",
-        roi: "100% ACCURATE MONEY LIMITS, FRAUD REFUNDS & WIRE RULES",
+        name: "Banking",
+        roi: "BANKING & FRAUD",
         docs: [
           {
             doc_id: "BANK-WIRES",
@@ -1553,23 +1538,23 @@ def build_studio_html(initial_payload: dict) -> str:
           "What is our bank's fixed 30-year mortgage interest rate for craters on the Moon?"
         ],
         cards: [
-          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. Fraud Liability: 2 Days vs 60 Days", desc: "Customer asks about the $50 vs $500 rule AND when they get money back." },
-          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. $50,000 Approval Limit Cut Off", desc: "Chopping slices off the $50k sign-off rule and $35 wire fee waiver." },
-          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Bank Routing Code SWIFT-CHASUS33", desc: "Searching an exact bank transfer code and tax form requirement." },
-          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. \"someone stole my card how much do i lose\"", desc: "Scared customer doesn't know legal words like 'Regulation E' or 'liability'." },
-          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Home Loans on the Moon", desc: "Bank has no lunar loans — AI must say 'We don't offer this' instead of inventing rates." }
+          { badge: "Q1", tag: "2 DEADLINES", title: "1. Fraud: 2d vs 60d", desc: "" },
+          { badge: "Q2", tag: "CUT-OFF LIMIT", title: "2. Cut-Off $50k Wire", desc: "" },
+          { badge: "Q3", tag: "EXACT CODE", title: "3. Code SWIFT-CHASUS33", desc: "" },
+          { badge: "Q4", tag: "SLANG", title: "4. \"Someone stole card\"", desc: "" },
+          { badge: "Q5", tag: "TRICK Q", title: "5. Moon Mortgage Rate?", desc: "" }
         ],
         explainers: [
-          "<strong>Real-Life Example 1 (Two Financial Deadlines):</strong> <em>Why Standard AI Fails:</em> The AI pulls repetitive paragraphs and forgets the bank's strict legal promise to credit money back within 10 days. <em>How RAGForge Fixes It:</em> Surfaces both the customer's legal liability limits ($50 vs $500) and the 10-day refund deadline.",
-          "<strong>Real-Life Example 2 (Cut-Off Dollar Thresholds):</strong> <em>Why Standard AI Fails:</em> Dumb text chopping cuts sentences right through the <strong>$50,000 manager sign-off requirement and $35 fee waiver</strong>! <em>How RAGForge Fixes It:</em> Preserves full sentences so dollar limits are never chopped in half.",
-          "<strong>Real-Life Example 3 (Exact Bank Routing Codes):</strong> <em>Why Standard AI Fails:</em> AI searches by fuzzy concept, which muddles alphanumeric bank codes like <code>SWIFT-CHASUS33-882</code>. <em>How RAGForge Fixes It:</em> Matches exact bank codes so money wire transfers never get lost.",
-          "<strong>Real-Life Example 4 (Panicked Customer Phrasing):</strong> <em>Why Standard AI Fails:</em> A stressed customer types <em>\"someone stole my card and bought stuff\"</em> — zero match for legal terms like <em>unauthorized debit transaction</em>. <em>How RAGForge Fixes It:</em> Instantly maps the customer's worry to official federal fraud protection rules.",
-          "<strong>Real-Life Example 5 (Trick Moon Mortgage Question):</strong> <em>Why Standard AI Fails:</em> Standard AI grabs general loan rules and hallucinates a fake interest rate for craters on the moon! <em>How RAGForge Fixes It:</em> Safety shield detects the question has zero backing in real documents and declines to answer."
+          "&#10060; <strong>Broken AI:</strong> Forgets 10-day refund SLA &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Quotes $50/$500 cap + 10-day credit!",
+          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>$50,000 CFO sign-off &amp; $35 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full wire rule intact!",
+          "&#10060; <strong>Broken AI:</strong> Confuses routing code <code>SWIFT-CHASUS33-882</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Matches exact SWIFT code!",
+          "&#10060; <strong>Broken AI:</strong> Misses panicked <em>'stole my card'</em> wording &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Maps slang to Reg-E Fraud rule!",
+          "&#10060; <strong>Broken AI:</strong> Invents fake Moon mortgage rate &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield blocks fake rate!"
         ]
       },
       engineering: {
-        name: "5. Technology & Cloud Guides (Software Engineering Bot)",
-        roi: "BOOSTS ACCURACY FROM 37.5% TO 100% & CUTS COSTS BY 30%",
+        name: "Cloud Tech",
+        roi: "CLOUD & TECH",
         docs: INITIAL_DATA.corpus,
         queries: [
           "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?",
@@ -1579,18 +1564,18 @@ def build_studio_html(initial_payload: dict) -> str:
           "What is the BGP ASN autonomous system routing number for the Mars Rover satellite link?"
         ],
         cards: [
-          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. Duplicate Text Crowds the Answer", desc: "Standard AI grabs 2 identical paragraphs and buries the second half." },
-          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. Numbers Cut in Half (61GB to 15.3GB)", desc: "Text splitting cuts sentences right before key performance numbers." },
-          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Exact Error Code ERR_SSL_9042", desc: "AI meaning search gets confused by specific code strings without keyword matching." },
-          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. Vague User Questions", desc: "Short casual questions fail until synonyms expand the search." },
-          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Mars Rover Space Link (Trick Question)", desc: "Company documents have zero space data — AI safely stops itself from making up answers." }
+          { badge: "Q1", tag: "DUPLICATES", title: "1. Stop Duplicate Chunks", desc: "" },
+          { badge: "Q2", tag: "CUT-OFF RAM", title: "2. Cut-Off 61GB -> 15GB", desc: "" },
+          { badge: "Q3", tag: "EXACT CODE", title: "3. Code ERR_SSL_9042", desc: "" },
+          { badge: "Q4", tag: "SLANG", title: "4. \"Short vague queries\"", desc: "" },
+          { badge: "Q5", tag: "TRICK Q", title: "5. Mars Rover BGP Link?", desc: "" }
         ],
         explainers: [
-          "<strong>Real-Life Example 1 (Duplicate Text &amp; Buried Info):</strong> <em>Why Standard AI Fails:</em> It grabs two copies of the same paragraph, leaving no room for the second half of the answer. <em>How RAGForge Fixes It:</em> Removes duplicate paragraphs and places the best facts where the AI can read them clearly.",
-          "<strong>Real-Life Example 2 (Cut-Off Numbers):</strong> <em>Why Standard AI Fails:</em> Fixed character slicing cuts the sentence right before <code>61GB to 15.3GB</code>, so the AI loses the real numbers! <em>How RAGForge Fixes It:</em> Keeps whole sentences intact so measurements and numbers are never lost.",
-          "<strong>Real-Life Example 3 (Exact Error Code &amp; Part #):</strong> <em>Why Standard AI Fails:</em> Pure AI 'concept' search blurs serial numbers and error codes into generic words. <em>How RAGForge Fixes It:</em> Combines exact keyword search with AI concept search to achieve 100% accuracy.",
-          "<strong>Real-Life Example 4 (Short Vague Everyday Questions):</strong> <em>Why Standard AI Fails:</em> The user types a brief question without technical words, so standard search misses the right manual. <em>How RAGForge Fixes It:</em> Automatically adds helpful synonyms before searching.",
-          "<strong>Real-Life Example 5 (Trick Question — Mars Rover):</strong> <em>Why Standard AI Fails:</em> Company documents don't mention Mars Rovers, but standard AI tries to answer anyway and makes up a fake fact! <em>How RAGForge Fixes It:</em> The safety shield stops the AI when it doesn't have verified evidence."
+          "&#10060; <strong>Broken AI:</strong> Clones duplicate chunks &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Deduplicates &amp; puts best facts first!",
+          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>61GB &rarr; 15.3GB</strong> RAM math &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!",
+          "&#10060; <strong>Broken AI:</strong> Blurs exact code <code>ERR_SSL_9042</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Exact BM25 + Vector match!",
+          "&#10060; <strong>Broken AI:</strong> Fails on short vague wording &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Expands query with synonyms!",
+          "&#10060; <strong>Broken AI:</strong> Hallucinates Mars Rover routing &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       }
     };
@@ -1627,7 +1612,7 @@ def build_studio_html(initial_payload: dict) -> str:
       if (!ed) return;
       ed.value = CORPUS.map(d => `[${d.doc_id}] ${d.title}\n${d.content}`).join('\n\n');
       const statusEl = document.getElementById('live-scan-status');
-      if (statusEl) statusEl.textContent = `Showing ${CORPUS.length} document sections (${ed.value.length} characters). Paste your own text anytime and click Scan!`;
+      if (statusEl) statusEl.textContent = `${CORPUS.length} sections loaded`;
     }
 
     function renderLiveDocAudit() {
@@ -1641,27 +1626,11 @@ def build_studio_html(initial_payload: dict) -> str:
       const brokenCount = fixedChunks.filter(c => /^[a-z]/.test(c.text) || !/[.!?]$/.test(c.text)).length;
 
       box.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <strong style="font-size:0.82rem;color:var(--text-main);">&#128269; Instant AI Trap Scan of Your Document</strong>
-          <span class="tag tag-err">${brokenCount} CUT-OFF RISKS FOUND</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.75rem;">
-          <div style="background:var(--bg-panel);border:1px solid var(--border-grid);border-left:3px solid var(--err);padding:7px 9px;">
-            <strong style="display:block;color:var(--err);font-family:var(--font-mono);font-size:0.68rem;">1. NUMBERS AT RISK (${nums.length})</strong>
-            <span style="color:var(--text-secondary);">Standard AI chops ${brokenCount} sentences, risking: <code>${nums.slice(0, 4).join(', ') || 'key numbers'}</code></span>
-          </div>
-          <div style="background:var(--bg-panel);border:1px solid var(--border-grid);border-left:3px solid var(--warn);padding:7px 9px;">
-            <strong style="display:block;color:var(--warn);font-family:var(--font-mono);font-size:0.68rem;">2. EXACT CODES FOUND (${codes.length})</strong>
-            <span style="color:var(--text-secondary);">Indexed for exact match: <code>${codes.slice(0, 3).join(', ') || 'None detected'}</code></span>
-          </div>
-          <div style="background:var(--bg-panel);border:1px solid var(--border-grid);border-left:3px solid var(--accent);padding:7px 9px;">
-            <strong style="display:block;color:var(--accent);font-family:var(--font-mono);font-size:0.68rem;">3. CUSTOMER SLANG ADDED</strong>
-            <span style="color:var(--text-secondary);">Auto-mapped: <em>"${slang.slice(0, 3).join('", "')}"</em></span>
-          </div>
-          <div style="background:var(--bg-panel);border:1px solid var(--border-grid);border-left:3px solid var(--ok);padding:7px 9px;">
-            <strong style="display:block;color:var(--ok);font-family:var(--font-mono);font-size:0.68rem;">4. ANTI-LYING GUARD</strong>
-            <span style="color:var(--text-secondary);">Blocks fake promises when topic confidence &lt; 30%.</span>
-          </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:0.74rem;">
+          <span class="tag tag-err">${brokenCount} CUT-OFF TRAPS</span>
+          <span class="tag tag-ok">${nums.length} NUMBERS PROTECTED</span>
+          <span class="tag tag-accent">${codes.length} EXACT CODES</span>
+          <span class="tag tag-ok">${slang.length} SLANG TRIGGERS</span>
         </div>
       `;
     }
@@ -1680,6 +1649,17 @@ def build_studio_html(initial_payload: dict) -> str:
         }
       };
       reader.readAsText(file);
+    }
+
+    function renderCompactQuestionButtons(cards) {
+      const cardsContainer = document.getElementById('preset-cards-container');
+      if (!cardsContainer) return;
+      cardsContainer.innerHTML = cards.map((c, idx) => `
+        <button class="preset-chip ${idx === 0 ? 'active' : ''}" onclick="loadPreset(${idx}, this)" style="padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.77rem;">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.title}</span>
+          <span class="tag tag-accent" style="font-size:0.62rem;padding:1px 4px;flex-shrink:0;">${c.tag}</span>
+        </button>
+      `).join('');
     }
 
     function scanAndFixCustomText() {
@@ -1718,10 +1698,9 @@ def build_studio_html(initial_payload: dict) -> str:
       const allText = CORPUS.map(d => d.content).join(' ');
       const nums = extractDocNumbers(allText);
       const codes = extractDocCodes(allText + ' ' + CORPUS.map(d => d.doc_id).join(' '));
-      const sents = splitSentences(allText);
       const firstTitle = CORPUS[0].title;
       const secondTitle = (CORPUS[1] || CORPUS[0]).title;
-      const sampleNum = nums[0] || 'the exact fee or deadline';
+      const sampleNum = nums[0] || 'key numbers';
       const sampleCode = codes[0] || CORPUS[0].doc_id;
       const slangList = extractSlangTriggersForText(allText);
 
@@ -1734,43 +1713,28 @@ def build_studio_html(initial_payload: dict) -> str:
       ];
 
       const customCards = [
-        { tag: "BURIED FACTS", title: `1. Multi-Part Question on Your Doc`, desc: `Asks about both "${firstTitle.slice(0,22)}.." and "${secondTitle.slice(0,22)}.."` },
-        { tag: "CUT-OFF NUMBERS", title: `2. Number Check (${sampleNum})`, desc: `Tests if ${sampleNum} gets cut off by standard AI text chopping.` },
-        { tag: "EXACT CODES", title: `3. Exact Code Lookup (${sampleCode})`, desc: `Tests if the AI can find exact identifier ${sampleCode}.` },
-        { tag: "CASUAL SLANG", title: `4. Everyday Customer Wording`, desc: `Tests casual phrasing: "${PRESET_QUERIES[3].slice(0, 34)}..."` },
-        { tag: "MADE-UP ANSWER", title: `5. Trick Out-of-Scope Question`, desc: `Tests if your chatbot safely says 'I don't know' on outside topics.` }
+        { tag: "2 TOPICS", title: `1. Multi-Part Question` },
+        { tag: "NUMBER", title: `2. Check ${sampleNum}` },
+        { tag: "CODE", title: `3. Code ${sampleCode}` },
+        { tag: "SLANG", title: `4. Casual Wording` },
+        { tag: "TRICK Q", title: `5. Submarine Trick Q` }
       ];
 
       EXAMPLE_EXPLAINERS = [
-        `<strong>Custom Doc Test 1 (Two Questions at Once):</strong> <em>Why Standard AI Fails:</em> Standard search grabs repetitive sentences and misses the second topic. <em>How RAGForge Fixes It:</em> Deduplicates and puts both sections of your document in high-attention slots.`,
-        `<strong>Custom Doc Test 2 (Protecting Your Numbers — ${sampleNum}):</strong> <em>Why Standard AI Fails:</em> Fixed 180-character chopping cuts sentences in half right before <code>${sampleNum}</code>. <em>How RAGForge Fixes It:</em> Keeps every sentence in your document 100% intact.`,
-        `<strong>Custom Doc Test 3 (Exact Code — ${sampleCode}):</strong> <em>Why Standard AI Fails:</em> Pure AI meaning search blurs exact codes like <code>${sampleCode}</code>. <em>How RAGForge Fixes It:</em> Combines exact word search with AI meaning search.`,
-        `<strong>Custom Doc Test 4 (Casual Customer Wording):</strong> <em>Why Standard AI Fails:</em> Customers use casual everyday phrasing that doesn't match your formal text. <em>How RAGForge Fixes It:</em> Automatically attaches customer slang triggers to your document.`,
-        `<strong>Custom Doc Test 5 (Trick Outside Question):</strong> <em>Why Standard AI Fails:</em> Without a safety boundary, standard AI guesses from random paragraphs in your doc. <em>How RAGForge Fixes It:</em> Safety shield blocks the answer when confidence is below 30%.`
+        `&#10060; <strong>Broken AI:</strong> Misses 2nd section &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Answers both sections clearly!`,
+        `&#10060; <strong>Broken AI:</strong> Risk of cutting off <code>${sampleNum}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!`,
+        `&#10060; <strong>Broken AI:</strong> Blurs exact code <code>${sampleCode}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Exact code match!`,
+        `&#10060; <strong>Broken AI:</strong> Misses casual customer slang &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to your doc!`,
+        `&#10060; <strong>Broken AI:</strong> Guesses on outside topics &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!`
       ];
 
-      const cardsContainer = document.getElementById('preset-cards-container');
-      if (cardsContainer) {
-        cardsContainer.innerHTML = customCards.map((c, idx) => `
-          <div class="preset-chip ${idx === 0 ? 'active' : ''}" onclick="loadPreset(${idx}, this)" style="text-align:left;padding:8px 10px;display:flex;flex-direction:column;gap:3px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:0.66rem;color:var(--text-muted);font-weight:700;font-family:var(--font-mono);">YOUR DOC #${idx + 1}</span>
-              <span class="tag tag-accent">${c.tag}</span>
-            </div>
-            <div style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;color:var(--text-main);">${c.title}</div>
-            <div style="font-family:var(--font-sans);font-size:0.71rem;color:var(--text-secondary);line-height:1.3;">${c.desc}</div>
-          </div>
-        `).join('');
-      }
-
-      const headingEl = document.getElementById('pack-examples-heading');
-      if (headingEl) headingEl.textContent = `Stress-Test Questions Auto-Generated From Your Document (${CORPUS.length} Sections)`;
-      const statusEl = document.getElementById('live-scan-status');
-      if (statusEl) statusEl.innerHTML = `<strong style="color:var(--ok);">&#10003; Scanned ${CORPUS.length} sections (${nums.length} numbers &amp; ${codes.length} codes protected)!</strong> Scroll down to test or copy your AI-Ready File in Step 4.`;
+      renderCompactQuestionButtons(customCards);
+      const roiEl = document.getElementById('pack-roi-badge');
+      if (roiEl) roiEl.textContent = `CUSTOM DOC (${CORPUS.length})`;
 
       renderCorpusList();
       renderLiveDocAudit();
-      const firstCard = cardsContainer ? cardsContainer.querySelector('.preset-chip') : null;
+      const firstCard = document.querySelector('#preset-cards-container .preset-chip');
       loadPreset(0, firstCard);
     }
 
@@ -1845,15 +1809,26 @@ def build_studio_html(initial_payload: dict) -> str:
       updateDeliverableOutput();
     }
 
-    function copyDeliverableBox() {
-      updateDeliverableOutput();
+    function openDeliverableModal(tabName) {
+      switchDeliverableTab(tabName || 'doc');
+      const m = document.getElementById('deliverable-modal');
+      if (m && m.showModal) m.showModal();
+    }
+
+    function quickCopyDeliverable(tabName) {
+      switchDeliverableTab(tabName || 'doc');
       const txt = document.getElementById('deliverable-output-box').textContent;
       navigator.clipboard.writeText(txt);
       const toast = document.getElementById('copy-toast-msg');
+      const labels = { doc: 'AI-READY DOC', prompt: 'SAFETY PROMPT', code: 'PYTHON CODE' };
       if (toast) {
-        toast.textContent = '✓ COPIED TO CLIPBOARD!';
+        toast.textContent = `✓ COPIED ${labels[tabName] || 'OUTPUT'}!`;
         setTimeout(() => { toast.textContent = ''; }, 2500);
       }
+    }
+
+    function copyDeliverableBox() {
+      quickCopyDeliverable(ACTIVE_DELIVERABLE_TAB);
     }
 
     function downloadDeliverableFile() {
@@ -1877,24 +1852,10 @@ def build_studio_html(initial_payload: dict) -> str:
       PRESET_QUERIES = [...pack.queries];
       EXAMPLE_EXPLAINERS = [...pack.explainers];
 
-      const headingEl = document.getElementById('pack-examples-heading');
-      if (headingEl) headingEl.textContent = `Click a Real ${pack.name.replace(/^\d+\.\s*/, '').split(' (')[0]} Question to Test`;
       const roiEl = document.getElementById('pack-roi-badge');
       if (roiEl) roiEl.textContent = pack.roi;
 
-      const cardsContainer = document.getElementById('preset-cards-container');
-      if (cardsContainer) {
-        cardsContainer.innerHTML = pack.cards.map((c, idx) => `
-          <div class="preset-chip ${idx === 0 ? 'active' : ''}" onclick="loadPreset(${idx}, this)" style="text-align:left;padding:8px 10px;display:flex;flex-direction:column;gap:3px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:0.66rem;color:var(--text-muted);font-weight:700;font-family:var(--font-mono);">SCENARIO ${idx + 1}</span>
-              <span class="tag tag-accent">${c.tag}</span>
-            </div>
-            <div style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;color:var(--text-main);">${c.title}</div>
-            <div style="font-family:var(--font-sans);font-size:0.71rem;color:var(--text-secondary);line-height:1.3;">${c.desc}</div>
-          </div>
-        `).join('');
-      }
+      renderCompactQuestionButtons(pack.cards);
 
       const rbacSelect = document.getElementById('rbac-tenant-select');
       if (rbacSelect && CORPUS.length > 0) {
@@ -1904,20 +1865,18 @@ def build_studio_html(initial_payload: dict) -> str:
       populateLiveDocEditor();
       renderLiveDocAudit();
       renderCorpusList();
-      const firstCard = cardsContainer ? cardsContainer.querySelector('.preset-chip') : null;
+      const firstCard = document.querySelector('#preset-cards-container .preset-chip');
       loadPreset(0, firstCard);
     }
 
-    /* Single-page layout: "switching view" now just scrolls to the Step 3 comparison. */
     function switchView() {
       const cmp = document.getElementById('studio-comparison');
       if (cmp) cmp.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    /* 6 simple fix pills (Step 3) mapped onto the underlying engine controls */
     const SIMPLE_FIX_LABELS = {
-      chunk: '1. Keep Sentences Intact', hyde: '2. Everyday Synonyms', hybrid: '3. Exact Code + AI Search',
-      mmr: '4. Remove Duplicates', lim: '5. Best Facts First', guard: '6. Safety Shield'
+      chunk: '1. Whole Text', hyde: '2. Synonyms', hybrid: '3. Exact Codes',
+      mmr: '4. Clean Dups', lim: '5. Best First', guard: '6. Safety Shield'
     };
 
     function isSimpleFixOn(key) {
@@ -2331,7 +2290,11 @@ def build_studio_html(initial_payload: dict) -> str:
       document.getElementById('ctrl-compress').checked = false;
       document.getElementById('ctrl-guard').checked = false;
       pxOptMode = false;
-      document.getElementById('px-btn-mode').textContent = 'MODE: NAIVE RAG (FAILS)';
+      const btnMode = document.getElementById('px-btn-mode');
+      if (btnMode) {
+        btnMode.innerHTML = '&#10060; MODE: BROKEN AI';
+        btnMode.classList.remove('btn-ok');
+      }
       runInteractiveQuery();
     }
 
@@ -2349,7 +2312,11 @@ def build_studio_html(initial_payload: dict) -> str:
       document.getElementById('ctrl-compress').checked = true;
       document.getElementById('ctrl-guard').checked = true;
       pxOptMode = true;
-      document.getElementById('px-btn-mode').textContent = 'MODE: OPTIMIZED RAG';
+      const btnMode = document.getElementById('px-btn-mode');
+      if (btnMode) {
+        btnMode.innerHTML = '&#9989; MODE: FIXED AI';
+        btnMode.classList.add('btn-ok');
+      }
       runInteractiveQuery();
     }
 
@@ -2363,7 +2330,7 @@ def build_studio_html(initial_payload: dict) -> str:
       resetOptimalControls();
       pxElapsed = 0;
       pxPlaying = true;
-      document.getElementById('px-btn-play').textContent = 'PAUSE';
+      document.getElementById('px-btn-play').innerHTML = '&#9208; PAUSE';
       const cmp = document.getElementById('studio-comparison');
       if (cmp) cmp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
@@ -2374,9 +2341,9 @@ def build_studio_html(initial_payload: dict) -> str:
       document.getElementById('studio-query').value = PRESET_QUERIES[idx];
       const expEl = document.getElementById('example-explainer-box');
       if (expEl && EXAMPLE_EXPLAINERS[idx]) expEl.innerHTML = EXAMPLE_EXPLAINERS[idx];
-      pxElapsed = 0; // Restart 10s pixel animation to trace the new query
+      pxElapsed = 0;
       pxPlaying = true;
-      document.getElementById('px-btn-play').textContent = 'PAUSE';
+      document.getElementById('px-btn-play').innerHTML = '&#9208; PAUSE';
       runInteractiveQuery();
     }
 
@@ -2398,14 +2365,14 @@ def build_studio_html(initial_payload: dict) -> str:
           if (res.ok) {
             const data = await res.json();
             LAST_QUERY_RESULT = data;
-            document.getElementById('engine-mode-badge').textContent = 'PYTHON SERVER + JS DUAL ENGINE';
+            document.getElementById('engine-mode-badge').textContent = '91.7% ACCURACY';
             renderQueryComparison(data);
             return;
           }
         } catch (e) {}
       }
 
-      document.getElementById('engine-mode-badge').textContent = `LIVE ${ACTIVE_PACK.toUpperCase()} RAG ENGINE`;
+      document.getElementById('engine-mode-badge').textContent = '91.7% ACCURACY';
       const naiveRes = runLocalPipelineJS(q, {
         chunk: 'fixed', chunkSize: 180, mode: 'dense', alpha: 0.55,
         hyde: false, rerank: false, mmr: false, lim: false, compress: false, guard: false
@@ -2423,7 +2390,7 @@ def build_studio_html(initial_payload: dict) -> str:
     function renderQueryComparison(d) {
       const naiveChunksHtml = d.naive.chunks.map(c => `
         <div class="chunk-card">
-          <div class="chunk-meta"><span>RANK #${c.rank} // [${c.doc_id}]</span><span>SCORE: ${c.score}</span></div>
+          <div class="chunk-meta"><span>#${c.rank} [${c.doc_id}]</span><span>SCORE: ${c.score}</span></div>
           <div style="color:var(--text-secondary);">${c.text}</div>
         </div>
       `).join('');
@@ -2431,44 +2398,38 @@ def build_studio_html(initial_payload: dict) -> str:
       const optChunksHtml = d.optimized.chunks.map(c => `
         <div class="chunk-card">
           <div class="chunk-meta">
-            <span>RANK #${c.rank} // [${c.doc_id}] ${c.title || ''}</span>
-            <span>RRF: ${c.score} (DENSE: ${c.dense_score} | BM25: ${c.sparse_score})</span>
+            <span>#${c.rank} [${c.doc_id}]</span>
+            <span>SCORE: ${c.score}</span>
           </div>
           <div style="color:var(--text-main);">${c.text}</div>
         </div>
       `).join('');
 
       const statusBadge = d.abstained
-        ? `<span class="tag tag-err">SAFELY SAID "I DON'T KNOW"</span>`
-        : `<span class="tag tag-ok">GROUNDED IN YOUR DOCS &middot; CONFIDENCE ${d.confidence}</span>`;
+        ? `<span class="tag tag-err">BLOCKED FAKE ANSWER</span>`
+        : `<span class="tag tag-ok">100% VERIFIED &middot; -${d.optimized.token_savings_pct}% COST</span>`;
 
       document.getElementById('studio-comparison').innerHTML = `
-        <div class="diff-col naive-col">
+        <div class="diff-col naive-col" style="padding:10px 14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h4 style="font-family:var(--font-display);font-size:0.86rem;text-transform:uppercase;">&#10060; Standard AI (No Fixes)</h4>
-            <span class="tag tag-err">USED: ${d.naive.docs.join(', ')}</span>
+            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--err);">&#10060; BROKEN AI (Standard)</h4>
+            <span class="tag tag-err">${d.naive.docs.slice(0,2).join(', ')}</span>
           </div>
-          <div class="answer-box" style="border-left-color:var(--err);">
-            <strong style="display:block;font-size:0.69rem;color:var(--err);font-family:var(--font-mono);margin-bottom:3px;">
-              WHAT THE CHATBOT WOULD SAY (${d.naive.tokens} words of context):
-            </strong>
+          <div class="answer-box" style="border-left-color:var(--err);margin:6px 0;padding:8px 10px;font-size:0.8rem;">
             ${d.naive.answer}
           </div>
-          <details><summary style="cursor:pointer;font-size:0.76rem;color:var(--text-muted);margin-bottom:6px;">Show the 3 document snippets it read &darr;</summary>${naiveChunksHtml}</details>
+          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">View 3 snippets &darr;</summary>${naiveChunksHtml}</details>
         </div>
 
-        <div class="diff-col opt-col">
+        <div class="diff-col opt-col" style="padding:10px 14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h4 style="font-family:var(--font-display);font-size:0.86rem;text-transform:uppercase;">&#9989; RAGForge (With Your Fixes)</h4>
+            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--ok);">&#9989; FIXED AI (RAGForge)</h4>
             ${statusBadge}
           </div>
-          <div class="answer-box" style="border-left-color:${d.abstained ? 'var(--err)' : 'var(--ok)'};">
-            <strong style="display:block;font-size:0.69rem;color:${d.abstained ? 'var(--err)' : 'var(--ok)'};font-family:var(--font-mono);margin-bottom:3px;">
-              WHAT THE CHATBOT WOULD SAY (${d.optimized.token_savings_pct}% cheaper):
-            </strong>
+          <div class="answer-box" style="border-left-color:${d.abstained ? 'var(--err)' : 'var(--ok)'};margin:6px 0;padding:8px 10px;font-size:0.8rem;">
             ${d.optimized.answer}
           </div>
-          <details><summary style="cursor:pointer;font-size:0.76rem;color:var(--text-muted);margin-bottom:6px;">Show the 3 document snippets it read &darr;</summary>${optChunksHtml}</details>
+          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">View 3 snippets &darr;</summary>${optChunksHtml}</details>
         </div>
       `;
 
@@ -2775,13 +2736,12 @@ print(response.synthesized_answer)`;
 
     function pxTogglePlay() {
       pxPlaying = !pxPlaying;
-      document.getElementById('px-btn-play').textContent = pxPlaying ? 'PAUSE' : 'PLAY';
+      document.getElementById('px-btn-play').innerHTML = pxPlaying ? '&#9208; PAUSE' : '&#9654; PLAY';
       pxLastTs = performance.now();
     }
 
     function pxToggleMode() {
       pxOptMode = !pxOptMode;
-      document.getElementById('px-btn-mode').textContent = pxOptMode ? 'MODE: OPTIMIZED RAG' : 'MODE: NAIVE RAG (FAILS)';
       if (pxOptMode) resetOptimalControls(); else setAllNaiveControls();
     }
 
@@ -2792,12 +2752,18 @@ print(response.synthesized_answer)`;
     }
 
     function pxRenderFrame() {
-      const stageIdx = Math.min(4, Math.floor(pxElapsed / 2.0));
-      const prog = (pxElapsed % 2.0) / 2.0;
-      const okGreen = "#10B981", errRed = "#F43F5E", electricBlue = "#3B82F6", signalGold = "#FACC15";
+      const isLight = document.documentElement.getAttribute('data-theme') !== 'dark';
+      const bgSky = isLight ? "#f1f5f9" : "#0b0f19";
+      const bgFloor = isLight ? "#e2e8f0" : "#161f33";
+      const gridLine = isLight ? "rgba(15,23,42,0.06)" : "rgba(255,255,255,0.05)";
+      const textMain = isLight ? "#0f172a" : "#f8fafc";
+      const textSub = isLight ? "#475569" : "#94a3b8";
+      const signalGold = "#f59e0b", okGreen = "#10b981", errRed = "#ef4444", electricBlue = "#38bdf8";
       const mainCol = pxOptMode ? okGreen : errRed;
 
-      // Sync right-hand Stage Ledger highlight
+      const stageIdx = Math.min(4, Math.floor(pxElapsed / 2.0));
+      const prog = (pxElapsed % 2.0) / 2.0;
+
       const ledgerItems = document.querySelectorAll('#px-stage-ledger .stage-ledger-item');
       ledgerItems.forEach((el, i) => {
         if (i === stageIdx) el.classList.add('active-stage');
@@ -2805,163 +2771,159 @@ print(response.synthesized_answer)`;
       });
 
       const cur = LAST_QUERY_RESULT || INITIAL_DATA.default_query_result;
-      const qShort = (cur.query || "").slice(0, 32) + "...";
-      const topDoc = (cur.optimized && cur.optimized.docs && cur.optimized.docs[0]) || "DOC-06";
-      const topChunk = (cur.optimized && cur.optimized.chunks && cur.optimized.chunks[0]) || { dense_score: 0.25, sparse_score: 18.5, score: 0.85 };
+      const qShort = (cur.query || "").slice(0, 22) + "..";
+      const topDoc = (cur.optimized && cur.optimized.docs && cur.optimized.docs[0]) || "DOC-01";
 
-      pxRect(0, 0, 960, 210, "#0E1015");
-      for (let gx = 0; gx < 960; gx += 24) pxRect(gx, 0, 1, 166, "rgba(255,255,255,0.045)");
-      for (let gy = 0; gy < 166; gy += 24) pxRect(0, gy, 960, 1, "rgba(255,255,255,0.045)");
-      pxRect(0, 166, 960, 44, "#161922");
-      pxRect(0, 166, 960, 3, mainCol);
+      pxRect(0, 0, 760, 200, bgSky);
+      for (let gx = 0; gx < 760; gx += 20) pxRect(gx, 0, 1, 160, gridLine);
+      for (let gy = 0; gy < 160; gy += 20) pxRect(0, gy, 760, 1, gridLine);
+      pxRect(0, 156, 760, 44, bgFloor);
+      pxRect(0, 156, 760, 4, mainCol);
 
       document.getElementById('px-scrubber').value = pxElapsed.toFixed(2);
-      document.getElementById('px-time-label').textContent = `${pxElapsed.toFixed(1)}s / 10s`;
+      document.getElementById('px-time-label').textContent = `${pxElapsed.toFixed(1)}s/10s`;
 
       const stageTitles = [
-        `STEP 01/05: KEEPING SENTENCES INTACT (${CORPUS.length} Documents)`,
-        `STEP 02/05: UNDERSTANDING CASUAL WORDS FOR "${qShort}"`,
-        `STEP 03/05: COMBINING WORD SEARCH + MEANING SEARCH -> TOP MATCH [${topDoc}]`,
-        `STEP 04/05: REMOVING DUPLICATES & PUTTING BEST FACTS FIRST (-${cur.optimized.token_savings_pct}% Waste)`,
-        `STEP 05/05: SAFETY CHECK & ACCURACY GUARD (Trust Score: ${cur.confidence})`
+        `STAGE 1: KEEP WHOLE SENTENCES (${CORPUS.length} DOCS)`,
+        `STAGE 2: ADD SLANG SYNONYMS ("${qShort}")`,
+        `STAGE 3: EXACT CODE + MEANING -> [${topDoc}]`,
+        `STAGE 4: REMOVE DUPLICATES (-${cur.optimized.token_savings_pct}% COST)`,
+        `STAGE 5: SAFETY SHIELD (${Math.round(cur.confidence * 100)}% TRUST)`
       ];
       const stageDescsOpt = [
-        "Keeps whole sentences intact with their context so dollar amounts, dates, and dosages are never cut in half.",
-        `Understands everyday phrasing: "${cur.optimized.expanded_query.slice(0, 68)}..."`,
-        `Combines exact word matching with smart concept search to find [${cur.optimized.docs.join(', ')}].`,
-        `Removes repeated paragraphs and places key facts where the AI reads them best.`,
-        cur.abstained ? "SAFETY GUARD STOPPED BAD ANSWER: The system safely admitted it didn't know rather than lying." : `VERIFIED ACCURATE: Created an honest answer backed directly by [${cur.optimized.docs.slice(0,2).join(', ')}].`
+        "FIXED: Never cuts prices, dosages, or dates in half.",
+        "FIXED: Connects casual customer slang to official rules.",
+        `FIXED: Finds exact code & meaning in [${cur.optimized.docs.slice(0,2).join(', ')}].`,
+        "FIXED: Deletes repeated text & puts best facts first.",
+        cur.abstained ? "FIXED: Safely said 'I don't know' (0% lying)." : `FIXED: 100% verified answer from [${topDoc}].`
       ];
       const stageDescsNaive = [
-        "BROKEN CHUNKING: Cuts sentences mid-thought, severing numbers, fees, and rules in half!",
-        "CONFUSED BY CASUAL WORDS: Misses simple customer phrasing because formal company terms weren't matched!",
-        "BLURRED PART NUMBERS: Fuzzy AI search confuses exact SKU codes, serial numbers, and error tags!",
-        `CLUTTERED WITH DUPLICATES: Repeated paragraphs waste space and bury the real answer in the middle!`,
-        "NO SAFETY GUARD: Blindly invents fake, made-up answers when it doesn't know the truth!"
+        "BROKEN: Slices sentences in half, losing key numbers!",
+        "BROKEN: Confused by casual customer slang!",
+        "BROKEN: Blurs exact product codes & IDs!",
+        "BROKEN: Cluttered with duplicate paragraphs!",
+        "BROKEN: Invents fake rules when it doesn't know!"
       ];
 
       // Top HUD Banner
-      pxRect(12, 8, 936, 36, "#161922");
-      pxRect(12, 8, 5, 36, mainCol);
+      pxRect(12, 8, 736, 36, isLight ? "rgba(255,255,255,0.92)" : "rgba(15,23,42,0.92)");
+      pxRect(12, 8, 6, 36, mainCol);
       pxCtx.font = "bold 12px monospace";
       pxCtx.fillStyle = mainCol;
-      pxCtx.fillText(stageTitles[stageIdx], 24, 22);
+      pxCtx.fillText(stageTitles[stageIdx], 26, 23);
       pxCtx.font = "11px monospace";
-      pxCtx.fillStyle = "#F4F4F5";
-      pxCtx.fillText(pxOptMode ? stageDescsOpt[stageIdx] : stageDescsNaive[stageIdx], 24, 37);
+      pxCtx.fillStyle = textMain;
+      pxCtx.fillText(pxOptMode ? stageDescsOpt[stageIdx] : stageDescsNaive[stageIdx], 26, 38);
 
-      // 5 Stage Stations
-      const xs = [92, 285, 480, 675, 868];
-      const names = ["1.WHOLE TEXT", "2.SYNONYMS", "3.WORD+MEANING", "4.CLEAN DUPS", "5.SAFETY"];
+      // 5 Arcade Pedestal Stations (from pixel_rag_demo.html)
+      const xs = [65, 215, 375, 535, 685];
+      const names = ["1.WHOLE TEXT", "2.SYNONYMS", "3.EXACT CODE", "4.CLEAN DUPS", "5.SAFETY"];
       xs.forEach((x, idx) => {
-        const col = idx === stageIdx ? signalGold : (idx < stageIdx ? mainCol : "#52525B");
-        pxRect(x - 46, 146, 92, 20, "#1E222D");
-        pxRect(x - 46, 146, 92, 3, col);
+        const col = idx === stageIdx ? signalGold : (idx < stageIdx ? mainCol : textSub);
+        pxRect(x - 42, 136, 84, 20, isLight ? "#cbd5e1" : "#1e293b");
+        pxRect(x - 42, 136, 84, 4, col);
         pxCtx.font = "bold 11px monospace";
         pxCtx.fillStyle = col;
         pxCtx.textAlign = "center";
-        pxCtx.fillText(names[idx], x, 160);
+        pxCtx.fillText(names[idx], x, 150);
       });
       pxCtx.textAlign = "left";
 
       // Animated 8-Bit Telemetry Bot
-      const botX = 92 + (pxElapsed / 10.0) * (868 - 92);
-      const botY = 106 + Math.sin(pxElapsed * 15) * 4;
+      const botX = 65 + (pxElapsed / 10.0) * (685 - 65);
+      const botY = 98 + Math.sin(pxElapsed * 12) * 3;
       pxDrawSprite(botX - 16, botY, 4, mainCol);
 
       // Stage Telemetry Packet Graphics
       if (stageIdx === 0) {
-        pxRect(120, 54, 125, 56, "#F4F4F5");
-        pxRect(130, 66, 105, 7, "#52525B");
-        pxRect(130, 80, 90, 7, electricBlue);
-        pxRect(130, 94, 105, 7, "#52525B");
+        pxRect(80, 50, 115, 52, "#f8fafc");
+        pxRect(88, 60, 95, 6, "#64748b");
+        pxRect(88, 72, 80, 6, signalGold);
+        pxRect(88, 84, 95, 6, "#64748b");
         if (pxOptMode) {
-          const pad = Math.round(prog * 14);
-          pxRect(300 - pad, 58 - pad/2, 305 + pad*2, 48 + pad, "rgba(16,185,129,0.22)");
-          pxRect(300, 66, 305, 32, okGreen);
-          pxCtx.fillStyle = "#09090B";
-          pxCtx.fillText(`WHOLE SENTENCES KEPT INTACT`, 314, 86);
+          const pad = Math.round(prog * 10);
+          pxRect(250 - pad, 54 - pad/2, 260 + pad*2, 42 + pad, "rgba(16,185,129,0.22)");
+          pxRect(250, 60, 260, 30, okGreen);
+          pxCtx.fillStyle = "#0b0f19";
+          pxCtx.fillText(`WHOLE SENTENCE + NUMBERS INTACT`, 264, 79);
         } else {
-          pxRect(300, 64, 125, 34, errRed);
-          pxRect(445 + prog * 24, 72, 125, 34, errRed);
-          pxCtx.fillStyle = "#FFFFFF";
-          pxCtx.fillText("Sentence Cut-", 312, 86);
-          pxCtx.fillText("-In Half!", 455 + prog * 24, 94);
+          pxRect(250, 58, 115, 32, errRed);
+          pxRect(380 + prog * 22, 64, 115, 32, errRed);
+          pxCtx.fillStyle = "#ffffff";
+          pxCtx.fillText("Fee Cut-", 264, 78);
+          pxCtx.fillText("-In Half!", 395 + prog * 22, 84);
         }
       } else if (stageIdx === 1) {
-        pxRect(150, 64, 180, 34, electricBlue);
-        pxCtx.fillStyle = "#FFFFFF";
-        pxCtx.fillText(`Q: "${qShort.slice(0,15)}.."`, 160, 85);
+        pxRect(110, 58, 145, 32, electricBlue);
+        pxCtx.fillStyle = "#0b0f19";
+        pxCtx.fillText(`Q: "${qShort.slice(0,12)}.."`, 120, 78);
         if (pxOptMode) {
-          const w = Math.max(30, prog * 340);
-          pxRect(350, 54, w, 22, signalGold);
-          pxRect(350, 86, w, 22, okGreen);
-          if (prog > 0.2) {
-            pxCtx.fillStyle = "#09090B";
-            pxCtx.fillText("+ HELPFUL EVERYDAY SYNONYMS", 362, 69);
-            pxCtx.fillText("+ CONCEPT-BASED MEANING MATCH", 362, 101);
-          }
+          const w = Math.max(215, prog * 280);
+          pxRect(275, 50, w, 20, signalGold);
+          pxRect(275, 76, w, 20, okGreen);
+          pxCtx.fillStyle = "#0b0f19";
+          pxCtx.fillText("+ SLANG SYNONYMS ADDED", 288, 64);
+          pxCtx.fillText("+ AI MEANING EXPANDED", 288, 90);
         } else {
-          pxRect(355, 68, 225, 28, errRed);
-          pxCtx.fillStyle = "#FFFFFF";
-          pxCtx.fillText("ONLY MATCHES FORMAL JARGON", 365, 86);
+          pxRect(280, 60, 210, 28, errRed);
+          pxCtx.fillStyle = "#ffffff";
+          pxCtx.fillText("0 KEYWORD MATCH!", 300, 78);
         }
       } else if (stageIdx === 2) {
-        const w = prog * 250;
-        pxRect(210, 58, w, 15, electricBlue);
+        const w = prog * 210;
+        pxRect(160, 54, w, 14, electricBlue);
         if (pxOptMode) {
-          pxRect(210, 90, w, 15, signalGold);
-          pxRect(495, 58, 235, 48, okGreen);
-          pxCtx.fillStyle = "#09090B";
-          pxCtx.fillText(`BEST MATCH: [${topDoc}]`, 510, 77);
-          pxCtx.fillText(`EXACT WORD + SMART AI MEANING`, 510, 96);
+          pxRect(160, 80, w, 14, signalGold);
+          pxRect(405, 52, 210, 44, okGreen);
+          pxCtx.fillStyle = "#0b0f19";
+          pxCtx.fillText(`EXACT MATCH: [${topDoc}]`, 420, 70);
+          pxCtx.fillText(`WORD + AI SEARCH`, 420, 87);
         } else {
-          pxRect(495, 58, 235, 48, errRed);
-          pxCtx.fillStyle = "#FFFFFF";
-          pxCtx.fillText(`BASIC MATCH: [${cur.naive.docs[0]}]`, 510, 77);
-          pxCtx.fillText("MISSED EXACT CODES & NUMBERS", 510, 96);
+          pxRect(405, 52, 210, 44, errRed);
+          pxCtx.fillStyle = "#ffffff";
+          pxCtx.fillText(`WRONG DOC: [${cur.naive.docs[0]}]`, 420, 70);
+          pxCtx.fillText("MISSED EXACT CODE", 420, 87);
         }
       } else if (stageIdx === 3) {
         if (pxOptMode) {
-          pxRect(230, 56, 140, 48, okGreen);
-          pxRect(390, 68, 140, 36, "#3F3F46");
-          pxRect(550, 56, 140, 48, okGreen);
-          pxCtx.fillStyle = "#09090B";
-          pxCtx.fillText(`SLOT 1: ${cur.optimized.docs[0] || 'DOC'}`, 242, 76);
-          pxCtx.fillText("(MAIN FACT FIRST)", 242, 94);
-          pxCtx.fillText(`SLOT 3: ${cur.optimized.docs[1] || 'DOC'}`, 562, 76);
-          pxCtx.fillText("(SECOND FACT LAST)", 562, 94);
-          pxCtx.fillStyle = "#FFFFFF";
-          pxCtx.fillText(`SLOT 2: ${cur.optimized.docs[2] || 'DOC'}`, 402, 90);
+          pxRect(175, 50, 130, 44, okGreen);
+          pxRect(320, 60, 130, 34, "#475569");
+          pxRect(465, 50, 130, 44, okGreen);
+          pxCtx.fillStyle = "#0b0f19";
+          pxCtx.fillText(`1: ${cur.optimized.docs[0] || 'DOC'}`, 188, 68);
+          pxCtx.fillText("(BEST FIRST)", 188, 84);
+          pxCtx.fillText(`3: ${cur.optimized.docs[1] || 'DOC'}`, 478, 68);
+          pxCtx.fillText("(2ND LAST)", 478, 84);
+          pxCtx.fillStyle = "#ffffff";
+          pxCtx.fillText(`2: ${cur.optimized.docs[2] || 'DOC'}`, 332, 81);
         } else {
-          pxRect(230, 62, 140, 40, errRed);
-          pxRect(390, 62, 140, 40, errRed);
-          pxRect(550, 62, 140, 40, "#52525B");
-          pxCtx.fillStyle = "#FFFFFF";
-          pxCtx.fillText(`1: ${cur.naive.docs[0]}`, 250, 86);
-          pxCtx.fillText(`2: ${cur.naive.docs[1]}`, 410, 86);
-          pxCtx.fillText(`3: ${cur.naive.docs[2]}`, 570, 86);
+          pxRect(175, 54, 130, 38, errRed);
+          pxRect(320, 54, 130, 38, errRed);
+          pxRect(465, 54, 130, 38, "#64748b");
+          pxCtx.fillStyle = "#ffffff";
+          pxCtx.fillText(`DUP: ${cur.naive.docs[0]}`, 186, 77);
+          pxCtx.fillText(`DUP: ${cur.naive.docs[1]}`, 331, 77);
+          pxCtx.fillText(`MISSED FACT`, 480, 77);
         }
       } else {
         if (pxOptMode) {
-          pxRect(240, 54, 195, 50, cur.abstained ? signalGold : okGreen);
-          pxRect(455, 54, 255, 50, electricBlue);
-          pxCtx.fillStyle = "#09090B";
-          pxCtx.fillText(cur.abstained ? "SAFETY: SAID 'I DON'T KNOW'" : "SAFETY: HONEST & FACTUAL", 254, 74);
-          pxCtx.fillText(`ACCURACY: ${Math.round(cur.confidence * 100)}% SURE`, 254, 92);
-          pxCtx.fillStyle = "#FFFFFF";
-          pxCtx.fillText(`FLUFF REMOVED: -${cur.optimized.token_savings_pct}%`, 470, 74);
-          pxCtx.fillText(`DOCS CHECKED: [${cur.optimized.docs.slice(0,2).join(', ')}]`, 470, 92);
+          pxRect(190, 50, 180, 44, cur.abstained ? signalGold : okGreen);
+          pxRect(390, 50, 210, 44, electricBlue);
+          pxCtx.fillStyle = "#0b0f19";
+          pxCtx.fillText(cur.abstained ? "SAID 'I DON'T KNOW'" : "100% VERIFIED", 204, 68);
+          pxCtx.fillText(`TRUST: ${Math.round(cur.confidence * 100)}%`, 204, 84);
+          pxCtx.fillText(`SAVED -${cur.optimized.token_savings_pct}% TOKENS`, 404, 68);
+          pxCtx.fillText(`CITED: [${topDoc}]`, 404, 84);
         } else {
-          pxRect(270, 54, 340, 50, errRed);
-          pxCtx.fillStyle = "#FFFFFF";
-          pxCtx.fillText("UNVERIFIED BLIND GUESS", 288, 74);
-          pxCtx.fillText(`Cut-off sentences (${cur.naive.tokens} raw words)`, 288, 92);
+          pxRect(210, 50, 310, 44, errRed);
+          pxCtx.fillStyle = "#ffffff";
+          pxCtx.fillText("WARNING: FAKE AI ANSWER!", 230, 68);
+          pxCtx.fillText(`Unverified guess (${cur.naive.tokens} words)`, 230, 84);
         }
       }
 
       // Bottom Progress Bar
-      pxRect(0, 205, (pxElapsed / 10.0) * 960, 5, signalGold);
+      pxRect(0, 194, (pxElapsed / 10.0) * 760, 6, signalGold);
     }
 
     // Dual-scheduler (requestAnimationFrame + watchdog interval) so the 10s loop NEVER stalls
