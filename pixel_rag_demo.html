@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-2 select-none">
+  <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+    <!-- Top Header & Controls -->
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+      <div class="flex items-center gap-2">
+        <span class="px-2 py-0.5 text-xs font-mono font-bold rounded bg-[var(--primary)] text-[var(--primary-foreground)]">8-BIT PIXEL DEMO</span>
+        <h2 class="text-[var(--foreground)] font-semibold text-base">How RAG Optimization Works (10s Loop)</h2>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-mode" onclick="toggleMode()" class="px-2.5 py-1 text-xs font-mono font-semibold rounded border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] cursor-pointer">
+          MODE: OPTIMIZED RAG
+        </button>
+        <button id="btn-play" onclick="togglePlay()" class="px-2.5 py-1 text-xs font-mono font-semibold rounded bg-[var(--primary)] text-[var(--primary-foreground)] cursor-pointer">
+          PAUSE
+        </button>
+        <button onclick="restartAnim()" class="px-2 py-1 text-xs font-mono rounded border border-[var(--border)] text-[var(--muted-foreground)] cursor-pointer">
+          REPLAY
+        </button>
+      </div>
+    </div>
+
+    <!-- Pixel Art Canvas Stage -->
+    <div class="relative rounded-lg overflow-hidden border border-[var(--border)]">
+      <canvas id="pixel-canvas" width="760" height="250" class="w-full block" style="image-rendering: pixelated;"></canvas>
+    </div>
+
+    <!-- Interactive Scrubber & 5-Stage Timeline Pills -->
+    <div class="mt-3">
+      <div class="flex items-center gap-3 mb-2">
+        <span id="time-label" class="text-xs font-mono font-semibold text-[var(--muted-foreground)] w-16">0.0s/10s</span>
+        <input id="scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="scrubTo(this.value)" class="w-full cursor-pointer" />
+      </div>
+      <div class="grid grid-cols-5 gap-1.5 text-center" id="stage-pills">
+        <button onclick="scrubTo(0.2)" class="stage-pill py-1 px-1.5 rounded text-xs font-mono border border-[var(--border)] cursor-pointer truncate">1. Chunk (0-2s)</button>
+        <button onclick="scrubTo(2.2)" class="stage-pill py-1 px-1.5 rounded text-xs font-mono border border-[var(--border)] cursor-pointer truncate">2. HyDE (2-4s)</button>
+        <button onclick="scrubTo(4.2)" class="stage-pill py-1 px-1.5 rounded text-xs font-mono border border-[var(--border)] cursor-pointer truncate">3. Hybrid (4-6s)</button>
+        <button onclick="scrubTo(6.2)" class="stage-pill py-1 px-1.5 rounded text-xs font-mono border border-[var(--border)] cursor-pointer truncate">4. Rerank (6-8s)</button>
+        <button onclick="scrubTo(8.2)" class="stage-pill py-1 px-1.5 rounded text-xs font-mono border border-[var(--border)] cursor-pointer truncate">5. Guard (8-10s)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('pixel-canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    let isPlaying = true;
+    let isOptimized = true;
+    let elapsed = 0; // 0 to 10.0 seconds
+    let lastTs = performance.now();
+
+    const STAGE_INFO = [
+      {
+        title: "STAGE 1/5: CHUNKING & INGESTION (0s - 2s)",
+        optDesc: "Sentence-Window embeds sharp micro-sentences & expands +/-1 neighbor context (100% intact).",
+        naiveDesc: "FAILURE C1: Fixed-size window slices sentences mid-clause ('97.8% broken boundaries')!"
+      },
+      {
+        title: "STAGE 2/5: QUERY REWRITING & LOCAL HyDE (2s - 4s)",
+        optDesc: "Injects domain synonyms + generates a Hypothetical Technical Passage (HyDE) to bridge phrasing gaps.",
+        naiveDesc: "FAILURE C3: Raw vague user query has zero lexical overlap with technical documentation!"
+      },
+      {
+        title: "STAGE 3/5: HYBRID RRF RETRIEVAL (4s - 6s)",
+        optDesc: "Fuses Dense Vector Cosine + Sparse Okapi BM25 via Reciprocal Rank Fusion (k=60) for SKU-8841-X9.",
+        naiveDesc: "FAILURE C2: Pure Dense Vector shatters exact code 'SKU-8841-X9' into weak subwords!"
+      },
+      {
+        title: "STAGE 4/5: CROSS-RERANK, MMR & U-SHAPED ORDER (6s - 8s)",
+        optDesc: "Cross-Encoder reranks top-12, MMR removes duplicates, U-Order puts Rank #1 first & Rank #2 last (-24.8% tok).",
+        naiveDesc: "FAILURE C5 & C6: Duplicate chunks crowd out DOC-05 & bury key facts in the low-attention middle!"
+      },
+      {
+        title: "STAGE 5/5: FAITHFULNESS GUARD & SYNTHESIS (8s - 10s)",
+        optDesc: "Confidence Guardrail blocks out-of-scope hallucinations & outputs verified citations [DOC-06, DOC-05].",
+        naiveDesc: "FAILURE C8: No confidence guardrail — LLM confidently hallucinates from irrelevant chunks!"
+      }
+    ];
+
+    // Draw blocky 8-bit pixel rectangle aligned to 4px grid
+    function pxRect(x, y, w, h, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, Math.round(w / 2) * 2, Math.round(h / 2) * 2);
+    }
+
+    // Draw an 8-bit pixel robot/wizard sprite using a bitmap matrix
+    const BOT_SPRITE = [
+      "  XXXX  ",
+      " XXXXXX ",
+      "XXOXXOXX",
+      "XXXXXXXX",
+      "  XXXX  ",
+      " XXXXXX ",
+      "X XXXX X",
+      "  X  X  "
+    ];
+    function drawSprite(matrix, x, y, scale, color, eyeColor = "#0b0e14") {
+      for (let r = 0; r < matrix.length; r++) {
+        for (let c = 0; c < matrix[r].length; c++) {
+          const ch = matrix[r][c];
+          if (ch === 'X') pxRect(x + c * scale, y + r * scale, scale, scale, color);
+          if (ch === 'O') pxRect(x + c * scale, y + r * scale, scale, scale, eyeColor);
+        }
+      }
+    }
+
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      document.getElementById('btn-play').textContent = isPlaying ? 'PAUSE' : 'PLAY';
+      lastTs = performance.now();
+    }
+
+    function toggleMode() {
+      isOptimized = !isOptimized;
+      const btn = document.getElementById('btn-mode');
+      btn.textContent = isOptimized ? 'MODE: OPTIMIZED RAG' : 'MODE: NAIVE RAG (FAILS)';
+    }
+
+    function restartAnim() {
+      elapsed = 0;
+      isPlaying = true;
+      document.getElementById('btn-play').textContent = 'PAUSE';
+      lastTs = performance.now();
+    }
+
+    function scrubTo(val) {
+      elapsed = parseFloat(val);
+      renderFrame();
+    }
+
+    function renderFrame() {
+      const isLight = document.documentElement.classList.contains('light');
+      const bgSky = isLight ? "#f1f5f9" : "#0b0f19";
+      const bgFloor = isLight ? "#e2e8f0" : "#161f33";
+      const gridLine = isLight ? "rgba(15,23,42,0.06)" : "rgba(255,255,255,0.05)";
+      const textMain = isLight ? "#0f172a" : "#f8fafc";
+      const textSub = isLight ? "#475569" : "#94a3b8";
+      const accentAmber = "#f59e0b";
+      const okGreen = "#10b981";
+      const errRed = "#ef4444";
+      const cyanBeam = "#38bdf8";
+
+      const stageIdx = Math.min(4, Math.floor(elapsed / 2.0));
+      const stageProgress = (elapsed % 2.0) / 2.0; // 0.0 -> 1.0 inside current 2-sec stage
+
+      // Background & Pixel Grid
+      pxRect(0, 0, 760, 250, bgSky);
+      for (let gx = 0; gx < 760; gx += 20) pxRect(gx, 0, 1, 200, gridLine);
+      for (let gy = 0; gy < 200; gy += 20) pxRect(0, gy, 760, 1, gridLine);
+      pxRect(0, 196, 760, 54, bgFloor);
+      pxRect(0, 196, 760, 4, isOptimized ? okGreen : errRed);
+
+      // Update UI controls
+      document.getElementById('scrubber').value = elapsed.toFixed(2);
+      document.getElementById('time-label').textContent = `${elapsed.toFixed(1)}s/10s`;
+      const pills = document.querySelectorAll('.stage-pill');
+      pills.forEach((p, idx) => {
+        if (idx === stageIdx) {
+          p.style.borderColor = isOptimized ? okGreen : errRed;
+          p.style.fontWeight = '700';
+        } else {
+          p.style.borderColor = '';
+          p.style.fontWeight = '400';
+        }
+      });
+
+      // Top HUD Banner on Canvas
+      pxRect(12, 10, 736, 36, isLight ? "rgba(255,255,255,0.88)" : "rgba(15,23,42,0.88)");
+      pxRect(12, 10, 6, 36, isOptimized ? okGreen : errRed);
+      ctx.font = "bold 13px monospace";
+      ctx.fillStyle = isOptimized ? okGreen : errRed;
+      ctx.fillText(STAGE_INFO[stageIdx].title, 28, 25);
+      ctx.font = "12px monospace";
+      ctx.fillStyle = textMain;
+      ctx.fillText(isOptimized ? STAGE_INFO[stageIdx].optDesc : STAGE_INFO[stageIdx].naiveDesc, 28, 41);
+
+      // Draw Pipeline Stations across X-axis (5 Arcade Stations)
+      const stations = [
+        { x: 65, label: "1.CHUNKER" },
+        { x: 215, label: "2.HyDE+EXP" },
+        { x: 375, label: "3.RRF-SEARCH" },
+        { x: 535, label: "4.MMR+ORDER" },
+        { x: 685, label: "5.GUARD+LLM" }
+      ];
+
+      stations.forEach((st, idx) => {
+        const active = idx === stageIdx;
+        const done = idx < stageIdx;
+        const stColor = active ? accentAmber : (done ? (isOptimized ? okGreen : errRed) : textSub);
+        // Pedestal
+        pxRect(st.x - 36, 174, 72, 22, isLight ? "#cbd5e1" : "#1e293b");
+        pxRect(st.x - 36, 174, 72, 4, stColor);
+        ctx.font = "bold 12px monospace";
+        ctx.fillStyle = stColor;
+        ctx.textAlign = "center";
+        ctx.fillText(st.label, st.x, 190);
+      });
+      ctx.textAlign = "left";
+
+      // Animated Pixel Data Packet traveling across the 5 stations
+      const packetX = 65 + (elapsed / 10.0) * (685 - 65);
+      const bounceY = Math.sin(elapsed * 12) * 4;
+      drawSprite(BOT_SPRITE, packetX - 16, 132 + bounceY, 4, isOptimized ? okGreen : errRed, "#ffffff");
+
+      // Stage-Specific Pixel Art Visual FX in the Center Arena (y: 56..168)
+      if (stageIdx === 0) {
+        // STAGE 1: Document Scroll & Chunker
+        const docX = 80;
+        pxRect(docX, 68, 120, 74, "#f8fafc");
+        pxRect(docX + 8, 78, 100, 6, "#64748b");
+        pxRect(docX + 8, 92, 85, 6, accentAmber);
+        pxRect(docX + 8, 106, 100, 6, "#64748b");
+
+        if (isOptimized) {
+          // Expanding Green Parent Window Frame
+          const pad = Math.round(stageProgress * 14);
+          pxRect(260 - pad, 74 - pad/2, 240 + pad*2, 58 + pad, "rgba(16,185,129,0.22)");
+          pxRect(260, 86, 240, 34, okGreen);
+          ctx.font = "bold 12px monospace";
+          ctx.fillStyle = "#0b0f19";
+          ctx.fillText("CORE SENTENCE + [+/-1 PARENT WINDOW]", 270, 107);
+        } else {
+          // Red Sawblade slicing chunk mid-word
+          pxRect(260, 80, 105, 42, errRed);
+          pxRect(375 + stageProgress * 20, 88, 105, 42, errRed);
+          ctx.font = "bold 12px monospace";
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText("Scalar Quant-", 268, 105);
+          ctx.fillText("-ization 98%", 383 + stageProgress * 20, 113);
+        }
+      } else if (stageIdx === 1) {
+        // STAGE 2: Query Expansion + HyDE Spell
+        pxRect(140, 82, 130, 36, cyanBeam);
+        ctx.font = "bold 12px monospace";
+        ctx.fillStyle = "#0b0f19";
+        ctx.fillText("Q: 'short vague'", 150, 104);
+
+        if (isOptimized) {
+          const beamW = Math.max(20, stageProgress * 280);
+          pxRect(280, 72, beamW, 24, accentAmber);
+          pxRect(280, 106, beamW, 24, okGreen);
+          ctx.fillStyle = "#0b0f19";
+          if (stageProgress > 0.25) {
+            ctx.fillText("+ SYNONYMS: HyDE, Recall@10", 290, 88);
+            ctx.fillText("+ HyDE HYPOTHETICAL DOC", 290, 122);
+          }
+        } else {
+          pxRect(290, 92, 180, 24, errRed);
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText("0 LEXICAL OVERLAP!", 305, 108);
+        }
+      } else if (stageIdx === 2) {
+        // STAGE 3: Hybrid RRF Search (Dense + BM25 Beams)
+        const beamLen = stageProgress * 220;
+        pxRect(180, 74, beamLen, 18, cyanBeam);
+        ctx.font = "bold 12px monospace";
+        ctx.fillStyle = textMain;
+        ctx.fillText("DENSE COSINE (0.36)", 184, 68);
+
+        if (isOptimized) {
+          pxRect(180, 112, beamLen, 18, accentAmber);
+          ctx.fillStyle = textMain;
+          ctx.fillText("OKAPI BM25 EXACT SKU (18.7)", 184, 144);
+          pxRect(420, 78, 170, 50, okGreen);
+          ctx.fillStyle = "#0b0f19";
+          ctx.fillText("RRF FUSION (k=60)", 435, 98);
+          ctx.fillText("LOCKED: [DOC-02]", 435, 116);
+        } else {
+          pxRect(420, 78, 185, 50, errRed);
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText("SKU-8841 FRAGMENTED", 432, 98);
+          ctx.fillText("WEAK VECTOR SIGNAL", 432, 116);
+        }
+      } else if (stageIdx === 3) {
+        // STAGE 4: Cross-Encoder + MMR + Lost-in-the-Middle U-Order
+        if (isOptimized) {
+          // Show 3 U-Ordered Slots: Slot 1 (#1 Primacy), Slot 2 (#3 Middle), Slot 3 (#2 Recency)
+          pxRect(190, 72, 120, 56, okGreen);
+          pxRect(330, 88, 120, 40, "#475569");
+          pxRect(470, 72, 120, 56, okGreen);
+          ctx.font = "bold 12px monospace";
+          ctx.fillStyle = "#0b0f19";
+          ctx.fillText("SLOT 1: #1", 206, 95);
+          ctx.fillText("(PRIMACY)", 206, 113);
+          ctx.fillText("SLOT 3: #2", 486, 95);
+          ctx.fillText("(RECENCY)", 486, 113);
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText("SLOT 2: #3", 346, 112);
+        } else {
+          // Duplicate DOC-06 clones crowding out DOC-05
+          pxRect(190, 78, 120, 48, errRed);
+          pxRect(330, 78, 120, 48, errRed);
+          pxRect(470, 78, 120, 48, "#64748b");
+          ctx.font = "bold 12px monospace";
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText("DOC-06 CLONE", 200, 106);
+          ctx.fillText("DOC-06 CLONE", 340, 106);
+          ctx.fillText("DOC-05 MISSED", 478, 106);
+        }
+      } else {
+        // STAGE 5: Faithfulness Guardrail & Grounded Trophy
+        if (isOptimized) {
+          pxRect(220, 68, 150, 58, okGreen);
+          pxRect(395, 68, 220, 58, accentAmber);
+          ctx.font = "bold 12px monospace";
+          ctx.fillStyle = "#0b0f19";
+          ctx.fillText("SHIELD: VERIFIED", 232, 92);
+          ctx.fillText("OOD BLOCKED 100%", 232, 110);
+          ctx.fillText("100% FACT RECALL", 412, 92);
+          ctx.fillText("CITED: [DOC-06,05]", 412, 110);
+        } else {
+          pxRect(240, 68, 290, 58, errRed);
+          ctx.font = "bold 12px monospace";
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText("WARNING: HALLUCINATION DETECTED!", 255, 92);
+          ctx.fillText("Unverified claim synthesized", 255, 110);
+        }
+      }
+
+      // Bottom Progress Bar (10-second timeline)
+      pxRect(0, 244, (elapsed / 10.0) * 760, 6, accentAmber);
+    }
+
+    function loop(now) {
+      const dt = (now - lastTs) / 1000.0;
+      lastTs = now;
+      if (isPlaying) {
+        elapsed = (elapsed + dt) % 10.0;
+        renderFrame();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    renderFrame();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>

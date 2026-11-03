@@ -1,0 +1,6 @@
+# Optional neural acceleration dependencies (the pipeline runs out-of-the-box with zero external packages,
+# and automatically upgrades to SentenceTransformers + CrossEncoder when installed):
+sentence-transformers>=2.6.0
+rank-bm25>=0.2.2
+faiss-cpu>=1.8.0
+numpy>=1.24.0

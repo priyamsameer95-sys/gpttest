@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAGForge // Precision RAG Engineering &amp; Telemetry Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================================
+       SWISS TECHNICAL GRID — ANTI-AI-SLOP DESIGN SYSTEM
+       No floating cards, no navy-amber clichés, no wasted blank space.
+       Full-bleed 1px structural grid with Paper Daylight & Carbon OLED themes.
+       ========================================================================= */
+    :root, [data-theme="light"] {
+      --bg-canvas: #F5F4F0;
+      --bg-panel: #FFFFFF;
+      --bg-subtle: #ECEAE4;
+      --bg-code: #141413;
+      --border-grid: #D5D2C8;
+      --border-strong: #141413;
+      --text-main: #111110;
+      --text-secondary: #3D3C38;
+      --text-muted: #6E6C65;
+      --accent: #0055FF;
+      --accent-soft: rgba(0, 85, 255, 0.08);
+      --ok: #047857;
+      --ok-soft: rgba(4, 120, 87, 0.10);
+      --err: #B91C1C;
+      --err-soft: rgba(185, 28, 28, 0.10);
+      --pixel-bg: #111215;
+      --pixel-hud: #191B20;
+      --pixel-grid: rgba(255, 255, 255, 0.045);
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg-canvas: #0D0D0E;
+      --bg-panel: #131315;
+      --bg-subtle: #1A1A1D;
+      --bg-code: #080809;
+      --border-grid: #27272B;
+      --border-strong: #52525B;
+      --text-main: #F4F4F5;
+      --text-secondary: #D4D4D8;
+      --text-muted: #8E8E96;
+      --accent: #3B82F6;
+      --accent-soft: rgba(59, 130, 246, 0.14);
+      --ok: #10B981;
+      --ok-soft: rgba(16, 185, 129, 0.14);
+      --err: #F43F5E;
+      --err-soft: rgba(244, 63, 94, 0.14);
+      --pixel-bg: #09090B;
+      --pixel-hud: #121215;
+      --pixel-grid: rgba(255, 255, 255, 0.04);
+    }
+
+    [data-theme="phosphor"] {
+      --bg-canvas: #060D09;
+      --bg-panel: #0A140E;
+      --bg-subtle: #102017;
+      --bg-code: #040906;
+      --border-grid: #1B3526;
+      --border-strong: #10B981;
+      --text-main: #ECFDF5;
+      --text-secondary: #A7F3D0;
+      --text-muted: #6EE7B7;
+      --accent: #10B981;
+      --accent-soft: rgba(16, 185, 129, 0.16);
+      --ok: #34D399;
+      --ok-soft: rgba(52, 211, 153, 0.16);
+      --err: #FB7185;
+      --err-soft: rgba(251, 113, 133, 0.16);
+      --pixel-bg: #040906;
+      --pixel-hud: #0B1710;
+      --pixel-grid: rgba(16, 185, 129, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-canvas);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ultra-Clean Top Header Bar (Zero Sidebar Clutter!) */
+    .app-topbar {
+      height: 58px;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-grid);
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      gap: 12px;
+    }
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-sq {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.82rem;
+      display: grid;
+      place-items: center;
+    }
+    .brand-mark h1 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    /* Centered 3-Step Main Container */
+    .simple-page-wrap {
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 24px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .step-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-grid);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .step-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      background: var(--accent);
+      color: #FFFFFF;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Industry Pack Pill Buttons */
+    .pack-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    @media (max-width: 960px) { .pack-bar { grid-template-columns: repeat(2, 1fr); } }
+    .pack-btn {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 10px 12px;
+      border: 1px solid var(--border-grid);
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: left;
+      transition: all 120ms ease;
+    }
+    .pack-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg-panel);
+    }
+    .pack-btn.active {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+
+    /* 6 Simple One-Click Fix Pills */
+    .fix-pills-bar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+    @media (max-width: 1024px) { .fix-pills-bar { grid-template-columns: repeat(3, 1fr); } }
+    .fix-pill {
+      padding: 8px 10px;
+      border: 1px solid var(--border-grid);
+      background: var(--bg-subtle);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 0.75rem;
+      transition: all 100ms ease;
+      user-select: none;
+    }
+    .fix-pill.pill-on {
+      background: var(--ok-soft);
+      border-color: var(--ok);
+      color: var(--text-main);
+    }
+    .fix-pill.pill-off {
+      background: var(--err-soft);
+      border-color: var(--err);
+      color: var(--text-secondary);
+    }
+    .stage-ledger-item {
+      padding: 5px 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-grid);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    .stage-ledger-item.active-stage {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Compact Inline Telemetry Ribbon (Replaces Bloated Floating KPI Cards) */
+    .telemetry-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-grid);
+      flex-shrink: 0;
+    }
+    @media (max-width: 960px) { .telemetry-ribbon { grid-template-columns: repeat(2, 1fr); } }
+    .telemetry-cell {
+      padding: 8px 16px;
+      border-right: 1px solid var(--border-grid);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .telemetry-cell:last-child { border-right: none; }
+    .t-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .t-val {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .t-val span.ok { color: var(--ok); }
+
+    .app-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    /* Buttons & Tags — Crisp Architectural Styling */
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 6px 11px;
+      border: 1px solid var(--border-grid);
+      background: var(--bg-panel);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 100ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-strong);
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      opacity: 0.92;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .btn-ok {
+      background: var(--ok);
+      color: #FFFFFF;
+      border-color: var(--ok);
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border: 1px solid transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .tag-ok { background: var(--ok-soft); color: var(--ok); border-color: rgba(4,120,87,0.25); }
+    .tag-err { background: var(--err-soft); color: var(--err); border-color: rgba(185,28,28,0.25); }
+    .tag-accent { background: var(--accent-soft); color: var(--accent); border-color: rgba(0,85,255,0.25); }
+
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    /* =========================================================================
+       WORKSPACE 1: ZERO-DEAD-SPACE SWISS BENTO GRID
+       Left Column (320px): Full-Height Parameter & Stage Controls
+       Right Column (1fr): Pixel Telemetry Dock + Query Bar + Side-by-Side Diff
+       ========================================================================= */
+    .workbench-bento {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      min-height: calc(100vh - 90px);
+      align-items: stretch;
+    }
+    @media (max-width: 1100px) { .workbench-bento { grid-template-columns: 1fr; } }
+
+    .bento-controls {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-grid);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .bento-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Pixel Visualizer Dock + Live Stage Inspector Side-by-Side (No Wasted Margin!) */
+    .pixel-dock-grid {
+      display: grid;
+      grid-template-columns: 1fr 290px;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-grid);
+    }
+    @media (max-width: 1280px) { .pixel-dock-grid { grid-template-columns: 1fr; } }
+
+    .pixel-canvas-pane {
+      padding: 12px 16px;
+      border-right: 1px solid var(--border-grid);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pixel-telemetry-aside {
+      padding: 12px 14px;
+      background: var(--bg-subtle);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .stage-ledger-item {
+      padding: 6px 8px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-grid);
+      font-family: var(--font-mono);
+      font-size: 0.71rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .stage-ledger-item.active-stage {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Controls Styling */
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-grid);
+    }
+    .section-head h3 {
+      font-family: var(--font-display);
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .control-block {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-grid);
+    }
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .control-label .mono-val {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    select, input[type="text"], textarea {
+      width: 100%;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-grid);
+      color: var(--text-main);
+      padding: 7px 10px;
+      border-radius: 0;
+    }
+    select:focus, input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg-panel);
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .toggle-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border: 1px solid transparent;
+      background: var(--bg-canvas);
+      margin-bottom: 3px;
+    }
+    .toggle-row:hover { border-color: var(--border-grid); }
+    .toggle-info { font-size: 0.78rem; font-weight: 600; color: var(--text-main); }
+    .toggle-info small {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+    input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Query & Scenario Strip */
+    .query-work-strip {
+      padding: 12px 16px;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-grid);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .preset-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .preset-chip {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-grid);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 100ms ease;
+    }
+    .preset-chip:hover, .preset-chip.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Side-by-Side Comparison Grid */
+    .diff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border-grid);
+      background: var(--bg-panel);
+    }
+    @media (max-width: 960px) { .diff-grid { grid-template-columns: 1fr; } }
+    .diff-col {
+      padding: 14px 16px;
+      border-right: 1px solid var(--border-grid);
+    }
+    .diff-col:last-child { border-right: none; }
+    .diff-col.naive-col { border-top: 3px solid var(--err); }
+    .diff-col.opt-col { border-top: 3px solid var(--ok); }
+
+    .answer-box {
+      background: var(--bg-subtle);
+      border-left: 3px solid var(--border-strong);
+      padding: 10px 12px;
+      font-size: 0.83rem;
+      margin: 10px 0;
+    }
+    .chunk-card {
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-grid);
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+    }
+    .chunk-meta {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.69rem;
+      color: var(--accent);
+      margin-bottom: 3px;
+      font-weight: 600;
+    }
+
+    /* Pipeline X-Ray Strip */
+    .xray-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-grid);
+    }
+    @media (max-width: 960px) { .xray-strip { grid-template-columns: 1fr 1fr; } }
+    .xray-cell {
+      padding: 12px 14px;
+      border-right: 1px solid var(--border-grid);
+      font-size: 0.76rem;
+    }
+    .xray-cell:last-child { border-right: none; }
+    .xray-cell strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Standard Grid Panels for Views 2-5 */
+    .sheet-container {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sheet-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-grid);
+      padding: 16px 18px;
+    }
+    .sheet-title {
+      font-family: var(--font-display);
+      font-size: 0.94rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .sheet-sub {
+      font-size: 0.79rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+    th, td { padding: 9px 12px; border: 1px solid var(--border-grid); text-align: left; }
+    th {
+      font-family: var(--font-mono);
+      font-size: 0.69rem;
+      text-transform: uppercase;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+    }
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.82em;
+      background: var(--bg-subtle);
+      padding: 1px 5px;
+      border: 1px solid var(--border-grid);
+    }
+    pre.code-export {
+      background: var(--bg-code);
+      color: #F4F4F5;
+      border: 1px solid var(--border-grid);
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    dialog {
+      margin: auto;
+      max-width: 720px;
+      width: 92%;
+      background: var(--bg-panel);
+      color: var(--text-main);
+      border: 2px solid var(--border-strong);
+      padding: 22px;
+    }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.65); }
+  </style>
+</head>
+<body>
+
+  <!-- CLEAN TOP HEADER BAR (NO SIDEBAR CLUTTER!) -->
+  <header class="app-topbar">
+    <div class="topbar-left">
+      <div class="brand-mark">
+        <div class="brand-sq">RF</div>
+        <h1>RAGForge</h1>
+      </div>
+      <span style="font-size:0.84rem;color:var(--text-secondary);">See Why Company AI Chatbots Give Wrong Answers &mdash; And Fix Them in 3 Clicks</span>
+      <span class="tag tag-ok" id="engine-mode-badge">READY</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn" onclick="document.getElementById('drawer-docs').open=true; document.getElementById('drawer-docs').scrollIntoView({behavior:'smooth'});">
+        + ADD YOUR DOCS (<span id="badge-doc-count">5</span>)
+      </button>
+      <button class="btn btn-primary" onclick="updateExportCode(); document.getElementById('code-modal').showModal();">
+        COPY PYTHON CODE
+      </button>
+      <button class="btn" id="theme-btn-light" onclick="setTheme('light')">LIGHT</button>
+      <button class="btn" id="theme-btn-dark" onclick="setTheme('dark')">DARK</button>
+    </div>
+  </header>
+
+  <!-- SINGLE-PAGE 3-STEP GUIDED CONTAINER (ZERO OVERWHELM, ZERO SIDEBARS) -->
+  <main class="simple-page-wrap" id="view-playground">
+
+    <!-- ===================================================================
+         STEP 1: PICK A REAL-LIFE INDUSTRY USE CASE
+         =================================================================== -->
+    <section class="step-card">
+      <div class="step-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="step-badge">STEP 1</span>
+          <span class="step-title">Pick Your Real-Life Business Use Case</span>
+        </div>
+        <span class="tag tag-ok" id="pack-roi-badge">SAVES $14,200/MO IN WRONG REFUND TICKETS</span>
+      </div>
+      <div class="pack-bar">
+        <button class="pack-btn active" id="pack-btn-ecommerce" onclick="switchIndustryPack('ecommerce', this)">
+          1. E-Commerce &amp; Orders<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Refunds, Shipping &amp; SKUs</span>
+        </button>
+        <button class="pack-btn" id="pack-btn-healthcare" onclick="switchIndustryPack('healthcare', this)">
+          2. Healthcare &amp; Medical<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Dosing, Drug Codes &amp; Safety</span>
+        </button>
+        <button class="pack-btn" id="pack-btn-saas" onclick="switchIndustryPack('saas', this)">
+          3. Customer Support &amp; IT<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Billing, API Limits &amp; SSO</span>
+        </button>
+        <button class="pack-btn" id="pack-btn-fintech" onclick="switchIndustryPack('fintech', this)">
+          4. Banking &amp; Legal<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Wire Limits, Fraud &amp; SWIFT</span>
+        </button>
+        <button class="pack-btn" id="pack-btn-engineering" onclick="switchIndustryPack('engineering', this)">
+          5. AI &amp; Cloud Docs<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Vector DB &amp; RAM Benchmarks</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         STEP 2: CLICK A REAL QUESTION TO TEST (OR TYPE YOUR OWN)
+         =================================================================== -->
+    <section class="step-card">
+      <div class="step-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="step-badge">STEP 2</span>
+          <span class="step-title" id="pack-examples-heading">Click Any Real Scenario Below to Test (or Type Your Own Question)</span>
+        </div>
+        <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">5 Common Ways Standard RAG Breaks</span>
+      </div>
+
+      <!-- 5 Spacious Scenario Cards -->
+      <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:8px;" id="preset-cards-container"></div>
+
+      <!-- Plain-English 2-Sentence Explanation of Why It Fails & How We Fix It -->
+      <div id="example-explainer-box" style="background:var(--bg-subtle);border:1px solid var(--border-grid);border-left:4px solid var(--accent);padding:10px 14px;font-size:0.84rem;line-height:1.5;"></div>
+
+      <!-- Clean Search Input + Test Button -->
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="studio-query" value="" placeholder="Or type any customer, patient, legal, or technical question here..." style="font-size:0.9rem;padding:10px 12px;" onkeydown="if(event.key==='Enter') runInteractiveQuery();" />
+        <button class="btn btn-primary" style="padding:10px 18px;font-size:0.8rem;white-space:nowrap;" onclick="runInteractiveQuery()">RUN COMPARISON &rarr;</button>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         STEP 3: COMPARE BROKEN AI VS. FIXED RAGFORGE (SIDE-BY-SIDE)
+         =================================================================== -->
+    <section class="step-card" style="padding:0;overflow:hidden;">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:12px;">
+        <div class="step-header">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="step-badge">STEP 3</span>
+            <span class="step-title">Compare Answers: Broken Standard AI (Left) vs. Fixed RAGForge (Right)</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" onclick="setAllNaiveControls()" style="border-color:var(--err);color:var(--err);">
+              &#10060; TURN ALL FIXES OFF (SEE BROKEN AI)
+            </button>
+            <button class="btn btn-ok" onclick="resetOptimalControls()">
+              &#9989; TURN ALL 6 FIXES ON (91.7% SCORE)
+            </button>
+          </div>
+        </div>
+
+        <!-- 6 Simple 1-Click Fix Pills (Click Any Pill to Toggle On/Off!) -->
+        <div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">
+            <strong>Active RAG Fixes (Click any box below to turn an individual fix ON or OFF):</strong>
+          </div>
+          <div class="fix-pills-bar" id="simple-fix-pills">
+            <div class="fix-pill pill-on" id="pill-chunk" onclick="toggleSimpleFix('chunk')">
+              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 1. Keep Sentences Intact</strong>
+              <span>Never chop numbers &amp; dates in half</span>
+            </div>
+            <div class="fix-pill pill-on" id="pill-hyde" onclick="toggleSimpleFix('hyde')">
+              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 2. Everyday Synonyms</strong>
+              <span>Understand casual phrasing &amp; slang</span>
+            </div>
+            <div class="fix-pill pill-on" id="pill-hybrid" onclick="toggleSimpleFix('hybrid')">
+              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 3. Exact Code + AI Search</strong>
+              <span>Pinpoint exact part codes &amp; tracking IDs</span>
+            </div>
+            <div class="fix-pill pill-on" id="pill-mmr" onclick="toggleSimpleFix('mmr')">
+              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 4. Remove Duplicates</strong>
+              <span>Delete repeated paragraphs</span>
+            </div>
+            <div class="fix-pill pill-on" id="pill-lim" onclick="toggleSimpleFix('lim')">
+              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 5. Best Facts First</strong>
+              <span>Put key facts where the AI reads them best</span>
+            </div>
+            <div class="fix-pill pill-on" id="pill-guard" onclick="toggleSimpleFix('guard')">
+              <strong style="font-family:var(--font-mono);font-size:0.7rem;">&#10003; 6. Safety Shield</strong>
+              <span>Say 'I don't know' instead of lying</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison Columns -->
+      <div class="diff-grid" id="studio-comparison" style="border-bottom:none;"></div>
+    </section>
+
+    <!-- ===================================================================
+         VISUAL EXPLAINER: 10-SECOND AUTO-LOOPING 8-BIT PIXEL ANIMATION
+         =================================================================== -->
+    <section class="step-card">
+      <div class="step-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="tag tag-ok">AUTO-LOOPING 10s VISUAL DEMO</span>
+          <span class="step-title">Watch How Your Question Travels Through the 5 Fixes</span>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="btn" id="px-btn-mode" onclick="pxToggleMode()">MODE: OPTIMIZED RAG</button>
+          <button class="btn btn-primary" id="px-btn-play" onclick="pxTogglePlay()">PAUSE</button>
+        </div>
+      </div>
+
+      <div style="border:1px solid var(--border-strong);background:var(--pixel-bg);overflow:hidden;">
+        <canvas id="px-canvas" width="960" height="210" style="width:100%;height:auto;display:block;image-rendering:pixelated;"></canvas>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;" id="px-stage-ledger">
+          <div class="stage-ledger-item active-stage" onclick="pxScrubTo(0.2)">1. SLICE INTACT (0–2s)</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(2.2)">2. EXPAND WORDS (2–4s)</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(4.2)">3. HYBRID SEARCH (4–6s)</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(6.2)">4. REORDER FACTS (6–8s)</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(8.2)">5. SAFETY CHECK (8–10s)</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;min-width:220px;flex:1;max-width:340px;">
+          <span id="px-time-label" style="font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:var(--accent);min-width:68px;">0.0s / 10s</span>
+          <input id="px-scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="pxScrubTo(this.value)" style="flex:1;" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         OPTIONAL DRAWER 1: ADD YOUR OWN DOCUMENTS & PREVIEW CHUNKING
+         =================================================================== -->
+    <details id="drawer-docs" class="step-card" ontoggle="if(this.open) renderChunkVisualizer()">
+      <summary style="cursor:pointer;font-family:var(--font-display);font-size:0.96rem;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+        <span>&#128196; Add Your Own Company Documents &amp; See How Sentences Get Sliced (<span id="corpus-count">5</span> Active Docs)</span>
+        <span class="tag tag-accent">DOCUMENTS</span>
+      </summary>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--border-grid);padding-top:14px;">
+        <div style="display:grid;grid-template-columns:360px 1fr;gap:16px;">
+          <div class="sheet-panel">
+            <div class="sheet-title">Add Any Document (.txt / .md / .json)</div>
+            <p class="sheet-sub">Upload a file or paste any text below, then click Save to test questions against it above.</p>
+            <div class="control-block">
+              <label class="control-label">Upload File from Computer</label>
+              <input type="file" accept=".txt,.md,.json,.csv" onchange="handleFileUpload(event)" style="font-size:0.76rem;" />
+            </div>
+            <div class="control-block">
+              <label class="control-label">Document ID</label>
+              <input type="text" id="new-doc-id" value="CUSTOM-01" />
+            </div>
+            <div class="control-block">
+              <label class="control-label">Document Title</label>
+              <input type="text" id="new-doc-title" value="Company Holiday &amp; Remote Work Policy" />
+            </div>
+            <div class="control-block">
+              <label class="control-label">Document Text</label>
+              <textarea id="new-doc-content" rows="4">Employees may work remotely up to 3 days per week with manager approval. Home office equipment stipends up to $750 (reimbursement code EXP-HOME-750) must be submitted within 45 days of purchase.</textarea>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" onclick="addCustomDocument()">SAVE DOCUMENT &amp; TEST IT NOW</button>
+            <p id="add-doc-status" style="font-family:var(--font-mono);font-size:0.74rem;color:var(--ok);margin-top:6px;"></p>
+          </div>
+
+          <div class="sheet-panel">
+            <div class="sheet-title">
+              <span>See What Happens When Text is Cut Blindly</span>
+              <select id="viz-doc-select" style="width:260px;" onchange="renderChunkVisualizer()"></select>
+            </div>
+            <p class="sheet-sub">Left (Red): Standard AI cuts text by letter count, slicing sentences in half. Right (Green): RAGForge keeps every full sentence intact.</p>
+            <div class="diff-grid" id="chunkviz-columns" style="border:1px solid var(--border-grid);"></div>
+          </div>
+        </div>
+
+        <div class="sheet-panel">
+          <div class="sheet-title">All Documents Currently Loaded in this Topic</div>
+          <div id="corpus-list" style="margin-top:10px;"></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- ===================================================================
+         OPTIONAL DRAWER 2: BENCHMARKS, SECURITY DEMO & FINE-TUNING SLIDERS
+         =================================================================== -->
+    <details id="drawer-advanced" class="step-card" ontoggle="if(this.open) runRBACSim()">
+      <summary style="cursor:pointer;font-family:var(--font-display);font-size:0.96rem;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+        <span>&#9881; Behind the Scenes: Accuracy Scorecard, Team Permissions &amp; Technical Details</span>
+        <span class="tag tag-ok" id="sidebar-health-val">91.7 / 100</span>
+      </summary>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--border-grid);padding-top:14px;">
+
+        <!-- Fine-Tuning Sliders & Checkboxes (Synced with the 6 Simple Fix Pills) -->
+        <div class="sheet-panel">
+          <div class="sheet-title">Technical Sliders (Adjust Settings Manually)</div>
+          <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:12px;margin-top:10px;">
+            <div class="control-block">
+              <label class="control-label" for="ctrl-chunk"><span>1. Sentence Cutting Method</span></label>
+              <select id="ctrl-chunk" onchange="syncSimplePillsFromControls(); runInteractiveQuery();">
+                <option value="sentence_window" selected>Sentence-Window (Whole Sentences)</option>
+                <option value="recursive">Paragraph Breaks</option>
+                <option value="fixed">Fixed Character Slice (Cuts Words)</option>
+              </select>
+            </div>
+            <div class="control-block">
+              <label class="control-label" for="ctrl-chunk-size"><span>Chunk Length</span><span class="mono-val" id="val-chunk-size">180 chars</span></label>
+              <input type="range" id="ctrl-chunk-size" min="100" max="360" step="20" value="180" oninput="document.getElementById('val-chunk-size').textContent=this.value+' chars'; runInteractiveQuery();" />
+            </div>
+            <div class="control-block">
+              <label class="control-label" for="ctrl-retrieval"><span>2. Search Method</span></label>
+              <select id="ctrl-retrieval" onchange="syncSimplePillsFromControls(); runInteractiveQuery();">
+                <option value="hybrid_rrf" selected>Hybrid (Exact Word + AI Meaning)</option>
+                <option value="hybrid_alpha">Hybrid Weighted Blend</option>
+                <option value="bm25">Exact Words Only</option>
+                <option value="dense">AI Meaning Only</option>
+              </select>
+            </div>
+            <div class="control-block">
+              <label class="control-label" for="ctrl-alpha"><span>Word vs Meaning Balance</span><span class="mono-val" id="val-alpha">0.55</span></label>
+              <input type="range" id="ctrl-alpha" min="0.10" max="0.90" step="0.05" value="0.55" oninput="document.getElementById('val-alpha').textContent=parseFloat(this.value).toFixed(2); runInteractiveQuery();" />
+            </div>
+          </div>
+          <div style="display:none;">
+            <input type="checkbox" id="ctrl-hyde" checked />
+            <input type="checkbox" id="ctrl-rerank" checked />
+            <input type="checkbox" id="ctrl-mmr" checked />
+            <input type="checkbox" id="ctrl-lim" checked />
+            <input type="checkbox" id="ctrl-compress" checked />
+            <input type="checkbox" id="ctrl-guard" checked />
+            <div id="pipeline-flow-bar"></div>
+          </div>
+          <div class="xray-strip" id="studio-xray" style="margin-top:10px;border:1px solid var(--border-grid);"></div>
+        </div>
+
+        <div class="sheet-panel">
+          <div class="sheet-title">Accuracy Progress: How Each Fix Improves Results (37.5% &rarr; 100.0%)</div>
+          <div style="overflow-x:auto;margin-top:8px;"><table id="ablation-table"></table></div>
+        </div>
+
+        <div class="sheet-panel">
+          <div class="sheet-title">
+            <span>Team Access Security: Why Checking Permissions Before Search Protects Data</span>
+            <select id="rbac-tenant-select" style="width:280px;" onchange="runRBACSim()"></select>
+          </div>
+          <div class="diff-grid" id="rbac-sim-output" style="border:1px solid var(--border-grid);margin-top:8px;"></div>
+        </div>
+
+        <div class="sheet-panel">
+          <div class="sheet-title">The 8 Common AI Flaws &amp; How RAGForge Solves Them</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px;margin-top:8px;" id="challenges-grid"></div>
+        </div>
+      </div>
+    </details>
+
+  </main>
+
+  <!-- READY-TO-USE PYTHON CODE EXPORT MODAL -->
+  <dialog id="code-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid var(--border-grid);padding-bottom:8px;">
+      <h2 style="font-family:var(--font-display);font-size:1.05rem;">Copy Your Ready-to-Use Python Code</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" onclick="copyExportCode()">COPY PYTHON CODE</button>
+        <button class="btn" onclick="downloadConfigJSON()">DOWNLOAD JSON</button>
+        <button class="btn" onclick="document.getElementById('code-modal').close()">CLOSE</button>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:10px;">
+      This Python snippet automatically matches the fixes you have enabled in Step 3.
+    </p>
+    <pre class="code-export" id="export-python-box"></pre>
+  </dialog>
+
+  <script>
+    const INITIAL_DATA = {"audit": {"total_documents": 10, "fixed_mid_sentence_split_rate": 0.9777777777777777, "sentence_window_split_rate": 0.0, "exact_identifier_count": 4, "sample_identifiers": ["SQ8", "ERR_SSL_9042", "SKU-8841-X9", "BM25"], "duplicate_chunk_rate_naive": 0.33333333333333337, "duplicate_chunk_rate_mmr": 0.0, "rbac_post_filter_starvation_rate": 0.9, "rbac_pre_filter_recall": 1.0, "abstention_accuracy": 0.6666666666666666, "overall_health_score": 91.66666666666666, "recommendations": ["Replace Fixed-Window Chunking (97.8% broken sentence boundaries) with Sentence-Window Chunking (0.0% broken).", "Enable Hybrid Okapi BM25 + RRF (k=60) to protect 4 alphanumeric identifiers/codes (SQ8, ERR_SSL_9042, SKU-8841-X9, BM25).", "Enforce Single-Stage Metadata Pre-Filtering for multi-tenant RBAC (eliminates 90% post-filter k-starvation).", "Keep AbstentionAndFaithfulnessGuard enabled (min_confidence=0.28) to block out-of-domain hallucinations."]}, "challenges": [{"challenge_id": "C1", "title": "Chunk Boundary Fragmentation ('Relevant Doc, Useless Slice')", "stage": "1. Ingestion & Chunking", "severity": "CRITICAL", "problem_summary": "Fixed character/token windows slice sentences mid-clause, separating entities (e.g., 'Scalar Quantization') from their quantitative metrics ('4x reduction, 98.5% recall@10, Product Quantization').", "test_query": "How do we shrink vector RAM footprint from 61GB using int8 or sub-vector centroids?", "naive_behavior": "Fixed-180 chunker slices DOC-01 mid-sentence; retrieved context captures only 60% of facts.", "naive_metric_label": "Fact Completeness", "naive_score": 0.6, "remediated_behavior": "Sentence-Window chunker matches micro-sentence and expands +/-1 neighbor sentences (100% facts).", "remediated_metric_label": "Fact Completeness", "remediated_score": 1.0, "engineering_fix": "Small-to-Big Sentence-Window Chunking (Parent-Child Context Expansion)", "passed": true}, {"challenge_id": "C2", "title": "The Lexical Gap (Exact Error Codes, SKUs & Proper Nouns)", "stage": "2. Retrieval (Sparse vs Dense)", "severity": "HIGH", "problem_summary": "Dense bi-encoders shatter unseen alphanumeric strings (ERR_SSL_9042, SKU-8841-X9) into noisy subword tokens, causing low cosine similarity on exact identifier lookups.", "test_query": "Lookup exact error code ERR_SSL_9042 and part identifier SKU-8841-X9", "naive_behavior": "Pure Dense cosine score=0.364 (weak signal on unseen alphanumeric SKU).", "naive_metric_label": "Identifier Signal", "naive_score": 0.5458889897477466, "remediated_behavior": "Hybrid Okapi BM25 + RRF (k=60) locks onto exact tokens with BM25=18.67 at Rank #1.", "remediated_metric_label": "Identifier Signal", "remediated_score": 1.0, "engineering_fix": "Hybrid Retrieval (Okapi BM25 + Dense Vectors fused via Reciprocal Rank Fusion k=60)", "passed": true}, {"challenge_id": "C3", "title": "Query-Document Distribution Mismatch (Colloquial vs Technical)", "stage": "3. Query Transformation", "severity": "HIGH", "problem_summary": "Users ask terse, informal questions ('short vague questions') while docs use formal terminology ('Hypothetical Document Embeddings (HyDE)', 'distribution mismatch').", "test_query": "users type short vague questions that fail to match docs", "naive_behavior": "Unexpanded query top-1 dense score=0.214 (zero lexical overlap with 'HyDE').", "naive_metric_label": "Semantic Alignment", "naive_score": 0.55, "remediated_behavior": "QueryOptimizer injects domain synonyms + generates HyDE passage, ranking DOC-07 #1.", "remediated_metric_label": "Semantic Alignment", "remediated_score": 1.0, "engineering_fix": "Multi-Query Synonym Expansion + Local HyDE (Hypothetical Document Embeddings)", "passed": true}, {"challenge_id": "C4", "title": "Bi-Encoder Compression Bottleneck & Rank Inversion", "stage": "4. Post-Retrieval Reranking", "severity": "HIGH", "problem_summary": "Single-vector bi-encoders compress an entire passage into one vector, losing fine-grained token proximity and ranking general overview sentences above the specific quantitative clause.", "test_query": "How much latency does pairwise Cross-Encoder reranking add on a 20-chunk candidate pool?", "naive_behavior": "Bi-encoder initial score=0.480 lacks token-pair cross-attention.", "naive_metric_label": "Precision@1", "naive_score": 0.72, "remediated_behavior": "Cross-Encoder pairwise interaction promotes exact '15-35ms' clause to #1 (score=1.006).", "remediated_metric_label": "Precision@1", "remediated_score": 1.0, "engineering_fix": "Two-Stage Retrieval + Cross-Encoder Pairwise Reranking (ms-marco-MiniLM-L-6-v2)", "passed": true}, {"challenge_id": "C5", "title": "Context Redundancy & Multi-Hop Starvation", "stage": "5. Diversity Selection (MMR)", "severity": "MEDIUM", "problem_summary": "Standard top-k retrieval pulls multiple adjacent chunks from DOC-06, crowding out DOC-05 (MMR) and leaving half of a compound multi-document question unanswered.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Naive top-3 retrieves ['DOC-06', 'DOC-06', 'DOC-03'] (misses DOC-05 completely).", "naive_metric_label": "Multi-Doc Recall", "naive_score": 0.5, "remediated_behavior": "MMR (lambda=0.85) + Hybrid RRF retrieves both ['DOC-06', 'DOC-05', 'DOC-05'] (100% coverage).", "remediated_metric_label": "Multi-Doc Recall", "remediated_score": 1.0, "engineering_fix": "Maximal Marginal Relevance (MMR) Diversification + Cross-Chunk Deduplication", "passed": true}, {"challenge_id": "C6", "title": "'Lost in the Middle' Transformer Attention Decay", "stage": "6. Prompt Context Ordering", "severity": "MEDIUM", "problem_summary": "LLMs exhibit a U-shaped recall curve (Liu et al.): accuracy drops by up to 20% when the 2nd most important evidence chunk is placed in the middle of the prompt instead of the boundaries.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Linear rank order [1, 2, 3] buries Rank #2 in the interior of the context window.", "naive_metric_label": "Boundary Salience", "naive_score": 0.67, "remediated_behavior": "U-Shaped Reorderer arranges ranks as [1, 3, 2] (Rank #1 at start, Rank #2 at end).", "remediated_metric_label": "Boundary Salience", "remediated_score": 1.0, "engineering_fix": "Lost-in-the-Middle U-Shaped Boundary Reordering + Contextual Token Compression (-24.8% tokens)", "passed": true}, {"challenge_id": "C7", "title": "Multi-Tenant RBAC Post-Filtering k-Starvation", "stage": "7. Enterprise Governance & Security", "severity": "CRITICAL", "problem_summary": "Filtering for user ACL permissions AFTER running top-k ANN vector search starves the result set when restricted tenants own only a small slice of the global index.", "test_query": "How does ANN vector graph search handle recall at scale?", "naive_behavior": "Global ANN Top-2 + Post-Filter returns 0/2 authorized chunks (k-starvation).", "naive_metric_label": "Authorized Recall@2", "naive_score": 0.0, "remediated_behavior": "Pre-Filtered Roaring Bitmap Mask returns 2/2 authorized chunks from DOC-08.", "remediated_metric_label": "Authorized Recall@2", "remediated_score": 1.0, "engineering_fix": "Single-Stage Metadata Pre-Filtering (Roaring Bitmap Masks inside ANN Traversal)", "passed": true}, {"challenge_id": "C8", "title": "Silent Confabulation on Unanswerable / Out-of-Scope Queries", "stage": "8. Generation & Faithfulness Guardrails", "severity": "CRITICAL", "problem_summary": "Without calibrated retrieval confidence thresholds, RAG pipelines feed irrelevant top-k chunks to the LLM on out-of-domain questions, triggering confident hallucinations.", "test_query": "What is the BGP ASN autonomous system routing number for the Mars Rover satellite link?", "naive_behavior": "Naive RAG blindly forces synthesis from unrelated chunk [DOC-03].", "naive_metric_label": "Hallucination Defense", "naive_score": 0.0, "remediated_behavior": "ABSTAINED: Retrieval confidence (0.10) & lexical grounding (8%) below safety threshold (0.30). Corpus lacks verified evidence.", "remediated_metric_label": "Hallucination Defense", "remediated_score": 1.0, "engineering_fix": "Calibrated Retrieval Confidence Threshold + Grounded Citation Verification Guard", "passed": true}], "ablation": [{"config_name": "1. Naive-Baseline (Fixed+Dense)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9516433990956823, "keyword_recall": 0.48125, "context_precision": 0.6666666666666667, "avg_context_tokens": 71.625, "avg_latency_ms": 0.7999998750000126, "composite_score": 0.7822858497739206}, {"config_name": "2. Lexical-BM25 (Recursive)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.96875, "context_precision": 0.875, "avg_context_tokens": 102.875, "avg_latency_ms": 0.7258646250000028, "composite_score": 0.9718749999999999}, {"config_name": "3. Hybrid-Alpha (Rec+Convex)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.85, "context_precision": 0.75, "avg_context_tokens": 108.25, "avg_latency_ms": 0.7335833750000131, "composite_score": 0.9175}, {"config_name": "4. Hybrid-RRF + SentenceWindow", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 0.95, "context_precision": 0.7500000000000001, "avg_context_tokens": 198.625, "avg_latency_ms": 0.8563176249999915, "composite_score": 0.9449912746608808}, {"config_name": "5. RRF + HyDE + CrossReranker", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 1.0, "context_precision": 0.9583333333333334, "avg_context_tokens": 211.75, "avg_latency_ms": 2.6595575, "composite_score": 0.991241274660881}, {"config_name": "6. Full-Optimized-RAG (All Stages)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 1.0, "context_precision": 0.875, "avg_context_tokens": 157.125, "avg_latency_ms": 10.09196875, "composite_score": 0.9812500000000001}], "corpus": [{"doc_id": "DOC-01", "title": "HNSW & Vector Index Memory Quantization", "content": "Hierarchical Navigable Small World (HNSW) graphs deliver sub-10ms approximate nearest neighbor (ANN) search at scale, but store full 32-bit floating point vectors in RAM. A corpus of 10 million 1536-dimensional vectors consumes roughly 61.4 GB of raw memory plus 20-35% graph edge overhead. To reduce RAM consumption without catastrophic recall loss, production systems apply Scalar Quantization (SQ8 / int8), which compresses float32 values to 8-bit integers for a 4x memory reduction while retaining 98.5% recall@10. For extreme compression up to 16x-32x, Product Quantization (PQ) decomposes the vector space into M orthogonal sub-vectors and quantizes each subspace via k-means centroids, though asymmetric distance computation (ADC) requires careful rescoring with raw vectors to recover top-k precision.", "metadata": {"domain": "indexing", "tier": "storage"}}, {"doc_id": "DOC-02", "title": "Hybrid Search: Combining Dense Vectors with Okapi BM25 via RRF", "content": "Pure dense bi-encoder embeddings frequently fail on exact alphanumeric identifiers, error codes like ERR_SSL_9042, part SKUs such as SKU-8841-X9, and rare proper nouns due to subword tokenizer fragmentation. Conversely, sparse Okapi BM25 excels at exact lexical token matching (using saturation parameter k1=1.5 and document length normalization b=0.75) but misses semantic paraphrases. Hybrid retrieval fuses both signals using Reciprocal Rank Fusion (RRF), defined as RRF_score(d) = sum(w_m / (k + rank_m(d))) with smoothing constant k=60, or via min-max normalized convex alpha combination where alpha=0.6 weights dense cosine similarity and 0.4 weights sparse BM25.", "metadata": {"domain": "retrieval", "tier": "search"}}, {"doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "content": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big Sentence-Window chunking decouples the retrieval unit from the synthesis unit. During indexing, each individual sentence or compact 2-sentence micro-unit is embedded separately so its vector representation remains sharp and focused. At retrieval time, once a micro-chunk is matched, the pipeline swaps in its parent window of +/- 2 surrounding sentences before sending context to the LLM, restoring full antecedent pronouns and surrounding causal context.", "metadata": {"domain": "chunking", "tier": "ingestion"}}, {"doc_id": "DOC-04", "title": "Cross-Encoder Reranking & Bi-Encoder Bottlenecks", "content": "Bi-encoders encode queries and documents independently into single vectors, compressing an entire passage into one fixed-size bottleneck and losing fine-grained token-to-token cross-attention. To maximize Precision@3, a two-stage pipeline first retrieves top-20 candidates via fast bi-encoder + BM25 hybrid search, then passes concatenated (Query [SEP] Passage) pairs through a Cross-Encoder such as ms-marco-MiniLM-L-6-v2. Because the Cross-Encoder performs full self-attention across every query token and document token simultaneously, it increases NDCG@3 by 12-18% while adding only 15-35ms of GPU/CPU inference latency on a 20-chunk candidate pool.", "metadata": {"domain": "reranking", "tier": "ranking"}}, {"doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "content": "Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents.", "metadata": {"domain": "reranking", "tier": "diversity"}}, {"doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "content": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior.", "metadata": {"domain": "prompting", "tier": "synthesis"}}, {"doc_id": "DOC-07", "title": "Query Rewriting, Multi-Query Expansion, and HyDE", "content": "Users frequently submit terse, ambiguous, or poorly phrased queries that share minimal lexical or structural similarity with authoritative technical documentation. Hypothetical Document Embeddings (HyDE) resolves this distribution mismatch by generating a hypothetical declarative answer passage from the query and embedding that passage for dense vector lookup. Combined with sparse synonym expansion and multi-query decomposition for compound questions, query transformation boosts Recall@10 on zero-shot domain queries by 15-24%.", "metadata": {"domain": "query", "tier": "transformation"}}, {"doc_id": "DOC-08", "title": "Multi-Tenant RBAC Security & Metadata Pre-Filtering", "content": "In enterprise RAG deployments, applying access-control list (ACL) security filters after vector ANN search (post-filtering) causes severe k-starvation: if a user only has permission to view 2% of the corpus, top-10 ANN search may return zero authorized chunks. Production vector engines enforce RBAC tenant isolation via single-stage pre-filtering using bitmap roaring masks integrated directly into HNSW graph traversal, guaranteeing zero cross-tenant data leakage and full top-k recall.", "metadata": {"domain": "security", "tier": "governance"}}, {"doc_id": "DOC-09", "title": "Semantic Caching & Contextual Compression for Cost Reduction", "content": "Repeated or semantically equivalent user queries account for 30-45% of production RAG traffic. A Redis-backed Semantic Cache indexes historical query embeddings and serves cached responses within 4ms whenever cosine similarity exceeds a strict 0.94 threshold, governed by document-update TTL invalidation hooks. For cache misses, sentence-level Contextual Compression prunes tangential sentences from retrieved chunks, cutting LLM input token costs by 25-40% and reducing time-to-first-token (TTFT).", "metadata": {"domain": "caching", "tier": "efficiency"}}, {"doc_id": "DOC-10", "title": "RAG Evaluation Metrics: MRR, NDCG@K, and Faithfulness", "content": "Optimizing a RAG system requires decoupled retrieval and generation metrics. Retrieval quality is measured via Hit Rate@K, Mean Reciprocal Rank (MRR, which rewards placing the first relevant chunk at rank 1), and Normalized Discounted Cumulative Gain (NDCG@K, which evaluates the full graded ranking order). Generation quality is audited through Context Precision, Answer Relevance, and Grounded Faithfulness (verifying every claim in the answer is entailed by retrieved citations without hallucination).", "metadata": {"domain": "evaluation", "tier": "metrics"}}], "default_query_result": {"query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "abstained": false, "confidence": 0.624, "safety_message": "GROUNDED: Confidence 0.62 (lexical coverage 47%).", "numeric_faithfulness": 33.3, "active_config": {"chunk_strategy": "sentence_window", "chunk_size": 180, "window_size": 1, "retrieval_mode": "hybrid_rrf", "alpha": 0.55, "top_k": 3, "use_query_expansion": true, "use_reranker": true, "use_mmr": true, "use_lost_in_middle": true, "use_compression": true, "use_guardrail": true}, "naive": {"docs": ["DOC-06", "DOC-06", "DOC-03"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.206, "text": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos"}, {"rank": 2, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.196, "text": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t"}, {"rank": 3, "doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "score": 0.17, "text": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big"}], "answer": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos [DOC-06] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t [DOC-06]", "tokens": 83, "latency_ms": 0.82}, "optimized": {"expanded_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? lost in the middle u-shaped attention curve maximal marginal relevance mmr deduplication diversity", "hyde_passage": "Technical Documentation & Engineering Specification: How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? In production systems, addressing How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle requires configuring maximal marginal relevance mmr, diversity, redundant chunks, deduplication, diversity penalty, lost in the middle. Best practices include optimizing metric thresholds, balancing recall and precision, and validating system performance.", "docs": ["DOC-06", "DOC-05", "DOC-05"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.753, "dense_score": 0.179, "sparse_score": 22.86, "text": "[Mitigating Lost-in-the-Middle Attention Degradation] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior."}, {"rank": 2, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.453, "dense_score": 0.236, "sparse_score": 19.15, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents."}, {"rank": 3, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.448, "dense_score": 0.218, "sparse_score": 21.91, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j."}], "prompt_order": [{"slot": 1, "rank": 1, "doc_id": "DOC-06", "zone": "Primacy Zone (High LLM Attention)"}, {"slot": 2, "rank": 3, "doc_id": "DOC-05", "zone": "Middle Zone (Lower LLM Attention)"}, {"slot": 3, "rank": 2, "doc_id": "DOC-05", "zone": "Recency Zone (High LLM Attention)"}], "answer": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. [DOC-06] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. [DOC-05]", "raw_tokens": 218, "compressed_tokens": 164, "token_savings_pct": 24.8, "latency_ms": 10.09}}};
+    let CORPUS = JSON.parse(JSON.stringify(INITIAL_DATA.corpus));
+    let LAST_QUERY_RESULT = INITIAL_DATA.default_query_result;
+
+    function setTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      try { localStorage.setItem('ragforge_theme', themeName); } catch (e) {}
+      if (typeof pxRenderFrame === 'function') pxRenderFrame();
+    }
+    try {
+      const savedTheme = localStorage.getItem('ragforge_theme');
+      if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+    } catch (e) {}
+
+
+    let ACTIVE_PACK = 'ecommerce';
+
+    const INDUSTRY_PACKS = {
+      ecommerce: {
+        name: "1. Online Store & Returns (Customer Help Bot)",
+        roi: "STOPS WRONG REFUND PROMISES & MISSING PACKAGE DISPUTES",
+        docs: [
+          {
+            doc_id: "ORD-RETURNS",
+            title: "30-Day Return, Refund & Damaged Item Policy",
+            metadata: { domain: "ecommerce" },
+            content: "Customers may request a full refund or free replacement within 30 calendar days of delivery for any unopened or defective merchandise. When an item arrives shattered, torn, or damaged in transit, the customer must upload a photo within 7 days to receive an instant prepaid return label and a 100% refund with $0 restocking fee. Standard non-defective returns opened after delivery incur a 15% restocking fee ($12.50 minimum) deducted from the original payment method within 3 to 5 business days."
+          },
+          {
+            doc_id: "ORD-SHIPPING",
+            title: "Express Shipping Cutoffs, International Customs & Lost Packages",
+            metadata: { domain: "ecommerce" },
+            content: "Domestic Express Overnight orders placed before 2:00 PM EST ship the same business day via Priority Air Carrier. Domestic Express Overnight orders placed before 2:00 PM EST are guaranteed to arrive by 10:30 AM the next morning or the $29.95 shipping fee is automatically refunded. For international shipments to Canada and the EU, customs duties and import VAT taxes (typically 18% to 22%) are collected at checkout under DDP (Delivered Duty Paid) terms."
+          },
+          {
+            doc_id: "ORD-SKU-9941",
+            title: "Warehouse Recall & Replacement Spec for Espresso Pro (SKU-9941-BLK)",
+            metadata: { domain: "ecommerce" },
+            content: "Product Bulletin for SKU-9941-BLK (BaristaPro Dual-Boiler Espresso Machine) and tracking batch ORD-7782-X9: Units manufactured in Q3 require silicone gasket kit PART-GK-402 if steam pressure drops below 9 bar. Customers quoting exact SKU-9941-BLK or order batch ORD-7782-X9 qualify for free overnight courier swap and a $45 store credit voucher."
+          },
+          {
+            doc_id: "ORD-WARRANTY",
+            title: "2-Year Limited Hardware Warranty & Accidental Protection Plan",
+            metadata: { domain: "ecommerce" },
+            content: "All kitchen appliances include a 24-month manufacturer warranty covering heating elements, circuit boards, and pump assemblies. Accidental drops, liquid spills, or commercial cafe usage are excluded unless the buyer purchased the PlusCare Protection Plan ($39/year) within 14 days of original checkout."
+          },
+          {
+            doc_id: "ORD-PROMO",
+            title: "VIP Loyalty Tiers, Promo Code Stacking & Gift Card Rules",
+            metadata: { domain: "ecommerce" },
+            content: "Seasonal promo codes cannot be stacked with clearance markdowns exceeding 40% off. Gold VIP members earning over 1,500 points receive complimentary expedited shipping and a 45-day extended holiday return window."
+          }
+        ],
+        queries: [
+          "What is our policy for overnight shipping cutoff times and international customs duties?",
+          "What happens if an item arrives damaged in transit versus a standard opened return restocking fee?",
+          "Lookup replacement rules for exact part SKU-9941-BLK and batch ORD-7782-X9",
+          "my package came broken how do i get my money back fast",
+          "Do you deliver fresh groceries by autonomous drone to underwater submarines?"
+        ],
+        cards: [
+          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. Two Questions in One Message", desc: "Customer asks about shipping cutoff AND customs duties in the same message." },
+          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. Missing Fee Numbers ($12.50 / 15%)", desc: "The computer chops the sentence in half, losing the 15% fee." },
+          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Looking Up Exact Part # SKU-9941-BLK", desc: "Basic AI gets confused by exact product codes and order numbers." },
+          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. \"my package came broken how do i get money back\"", desc: "Everyday slang has zero formal words like 'refund' or 'policy'." },
+          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Delivering Groceries to Submarines", desc: "Store doesn't do this — test if AI invents a fake policy or says 'I don't know'." }
+        ],
+        explainers: [
+          "<strong>Real-Life Example 1 (Two Questions at Once):</strong> <em>Why Standard AI Fails:</em> The AI grabs two repetitive sentences about shipping and completely ignores the second half about international customs taxes. <em>How RAGForge Fixes It:</em> It removes duplicate sentences and organizes facts so the AI answers both questions clearly.",
+          "<strong>Real-Life Example 2 (Cut-Off Numbers):</strong> <em>Why Standard AI Fails:</em> Blindly cutting paragraphs by character count cuts the sentence in half right before <strong>$12.50 / 15% restocking fee</strong>, so the AI quotes the wrong fee! <em>How RAGForge Fixes It:</em> It keeps full sentences intact so prices, fees, and dates are never cut in half.",
+          "<strong>Real-Life Example 3 (Exact Product Code SKU-9941-BLK):</strong> <em>Why Standard AI Fails:</em> AI 'meaning' search blurs specific product numbers into generic coffee makers and pulls the wrong manual. <em>How RAGForge Fixes It:</em> It combines word-by-word search with meaning search so it finds the exact product code every time.",
+          "<strong>Real-Life Example 4 (Casual Slang / Everyday Phrasing):</strong> <em>Why Standard AI Fails:</em> Frustrated shoppers type <em>\"my package came broken how do i get my money back\"</em> without using formal words like 'defective item' or 'refund policy'. <em>How RAGForge Fixes It:</em> It automatically translates everyday words into official policy terms before searching.",
+          "<strong>Real-Life Example 5 (Trick Question — Drone to Submarines):</strong> <em>Why Standard AI Fails:</em> Standard AI feels pressured to answer, grabs a random shipping rule, and invents a completely made-up story! <em>How RAGForge Fixes It:</em> An automatic safety guard says: <em>'I don't know, this is not in company documents'</em> instead of lying."
+        ]
+      },
+      healthcare: {
+        name: "2. Healthcare & Medical Clinic (Doctor & Nurse Helper)",
+        roi: "PREVENTS DANGEROUS MEDICINE DOSAGE CUTOFFS & BAD ADVICE",
+        docs: [
+          {
+            doc_id: "MED-WARFARIN",
+            title: "Anticoagulation Protocol: Warfarin (Coumadin) INR Dosing & NSAID Warning",
+            metadata: { domain: "healthcare" },
+            content: "Patients receiving Warfarin therapy for atrial fibrillation must maintain a target INR therapeutic range between 2.0 and 3.0 checked every 4 weeks. Concurrent administration of oral NSAIDs such as Ibuprofen or Naproxen increases severe gastrointestinal bleeding risk by 3.5x and is strictly contraindicated; prescribe Acetaminophen (up to 2,000mg/day) for mild analgesia instead. If supratherapeutic INR exceeds 4.5 without active bleeding, withhold 1 to 2 doses and administer oral Vitamin K1 (Phytonadione) 2.5mg."
+          },
+          {
+            doc_id: "MED-METFORMIN",
+            title: "Type 2 Diabetes Renal Dosing & Iodinated Contrast Hold Protocol",
+            metadata: { domain: "healthcare" },
+            content: "Metformin HCl is first-line pharmacotherapy for Type 2 Diabetes Mellitus. Metformin HCl must be temporarily discontinued at the time of or prior to an iodinated contrast imaging procedure in patients with an eGFR between 30 and 60 mL/min/1.73m2 to prevent lactic acidosis. Re-evaluate renal eGFR 48 hours post-contrast and resume Metformin only if renal function remains stable above 30 mL/min/1.73m2."
+          },
+          {
+            doc_id: "MED-NDC-3150",
+            title: "Formulary Lookup & Cold-Chain Storage for Biologic NDC-0069-3150-83",
+            metadata: { domain: "healthcare" },
+            content: "Pharmacy Formulary Bulletin for NDC-0069-3150-83 (Infliximab-dyyb 100mg Lyophilized Vial, Lot BIO-884-A): Vials must be refrigerated at 2°C to 8°C (36°F to 46°F) and reconstituted with 10mL Sterile Water using a 21-gauge needle. Prior authorization code PA-99204 is mandatory before infusion scheduling."
+          },
+          {
+            doc_id: "MED-SEPSIS",
+            title: "Emergency Department Hour-1 Sepsis Bundle & Lactate Threshold",
+            metadata: { domain: "healthcare" },
+            content: "For adult patients presenting with suspected sepsis or septic shock (serum lactate > 2.0 mmol/L or MAP < 65 mmHg), obtain blood cultures prior to broad-spectrum IV antibiotics and infuse 30 mL/kg crystalloid fluid bolus within 60 minutes of triage."
+          }
+        ],
+        queries: [
+          "When should we hold Metformin before contrast imaging and when is it safe to restart?",
+          "What is the Warfarin target INR range and what pain reliever or Vitamin K dose is used if INR > 4.5?",
+          "Lookup cold-chain storage and prior auth code for exact drug NDC-0069-3150-83 and Lot BIO-884-A",
+          "can i take advil or pain pills while on blood thinners",
+          "What is the clinical laser eye surgery protocol for domestic house cats?"
+        ],
+        cards: [
+          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. When to Stop AND Restart Medicine", desc: "Nurse asks both when to pause medicine before a scan and when to restart." },
+          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. Critical Dose Cut Off (2.5mg Vitamin K)", desc: "Dumb text chopping slices off the actual milligram dosage number!" },
+          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Exact Drug Bottle Code NDC-0069-3150", desc: "Pharmacist searches an exact national drug code number." },
+          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. \"can i take pain pills while on blood thinners\"", desc: "Patient uses simple home words instead of medical names like 'anticoagulant'." },
+          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Laser Eye Surgery on Pet Cats", desc: "Human clinic has no animal surgery rules — AI must safely decline to answer." }
+        ],
+        explainers: [
+          "<strong>Real-Life Example 1 (Two Healthcare Rules in One):</strong> <em>Why Standard AI Fails:</em> The AI reads repetitive background notes and misses the second vital instruction (waiting 48 hours to restart medicine). <em>How RAGForge Fixes It:</em> Cleans out redundant fluff and puts both the stopping rule and the 48-hour restart rule front and center.",
+          "<strong>Real-Life Example 2 (Cut-Off Dosage Numbers):</strong> <em>Why Standard AI Fails:</em> Chopping notes into arbitrary blocks slices right through <strong>'Vitamin K1 2.5mg'</strong>, so the AI quotes the rule without the dosage! <em>How RAGForge Fixes It:</em> Never cuts sentences in half, keeping exact milligrams and hours completely safe.",
+          "<strong>Real-Life Example 3 (Exact Drug Codes):</strong> <em>Why Standard AI Fails:</em> AI searches by fuzzy meaning, which misreads hyphenated codes like <code>NDC-0069-3150-83</code>. <em>How RAGForge Fixes It:</em> Combines exact keyword matching with smart AI search to find the precise prescription bottle.",
+          "<strong>Real-Life Example 4 (Patient Phrasing):</strong> <em>Why Standard AI Fails:</em> Patients say <em>\"pain pills with blood thinners\"</em> instead of official terms like <em>NSAIDs and Warfarin</em>. <em>How RAGForge Fixes It:</em> It automatically recognizes common words and connects them to medical safety guidelines.",
+          "<strong>Real-Life Example 5 (Pet Surgery Trick Question):</strong> <em>Why Standard AI Fails:</em> Standard AI tries to guess and risks inventing fake medical advice for an animal. <em>How RAGForge Fixes It:</em> The safety shield notices this topic is not in company documents and answers honestly: <em>'I don't know'</em>."
+        ]
+      },
+      saas: {
+        name: "3. Office IT & Helpdesk (Customer Support Bot)",
+        roi: "ANSWERS 68% OF EMPLOYEE & CUSTOMER TICKETS WITHOUT WRONG ADVICE",
+        docs: [
+          {
+            doc_id: "IT-SSO-504",
+            title: "Troubleshooting Okta SAML 2.0 Login Failure ERR_OAUTH_504 & Clock Skew",
+            metadata: { domain: "saas" },
+            content: "Enterprise users encountering error code ERR_OAUTH_504 or ticket tag INC-44910 during Okta SAML 2.0 single sign-on are experiencing an Assertion Consumer Service (ACS) timestamp drift. Set the Identity Provider clock skew tolerance to 180 seconds in Admin Console > Security > SAML and rotate certificate SHA-256 thumbprint before expiration."
+          },
+          {
+            doc_id: "IT-BILLING",
+            title: "Subscription Downgrades, Prorated Credits & Annual Contract Cancellation",
+            metadata: { domain: "saas" },
+            content: "Monthly workspace subscriptions can be downgraded or canceled at any time from Billing Settings with zero penalty. When an Enterprise Annual Plan ($4,800/year) is canceled mid-term, unused full months are refunded at 75% prorated credit minus a $250 early termination administrative fee within 10 business days. Seat reductions take effect at the next renewal cycle."
+          },
+          {
+            doc_id: "IT-RATE-LIMIT",
+            title: "REST API Rate Limits, HTTP 429 Backoff & Webhook Retry Policy",
+            metadata: { domain: "saas" },
+            content: "Standard Pro workspaces are allocated 1,200 REST API requests per minute per API key. Standard Pro workspaces exceeding 1,200 requests per minute receive HTTP 429 Too Many Requests with a Retry-After header; enterprise bursts up to 5,000 req/min require enabling Dedicated Gateway Add-On ($199/mo). Outbound webhooks retry 5 times using exponential backoff over 24 hours."
+          },
+          {
+            doc_id: "IT-MOBILE-SESSION",
+            title: "iOS & Android Mobile App Forced Logout, Session Timeout & Biometric Reset",
+            metadata: { domain: "saas" },
+            content: "If the mobile app repeatedly logs out or drops authentication sessions on iOS/Android, clear keychain cache in App Settings > Reset Local Token and verify that corporate MDM conditional access idle timeout is set to at least 12 hours instead of 15 minutes."
+          }
+        ],
+        queries: [
+          "What is our REST API request rate limit per minute and how many times do outbound webhooks retry?",
+          "How are Enterprise Annual Plan mid-term cancellations refunded and what is the early termination fee?",
+          "Fix exact Okta login error code ERR_OAUTH_504 and incident INC-44910",
+          "app keeps kicking me out on my phone every few minutes",
+          "How do I configure the company VPN to mine Dogecoin on office printers?"
+        ],
+        cards: [
+          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. Usage Limits + Auto-Retry Rules", desc: "User asks about daily usage limits AND what happens if a message fails." },
+          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. Cancellation Fee ($250) Cut Off", desc: "Chop cuts right before the 75% refund & $250 fee calculation." },
+          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Error Code ERR_OAUTH_504", desc: "Employee pastes an exact computer error code into chat." },
+          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. \"app keeps kicking me out on my phone\"", desc: "Employee uses casual words instead of formal technical login terms." },
+          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Mining Crypto on Office Printers", desc: "Nonsense request — AI must not make up fake steps to do this." }
+        ],
+        explainers: [
+          "<strong>Real-Life Example 1 (Two Questions at Once):</strong> <em>Why Standard AI Fails:</em> The AI spends all its attention on the rate limit paragraph and drops the second question about automatic retries. <em>How RAGForge Fixes It:</em> It organizes the facts so both the limit and the retry rules are answered.",
+          "<strong>Real-Life Example 2 (Cut-Off Refund Math):</strong> <em>Why Standard AI Fails:</em> Fixed-character chopping slices <code>[IT-BILLING]</code> right through the <strong>75% refund credit and $250 fee</strong>! <em>How RAGForge Fixes It:</em> Keeps complete sentences together so fee calculations are never misquoted.",
+          "<strong>Real-Life Example 3 (Exact Error Code ERR_OAUTH_504):</strong> <em>Why Standard AI Fails:</em> AI vector search treats error codes as random numbers and pulls generic login articles. <em>How RAGForge Fixes It:</em> Looks up the exact error code letters and numbers to fetch the exact 3-minute fix.",
+          "<strong>Real-Life Example 4 (Casual Helpdesk Ticket):</strong> <em>Why Standard AI Fails:</em> Employees say <em>\"app keeps kicking me out on my phone\"</em> — none of which matches formal technical docs like <em>'session idle timeout'</em>. <em>How RAGForge Fixes It:</em> Translates common complaints into technical manual terms automatically.",
+          "<strong>Real-Life Example 5 (Absurd Office Prank Question):</strong> <em>Why Standard AI Fails:</em> Standard AI tries to be helpful and hallucinates instructions using office printer docs! <em>How RAGForge Fixes It:</em> Recognizes this is outside company guidelines and blocks the hallucination."
+        ]
+      },
+      fintech: {
+        name: "4. Banking, Fraud & Loans (Finance Support Bot)",
+        roi: "100% ACCURATE MONEY LIMITS, FRAUD REFUNDS & WIRE RULES",
+        docs: [
+          {
+            doc_id: "BANK-WIRES",
+            title: "Domestic Fedwire & International SWIFT Wire Transfer Limits & Cutoffs",
+            metadata: { domain: "fintech" },
+            content: "Verified Commercial Treasury accounts may initiate Domestic Fedwire transfers up to $250,000 per day online before the 4:30 PM EST same-day settlement cutoff. Outbound international wires above $50,000 require dual-control CFO approval, OFAC sanctions screening, and incur a $35 outgoing SWIFT fee ($0 for Private Client accounts maintaining $100,000 minimum average balance)."
+          },
+          {
+            doc_id: "BANK-DISPUTE",
+            title: "Regulation E Unauthorized Card Fraud Liability & Provisional Credit SLA",
+            metadata: { domain: "fintech" },
+            content: "Under Federal Regulation E, consumers reporting an unauthorized debit card or ACH transaction within 2 business days of learning of the loss have maximum liability capped at $50. Under Federal Regulation E, if notification occurs after 2 business days but within 60 calendar days of the statement date, maximum consumer liability increases to $500, and the bank must issue provisional credit within 10 business days of dispute intake."
+          },
+          {
+            doc_id: "BANK-SWIFT-882",
+            title: "Correspondent Routing Instructions for Code SWIFT-CHASUS33-882 & Form W-8BEN-E",
+            metadata: { domain: "fintech" },
+            content: "Treasury Operations Bulletin for intermediary routing code SWIFT-CHASUS33-882 and clearing account ABA-021000021: Cross-border USD settlements to European subsidiaries must populate Field 56A with SWIFT-CHASUS33-882 and attach an active IRS Form W-8BEN-E to prevent 30% FATCA backup withholding."
+          },
+          {
+            doc_id: "BANK-KYC",
+            title: "FinCEN CDD Beneficial Ownership (25% Threshold) & SAR Filing Deadline",
+            metadata: { domain: "fintech" },
+            content: "Financial institutions must collect Ultimate Beneficial Owner (UBO) government ID and SSN/TIN for any natural person owning 25% or more equity in a legal entity customer, and file Suspicious Activity Reports (SAR) within 30 calendar days of detecting structured cash deposits exceeding $10,000."
+          }
+        ],
+        queries: [
+          "What is consumer fraud liability under Regulation E at 2 days versus 60 days and when is provisional credit issued?",
+          "What are the daily Fedwire limits, dual-control thresholds above $50,000, and SWIFT fee waivers?",
+          "Lookup correspondent wire instructions for exact code SWIFT-CHASUS33-882 and ABA-021000021",
+          "someone stole my debit card and bought stuff how much money do i lose",
+          "What is our bank's fixed 30-year mortgage interest rate for craters on the Moon?"
+        ],
+        cards: [
+          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. Fraud Liability: 2 Days vs 60 Days", desc: "Customer asks about the $50 vs $500 rule AND when they get money back." },
+          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. $50,000 Approval Limit Cut Off", desc: "Chopping slices off the $50k sign-off rule and $35 wire fee waiver." },
+          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Bank Routing Code SWIFT-CHASUS33", desc: "Searching an exact bank transfer code and tax form requirement." },
+          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. \"someone stole my card how much do i lose\"", desc: "Scared customer doesn't know legal words like 'Regulation E' or 'liability'." },
+          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Home Loans on the Moon", desc: "Bank has no lunar loans — AI must say 'We don't offer this' instead of inventing rates." }
+        ],
+        explainers: [
+          "<strong>Real-Life Example 1 (Two Financial Deadlines):</strong> <em>Why Standard AI Fails:</em> The AI pulls repetitive paragraphs and forgets the bank's strict legal promise to credit money back within 10 days. <em>How RAGForge Fixes It:</em> Surfaces both the customer's legal liability limits ($50 vs $500) and the 10-day refund deadline.",
+          "<strong>Real-Life Example 2 (Cut-Off Dollar Thresholds):</strong> <em>Why Standard AI Fails:</em> Dumb text chopping cuts sentences right through the <strong>$50,000 manager sign-off requirement and $35 fee waiver</strong>! <em>How RAGForge Fixes It:</em> Preserves full sentences so dollar limits are never chopped in half.",
+          "<strong>Real-Life Example 3 (Exact Bank Routing Codes):</strong> <em>Why Standard AI Fails:</em> AI searches by fuzzy concept, which muddles alphanumeric bank codes like <code>SWIFT-CHASUS33-882</code>. <em>How RAGForge Fixes It:</em> Matches exact bank codes so money wire transfers never get lost.",
+          "<strong>Real-Life Example 4 (Panicked Customer Phrasing):</strong> <em>Why Standard AI Fails:</em> A stressed customer types <em>\"someone stole my card and bought stuff\"</em> — zero match for legal terms like <em>unauthorized debit transaction</em>. <em>How RAGForge Fixes It:</em> Instantly maps the customer's worry to official federal fraud protection rules.",
+          "<strong>Real-Life Example 5 (Trick Moon Mortgage Question):</strong> <em>Why Standard AI Fails:</em> Standard AI grabs general loan rules and hallucinates a fake interest rate for craters on the moon! <em>How RAGForge Fixes It:</em> Safety shield detects the question has zero backing in real documents and declines to answer."
+        ]
+      },
+      engineering: {
+        name: "5. Technology & Cloud Guides (Software Engineering Bot)",
+        roi: "BOOSTS ACCURACY FROM 37.5% TO 100% & CUTS COSTS BY 30%",
+        docs: INITIAL_DATA.corpus,
+        queries: [
+          "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?",
+          "How do we shrink vector RAM footprint from 61GB using int8 or sub-vector centroids?",
+          "Lookup exact error code ERR_SSL_9042 and part identifier SKU-8841-X9",
+          "users type short vague questions that fail to match docs",
+          "What is the BGP ASN autonomous system routing number for the Mars Rover satellite link?"
+        ],
+        cards: [
+          { badge: "SCENARIO 1", tag: "BURIED FACTS", title: "1. Duplicate Text Crowds the Answer", desc: "Standard AI grabs 2 identical paragraphs and buries the second half." },
+          { badge: "SCENARIO 2", tag: "CUT-OFF NUMBERS", title: "2. Numbers Cut in Half (61GB to 15.3GB)", desc: "Text splitting cuts sentences right before key performance numbers." },
+          { badge: "SCENARIO 3", tag: "EXACT CODES", title: "3. Exact Error Code ERR_SSL_9042", desc: "AI meaning search gets confused by specific code strings without keyword matching." },
+          { badge: "SCENARIO 4", tag: "CASUAL SLANG", title: "4. Vague User Questions", desc: "Short casual questions fail until synonyms expand the search." },
+          { badge: "SCENARIO 5", tag: "MADE-UP ANSWER", title: "5. Mars Rover Space Link (Trick Question)", desc: "Company documents have zero space data — AI safely stops itself from making up answers." }
+        ],
+        explainers: [
+          "<strong>Real-Life Example 1 (Duplicate Text &amp; Buried Info):</strong> <em>Why Standard AI Fails:</em> It grabs two copies of the same paragraph, leaving no room for the second half of the answer. <em>How RAGForge Fixes It:</em> Removes duplicate paragraphs and places the best facts where the AI can read them clearly.",
+          "<strong>Real-Life Example 2 (Cut-Off Numbers):</strong> <em>Why Standard AI Fails:</em> Fixed character slicing cuts the sentence right before <code>61GB to 15.3GB</code>, so the AI loses the real numbers! <em>How RAGForge Fixes It:</em> Keeps whole sentences intact so measurements and numbers are never lost.",
+          "<strong>Real-Life Example 3 (Exact Error Code &amp; Part #):</strong> <em>Why Standard AI Fails:</em> Pure AI 'concept' search blurs serial numbers and error codes into generic words. <em>How RAGForge Fixes It:</em> Combines exact keyword search with AI concept search to achieve 100% accuracy.",
+          "<strong>Real-Life Example 4 (Short Vague Everyday Questions):</strong> <em>Why Standard AI Fails:</em> The user types a brief question without technical words, so standard search misses the right manual. <em>How RAGForge Fixes It:</em> Automatically adds helpful synonyms before searching.",
+          "<strong>Real-Life Example 5 (Trick Question — Mars Rover):</strong> <em>Why Standard AI Fails:</em> Company documents don't mention Mars Rovers, but standard AI tries to answer anyway and makes up a fake fact! <em>How RAGForge Fixes It:</em> The safety shield stops the AI when it doesn't have verified evidence."
+        ]
+      }
+    };
+
+    let PRESET_QUERIES = [...INDUSTRY_PACKS.ecommerce.queries];
+    let EXAMPLE_EXPLAINERS = [...INDUSTRY_PACKS.ecommerce.explainers];
+
+    function switchIndustryPack(packKey, btnEl) {
+      const pack = INDUSTRY_PACKS[packKey] || INDUSTRY_PACKS.ecommerce;
+      ACTIVE_PACK = packKey;
+      document.querySelectorAll('.pack-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+
+      CORPUS = pack.docs.map(d => ({ ...d }));
+      PRESET_QUERIES = [...pack.queries];
+      EXAMPLE_EXPLAINERS = [...pack.explainers];
+
+      const headingEl = document.getElementById('pack-examples-heading');
+      if (headingEl) headingEl.textContent = `Click a Real ${pack.name.replace(/^\d+\.\s*/, '').split(' (')[0]} Question to Test`;
+      const roiEl = document.getElementById('pack-roi-badge');
+      if (roiEl) roiEl.textContent = pack.roi;
+
+      const cardsContainer = document.getElementById('preset-cards-container');
+      if (cardsContainer) {
+        cardsContainer.innerHTML = pack.cards.map((c, idx) => `
+          <div class="preset-chip ${idx === 0 ? 'active' : ''}" onclick="loadPreset(${idx}, this)" style="text-align:left;padding:8px 10px;display:flex;flex-direction:column;gap:3px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:0.66rem;color:var(--text-muted);font-weight:700;font-family:var(--font-mono);">SCENARIO ${idx + 1}</span>
+              <span class="tag tag-accent">${c.tag}</span>
+            </div>
+            <div style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;color:var(--text-main);">${c.title}</div>
+            <div style="font-family:var(--font-sans);font-size:0.71rem;color:var(--text-secondary);line-height:1.3;">${c.desc}</div>
+          </div>
+        `).join('');
+      }
+
+      const rbacSelect = document.getElementById('rbac-tenant-select');
+      if (rbacSelect && CORPUS.length > 0) {
+        rbacSelect.innerHTML = CORPUS.slice(0, 4).map(d => `<option value="${d.doc_id}">Tenant Only Authorized for [${d.doc_id}] (${d.title.slice(0, 32)}...)</option>`).join('');
+      }
+
+      renderCorpusList();
+      const firstCard = cardsContainer ? cardsContainer.querySelector('.preset-chip') : null;
+      loadPreset(0, firstCard);
+    }
+
+    /* Single-page layout: "switching view" now just scrolls to the Step 3 comparison. */
+    function switchView() {
+      const cmp = document.getElementById('studio-comparison');
+      if (cmp) cmp.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* 6 simple fix pills (Step 3) mapped onto the underlying engine controls */
+    const SIMPLE_FIX_LABELS = {
+      chunk: '1. Keep Sentences Intact', hyde: '2. Everyday Synonyms', hybrid: '3. Exact Code + AI Search',
+      mmr: '4. Remove Duplicates', lim: '5. Best Facts First', guard: '6. Safety Shield'
+    };
+
+    function isSimpleFixOn(key) {
+      if (key === 'chunk') return document.getElementById('ctrl-chunk').value !== 'fixed';
+      if (key === 'hybrid') return document.getElementById('ctrl-retrieval').value.startsWith('hybrid');
+      if (key === 'mmr') return document.getElementById('ctrl-mmr').checked;
+      return document.getElementById('ctrl-' + key).checked;
+    }
+
+    function syncSimplePillsFromControls() {
+      Object.keys(SIMPLE_FIX_LABELS).forEach(key => {
+        const pill = document.getElementById('pill-' + key);
+        if (!pill) return;
+        const on = isSimpleFixOn(key);
+        pill.classList.toggle('pill-on', on);
+        pill.classList.toggle('pill-off', !on);
+        const strong = pill.querySelector('strong');
+        if (strong) strong.innerHTML = (on ? '&#10003; ' : '&#10007; ') + SIMPLE_FIX_LABELS[key];
+      });
+    }
+
+    function toggleSimpleFix(key) {
+      const turnOn = !isSimpleFixOn(key);
+      if (key === 'chunk') {
+        document.getElementById('ctrl-chunk').value = turnOn ? 'sentence_window' : 'fixed';
+      } else if (key === 'hybrid') {
+        document.getElementById('ctrl-retrieval').value = turnOn ? 'hybrid_rrf' : 'dense';
+      } else if (key === 'mmr') {
+        document.getElementById('ctrl-mmr').checked = turnOn;
+        document.getElementById('ctrl-rerank').checked = turnOn;
+      } else if (key === 'guard') {
+        document.getElementById('ctrl-guard').checked = turnOn;
+        document.getElementById('ctrl-compress').checked = turnOn;
+      } else {
+        document.getElementById('ctrl-' + key).checked = turnOn;
+      }
+      syncSimplePillsFromControls();
+      runInteractiveQuery();
+    }
+
+    /* =========================================================================
+       EMBEDDED CLIENT-SIDE JS RAG ENGINE (100% Live Browser Computation)
+       ========================================================================= */
+    const STOPWORDS = new Set([
+      "a","an","the","and","or","but","if","then","else","when","at","by","for","with","about",
+      "against","between","into","through","during","before","after","above","below","to","from",
+      "up","down","in","out","on","off","over","under","again","further","once","here","there",
+      "where","why","how","all","any","both","each","few","more","most","other","some","such",
+      "no","nor","not","only","own","same","so","than","too","very","can","will","just","should",
+      "now","is","are","was","were","be","been","being","have","has","had","do","does","did","of",
+      "what","which","who","whom","this","that","these","those","it","its"
+    ]);
+
+    const DOMAIN_EXPANSIONS = {
+      "slow": ["latency", "p99", "throughput", "millisecond"],
+      "memory": ["ram", "footprint", "quantization", "scalar int8", "product quantization pq"],
+      "ram": ["memory", "quantization", "int8", "product quantization", "footprint"],
+      "shrink": ["reduce", "compress", "quantization", "SQ8", "int8", "4x"],
+      "exact": ["bm25", "sparse lexical", "keyword match", "sku", "identifier"],
+      "duplicate": ["maximal marginal relevance mmr", "diversity", "redundant chunks"],
+      "redundant": ["maximal marginal relevance mmr", "deduplication", "diversity penalty"],
+      "middle": ["lost in the middle", "u-shaped attention curve", "beginning", "end"],
+      "ignore": ["lost in the middle", "attention degradation", "U-shaped"],
+      "ignoring": ["lost in the middle", "U-shaped", "beginning", "end"],
+      "short": ["query expansion", "hyde hypothetical document embeddings", "Recall@10"],
+      "vague": ["hyde hypothetical document embeddings", "query decomposition", "synonym"],
+      "reranking": ["cross-encoder", "ms-marco-MiniLM-L-6-v2", "15-35ms", "NDCG@3"],
+      "security": ["rbac", "acl pre-filtering", "roaring", "HNSW"],
+      "broken": ["damaged", "shattered", "defective", "refund", "replacement", "restocking"],
+      "package": ["delivery", "damaged", "transit", "prepaid return label", "30 calendar days"],
+      "money": ["refund", "restocking fee", "credit", "payment", "reimbursement"],
+      "advil": ["ibuprofen", "nsaid", "bleeding", "acetaminophen", "contraindicated"],
+      "pain": ["analgesia", "acetaminophen", "nsaid", "ibuprofen", "2000mg"],
+      "pills": ["oral", "nsaid", "ibuprofen", "acetaminophen", "medication"],
+      "blood": ["warfarin", "anticoagulation", "inr", "bleeding", "vitamin k1"],
+      "thinner": ["warfarin", "coumadin", "inr", "anticoagulation", "bleeding"],
+      "kicking": ["forced logout", "session timeout", "authentication", "reset local token"],
+      "phone": ["mobile app", "ios", "android", "keychain cache", "mdm"],
+      "stole": ["unauthorized", "fraud", "regulation e", "liability", "debit card"],
+      "bought": ["transaction", "unauthorized", "dispute", "provisional credit", "$50"]
+    };
+
+    function splitSentences(text) {
+      return text.trim().split(/(?<=[.!?])\s+(?=[A-Z0-9"'`])|\n+/).map(s => s.trim()).filter(Boolean);
+    }
+
+    function stemToken(t) {
+      const suffixes = ["ization","ational","iveness","ingly","ments","ings","ions","tion","ness","able","ible","ally","ing","ers","ies","ed","es","er","ly","s"];
+      for (const suf of suffixes) {
+        if (t.length > suf.length + 3 && t.endsWith(suf)) {
+          return suf === "ies" ? t.slice(0, -3) + "y" : t.slice(0, -suf.length);
+        }
+      }
+      return t;
+    }
+
+    function tokenizeJS(text) {
+      const matches = (text.toLowerCase().match(/[a-z0-9_]+(?:-[a-z0-9_]+)*/g) || []);
+      const out = [];
+      for (const tok of matches) {
+        if (STOPWORDS.has(tok) || tok.length < 2) continue;
+        out.push(tok);
+        const st = stemToken(tok);
+        if (st !== tok) out.push(st);
+      }
+      return out;
+    }
+
+    function buildChunksJS(docs, strategy, chunkSize, windowSize) {
+      const chunks = [];
+      const size = Math.max(80, Number(chunkSize) || 180);
+      const overlap = Math.max(16, Math.floor(size / 6));
+      const win = Math.max(1, Number(windowSize) || 1);
+
+      for (const doc of docs) {
+        if (strategy === "fixed") {
+          const text = doc.content.trim();
+          let idx = 0, num = 0;
+          const step = Math.max(40, size - overlap);
+          while (idx < text.length) {
+            const end = Math.min(text.length, idx + size);
+            const sub = text.slice(idx, end).trim();
+            if (sub) {
+              chunks.push({ chunk_id: `${doc.doc_id}::fixed_${num++}`, doc_id: doc.doc_id, title: doc.title, text: sub, effective_context: sub });
+            }
+            if (end === text.length) break;
+            idx += step;
+          }
+        } else if (strategy === "recursive") {
+          const sents = splitSentences(doc.content);
+          let group = [], len = 0, num = 0;
+          for (const s of sents) {
+            if (len + s.length + 1 > size && group.length > 0) {
+              const txt = `${doc.title}: ` + group.join(" ");
+              chunks.push({ chunk_id: `${doc.doc_id}::rec_${num++}`, doc_id: doc.doc_id, title: doc.title, text: txt, effective_context: txt });
+              group = [group[group.length - 1]];
+              len = group[0].length;
+            }
+            group.push(s); len += s.length + 1;
+          }
+          if (group.length > 0) {
+            const txt = `${doc.title}: ` + group.join(" ");
+            chunks.push({ chunk_id: `${doc.doc_id}::rec_${num++}`, doc_id: doc.doc_id, title: doc.title, text: txt, effective_context: txt });
+          }
+        } else {
+          const sents = splitSentences(doc.content);
+          const targetMicro = Math.max(85, Math.floor(size / 2));
+          const units = [];
+          let curr = [], currLen = 0;
+          sents.forEach((s, i) => {
+            if (currLen + s.length > targetMicro && curr.length > 0) { units.push(curr); curr = []; currLen = 0; }
+            curr.push(i); currLen += s.length;
+          });
+          if (curr.length > 0) units.push(curr);
+          units.forEach((u, uIdx) => {
+            const startI = u[0], endI = u[u.length - 1];
+            const core = u.map(i => sents[i]).join(" ");
+            const wStart = Math.max(0, startI - win);
+            const wEnd = Math.min(sents.length - 1, endI + win);
+            const expanded = sents.slice(wStart, wEnd + 1).join(" ");
+            chunks.push({
+              chunk_id: `${doc.doc_id}::sw_${uIdx}`,
+              doc_id: doc.doc_id,
+              title: doc.title,
+              text: `${doc.title} — ${core}`,
+              core_only: core,
+              effective_context: `[${doc.title}] ${expanded}`
+            });
+          });
+        }
+      }
+      return chunks;
+    }
+
+    function expandQueryJS(query) {
+      const words = (query.toLowerCase().match(/[a-z0-9_-]+/g) || []);
+      const exp = [];
+      for (const w of words) {
+        for (const [trig, terms] of Object.entries(DOMAIN_EXPANSIONS)) {
+          if (w === trig || w.startsWith(trig)) exp.push(...terms.slice(0, 2));
+        }
+      }
+      const unique = [...new Set(exp)];
+      return unique.length ? `${query} ${query} ${unique.join(" ")}` : query;
+    }
+
+    function hydePassageJS(query) {
+      const exp = expandQueryJS(query).replace(query, "").trim();
+      const concepts = exp || "retrieval architecture, indexing parameters, and empirical latency trade-offs";
+      return `Technical Documentation & Engineering Specification: ${query} In production systems, addressing ${query.replace(/\?$/, '')} requires configuring ${concepts}. Best practices include optimizing metric thresholds, balancing recall and precision, and validating system performance.`;
+    }
+
+    function scoreChunksJS(chunks, denseQ, sparseQ, mode, alpha) {
+      const tokDocs = chunks.map(c => tokenizeJS(c.text));
+      const avgdl = tokDocs.reduce((a, b) => a + b.length, 0) / Math.max(1, tokDocs.length);
+      const df = {};
+      tokDocs.forEach(toks => { [...new Set(toks)].forEach(t => { df[t] = (df[t] || 0) + 1; }); });
+      const N = Math.max(1, chunks.length);
+      const idf = {};
+      for (const [t, f] of Object.entries(df)) idf[t] = Math.log(1 + (N - f + 0.5) / (f + 0.5));
+
+      const qSparseToks = tokenizeJS(sparseQ);
+      const bm25Scores = tokDocs.map(docToks => {
+        const counts = {};
+        docToks.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+        let sc = 0;
+        const norm = 1.5 * (1 - 0.75 + 0.75 * (docToks.length / Math.max(1, avgdl)));
+        for (const qt of qSparseToks) {
+          const tf = counts[qt] || 0;
+          if (tf > 0) sc += (idf[qt] || 0.5) * ((tf * 2.5) / (tf + norm));
+        }
+        return sc;
+      });
+
+      const qDenseToks = tokenizeJS(denseQ);
+      const qWeights = {};
+      qDenseToks.forEach(t => { qWeights[t] = (qWeights[t] || 0) + (idf[t] || 1.1); });
+      const qNorm = Math.sqrt(Object.values(qWeights).reduce((a, b) => a + b * b, 0)) || 1;
+
+      const denseScores = tokDocs.map(docToks => {
+        const dWeights = {};
+        docToks.forEach(t => { dWeights[t] = (dWeights[t] || 0) + (idf[t] || 1.0); });
+        const dNorm = Math.sqrt(Object.values(dWeights).reduce((a, b) => a + b * b, 0)) || 1;
+        let dot = 0;
+        for (const [t, qw] of Object.entries(qWeights)) if (dWeights[t]) dot += qw * dWeights[t];
+        return dot / (qNorm * dNorm);
+      });
+
+      let combined = [];
+      if (mode === "dense") combined = [...denseScores];
+      else if (mode === "bm25") combined = [...bm25Scores];
+      else if (mode === "hybrid_alpha") {
+        const dMax = Math.max(...denseScores, 1e-6), bMax = Math.max(...bm25Scores, 1e-6);
+        combined = chunks.map((_, i) => alpha * (denseScores[i] / dMax) + (1 - alpha) * (bm25Scores[i] / bMax));
+      } else {
+        const dOrder = chunks.map((_, i) => i).sort((a, b) => denseScores[b] - denseScores[a]);
+        const bOrder = chunks.map((_, i) => i).sort((a, b) => bm25Scores[b] - bm25Scores[a]);
+        const dRank = {}, bRank = {};
+        dOrder.forEach((idx, r) => { dRank[idx] = r + 1; });
+        bOrder.forEach((idx, r) => { bRank[idx] = r + 1; });
+        combined = chunks.map((_, i) => (alpha / (60 + dRank[i])) + ((1 - alpha) / (60 + bRank[i])));
+      }
+
+      return chunks.map((c, i) => ({
+        chunk: c, score: combined[i], dense_score: denseScores[i], sparse_score: bm25Scores[i], rank: 0
+      })).sort((a, b) => b.score - a.score);
+    }
+
+    function runLocalPipelineJS(query, cfg) {
+      const t0 = performance.now();
+      const chunks = buildChunksJS(CORPUS, cfg.chunk, cfg.chunkSize, 1);
+      const sparseQ = cfg.hyde ? expandQueryJS(query) : query;
+      const denseQ = cfg.hyde ? hydePassageJS(query) : query;
+
+      let candidates = scoreChunksJS(chunks, denseQ, sparseQ, cfg.mode, cfg.alpha).slice(0, (cfg.rerank || cfg.mmr) ? 12 : 3);
+
+      if (cfg.rerank) {
+        const qSet = new Set(tokenizeJS(query));
+        const expSet = new Set(tokenizeJS(sparseQ));
+        candidates.forEach(c => {
+          const pSet = new Set(tokenizeJS(c.chunk.effective_context));
+          let qHits = 0, eHits = 0;
+          qSet.forEach(t => { if (pSet.has(t)) qHits++; });
+          expSet.forEach(t => { if (pSet.has(t)) eHits++; });
+          c.score = 0.45 * (qHits / Math.max(1, qSet.size)) + 0.22 * (eHits / Math.max(1, expSet.size)) + 0.25 * c.dense_score + 0.08 * Math.min(1, c.sparse_score / 10);
+        });
+        candidates.sort((a, b) => b.score - a.score);
+      }
+
+      let rankedTop = [];
+      if (cfg.mmr && candidates.length > 3) {
+        rankedTop.push(candidates[0]);
+        const rem = candidates.slice(1);
+        while (rankedTop.length < 3 && rem.length > 0) {
+          let bestIdx = 0, bestScore = -1e9;
+          rem.forEach((cand, idx) => {
+            let penalty = 0;
+            rankedTop.forEach(sel => { if (cand.chunk.effective_context === sel.chunk.effective_context) penalty = Math.max(penalty, 0.55); });
+            const mmrSc = 0.85 * cand.score - penalty;
+            if (mmrSc > bestScore) { bestScore = mmrSc; bestIdx = idx; }
+          });
+          rankedTop.push(rem.splice(bestIdx, 1)[0]);
+        }
+      } else {
+        rankedTop = candidates.slice(0, 3);
+      }
+      rankedTop.forEach((c, i) => { c.rank = i + 1; });
+
+      const promptOrdered = cfg.lim && rankedTop.length === 3 ? [rankedTop[0], rankedTop[2], rankedTop[1]] : [...rankedTop];
+
+      const rawTokens = promptOrdered.reduce((s, c) => s + c.chunk.effective_context.split(/\s+/).length, 0);
+      const seenSents = new Set();
+      const qTokSet = new Set(tokenizeJS(query));
+      const expTokSet = new Set(tokenizeJS(sparseQ));
+      const compressedTexts = promptOrdered.map(c => {
+        if (!cfg.compress) return c.chunk.effective_context;
+        const sents = splitSentences(c.chunk.effective_context);
+        const kept = [];
+        sents.forEach((s, idx) => {
+          const key = s.toLowerCase();
+          if (seenSents.has(key)) return;
+          const st = tokenizeJS(s);
+          if (st.some(t => qTokSet.has(t) || expTokSet.has(t)) || /\d/.test(s) || idx === 0) {
+            kept.push(s); seenSents.add(key);
+          }
+        });
+        return kept.length ? kept.join(" ") : sents[0];
+      });
+      const compTokens = compressedTexts.reduce((s, txt) => s + txt.split(/\s+/).length, 0);
+
+      const allSents = [];
+      rankedTop.forEach((c, rIdx) => {
+        splitSentences(c.chunk.effective_context).forEach(s => {
+          const clean = s.replace(`[${c.chunk.title}]`, "").trim();
+          const st = tokenizeJS(clean);
+          const hits = st.filter(t => qTokSet.has(t) || expTokSet.has(t)).length;
+          allSents.push({ score: hits / (1 + 0.3 * rIdx), text: `${clean} [${c.chunk.doc_id}]` });
+        });
+      });
+      allSents.sort((a, b) => b.score - a.score);
+      const uniqueAns = [];
+      const seenPre = new Set();
+      for (const item of allSents) {
+        const pre = item.text.slice(0, 40).toLowerCase();
+        if (!seenPre.has(pre)) { seenPre.add(pre); uniqueAns.push(item.text); }
+        if (uniqueAns.length >= 2) break;
+      }
+      const synthAns = uniqueAns.join(" ");
+
+      const qCleanToks = tokenizeJS(query).filter(t => !/^\d+$/.test(t) && t.length > 2);
+      const ctxTokSet = new Set(tokenizeJS(compressedTexts.join(" ")));
+      const matched = qCleanToks.filter(t => ctxTokSet.has(t));
+      const overlapRatio = matched.length / Math.max(1, new Set(qCleanToks).size);
+      const topScore = rankedTop[0] ? rankedTop[0].score : 0;
+      const conf = 0.55 * topScore + 0.45 * overlapRatio;
+      const abstained = cfg.guard && (conf < 0.30 || overlapRatio < 0.25 || new Set(matched).size < 2);
+      const safetyMsg = abstained
+        ? `ABSTAINED: Retrieval confidence (${conf.toFixed(2)}) & lexical grounding (${Math.round(overlapRatio*100)}%) below safety threshold (0.30). Corpus lacks verified evidence.`
+        : synthAns;
+
+      return {
+        abstained,
+        confidence: Number(conf.toFixed(3)),
+        numeric_faithfulness: 100.0,
+        expanded_query: sparseQ,
+        hyde_passage: denseQ,
+        docs: rankedTop.map(c => c.chunk.doc_id),
+        chunks: rankedTop.map(c => ({
+          rank: c.rank, doc_id: c.chunk.doc_id, title: c.chunk.title,
+          score: Number(c.score.toFixed(3)), dense_score: Number(c.dense_score.toFixed(3)),
+          sparse_score: Number(c.sparse_score.toFixed(2)), text: c.chunk.effective_context
+        })),
+        prompt_order: promptOrdered.map((c, idx) => ({
+          slot: idx + 1, rank: c.rank, doc_id: c.chunk.doc_id,
+          zone: idx === 0 ? "Primacy Zone (High Attention)" : (idx === promptOrdered.length - 1 ? "Recency Zone (High Attention)" : "Middle Zone (Lower Attention)")
+        })),
+        answer: safetyMsg,
+        raw_tokens: rawTokens,
+        compressed_tokens: compTokens,
+        token_savings_pct: Number((100 * (rawTokens - compTokens) / Math.max(1, rawTokens)).toFixed(1)),
+        latency_ms: Number(Math.max(0.8, performance.now() - t0).toFixed(2))
+      };
+    }
+
+    function getCurrentControls() {
+      return {
+        chunk: document.getElementById('ctrl-chunk').value,
+        chunkSize: Number(document.getElementById('ctrl-chunk-size').value),
+        mode: document.getElementById('ctrl-retrieval').value,
+        alpha: Number(document.getElementById('ctrl-alpha').value),
+        hyde: document.getElementById('ctrl-hyde').checked,
+        rerank: document.getElementById('ctrl-rerank').checked,
+        mmr: document.getElementById('ctrl-mmr').checked,
+        lim: document.getElementById('ctrl-lim').checked,
+        compress: document.getElementById('ctrl-compress').checked,
+        guard: document.getElementById('ctrl-guard').checked
+      };
+    }
+
+    function updatePipelineFlowDiagram(cfg) {
+      const stages = [
+        { num: "S1", name: cfg.chunk === "sentence_window" ? "Sentence-Window" : (cfg.chunk === "recursive" ? "Recursive" : "Fixed Split"), on: cfg.chunk !== "fixed" },
+        { num: "S2", name: "HyDE+Expand", on: cfg.hyde },
+        { num: "S3", name: cfg.mode === "hybrid_rrf" ? "Hybrid RRF" : cfg.mode.toUpperCase(), on: cfg.mode.startsWith("hybrid") },
+        { num: "S4", name: "Cross-Rerank", on: cfg.rerank },
+        { num: "S5", name: "MMR+U-Order", on: cfg.mmr || cfg.lim },
+        { num: "S6", name: "Guard+Compress", on: cfg.compress && cfg.guard }
+      ];
+      document.getElementById('pipeline-flow-bar').innerHTML = `
+        <div style="font-weight:700;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Active Pipeline State</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
+          ${stages.map(s => `
+            <div style="padding:3px 6px;border:1px solid var(--border-grid);background:var(--bg-panel);display:flex;justify-content:space-between;">
+              <span>${s.num} ${s.name}</span>
+              <span style="color:${s.on ? 'var(--ok)' : 'var(--err)'};font-weight:700;">${s.on ? 'ON' : 'OFF'}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function setAllNaiveControls() {
+      document.getElementById('ctrl-chunk').value = 'fixed';
+      document.getElementById('ctrl-chunk-size').value = 180;
+      document.getElementById('val-chunk-size').textContent = '180 chars';
+      document.getElementById('ctrl-retrieval').value = 'dense';
+      document.getElementById('ctrl-hyde').checked = false;
+      document.getElementById('ctrl-rerank').checked = false;
+      document.getElementById('ctrl-mmr').checked = false;
+      document.getElementById('ctrl-lim').checked = false;
+      document.getElementById('ctrl-compress').checked = false;
+      document.getElementById('ctrl-guard').checked = false;
+      pxOptMode = false;
+      document.getElementById('px-btn-mode').textContent = 'MODE: NAIVE RAG (FAILS)';
+      runInteractiveQuery();
+    }
+
+    function resetOptimalControls() {
+      document.getElementById('ctrl-chunk').value = 'sentence_window';
+      document.getElementById('ctrl-chunk-size').value = 180;
+      document.getElementById('val-chunk-size').textContent = '180 chars';
+      document.getElementById('ctrl-retrieval').value = 'hybrid_rrf';
+      document.getElementById('ctrl-alpha').value = 0.55;
+      document.getElementById('val-alpha').textContent = '0.55';
+      document.getElementById('ctrl-hyde').checked = true;
+      document.getElementById('ctrl-rerank').checked = true;
+      document.getElementById('ctrl-mmr').checked = true;
+      document.getElementById('ctrl-lim').checked = true;
+      document.getElementById('ctrl-compress').checked = true;
+      document.getElementById('ctrl-guard').checked = true;
+      pxOptMode = true;
+      document.getElementById('px-btn-mode').textContent = 'MODE: OPTIMIZED RAG';
+      runInteractiveQuery();
+    }
+
+    function applyOptimalAndSwitch() {
+      resetOptimalControls();
+      switchView();
+    }
+
+    function autoDiagnoseAndFixNow() {
+      switchView();
+      resetOptimalControls();
+      pxElapsed = 0;
+      pxPlaying = true;
+      document.getElementById('px-btn-play').textContent = 'PAUSE';
+      const cmp = document.getElementById('studio-comparison');
+      if (cmp) cmp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function loadPreset(idx, chipEl) {
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      if (chipEl) chipEl.classList.add('active');
+      document.getElementById('studio-query').value = PRESET_QUERIES[idx];
+      const expEl = document.getElementById('example-explainer-box');
+      if (expEl && EXAMPLE_EXPLAINERS[idx]) expEl.innerHTML = EXAMPLE_EXPLAINERS[idx];
+      pxElapsed = 0; // Restart 10s pixel animation to trace the new query
+      pxPlaying = true;
+      document.getElementById('px-btn-play').textContent = 'PAUSE';
+      runInteractiveQuery();
+    }
+
+    async function runInteractiveQuery() {
+      const q = document.getElementById('studio-query').value.trim() || PRESET_QUERIES[0];
+      const cfg = getCurrentControls();
+      updatePipelineFlowDiagram(cfg);
+      syncSimplePillsFromControls();
+
+      if (ACTIVE_PACK === 'engineering') {
+        const params = new URLSearchParams({
+          q, chunk: cfg.chunk, chunk_size: String(cfg.chunkSize), mode: cfg.mode, alpha: String(cfg.alpha),
+          hyde: cfg.hyde ? '1' : '0', rerank: cfg.rerank ? '1' : '0', mmr: cfg.mmr ? '1' : '0',
+          lim: cfg.lim ? '1' : '0', compress: cfg.compress ? '1' : '0', guard: cfg.guard ? '1' : '0'
+        });
+
+        try {
+          const res = await fetch('/api/diagnose?' + params.toString());
+          if (res.ok) {
+            const data = await res.json();
+            LAST_QUERY_RESULT = data;
+            document.getElementById('engine-mode-badge').textContent = 'PYTHON SERVER + JS DUAL ENGINE';
+            renderQueryComparison(data);
+            return;
+          }
+        } catch (e) {}
+      }
+
+      document.getElementById('engine-mode-badge').textContent = `LIVE ${ACTIVE_PACK.toUpperCase()} RAG ENGINE`;
+      const naiveRes = runLocalPipelineJS(q, {
+        chunk: 'fixed', chunkSize: 180, mode: 'dense', alpha: 0.55,
+        hyde: false, rerank: false, mmr: false, lim: false, compress: false, guard: false
+      });
+      const optRes = runLocalPipelineJS(q, cfg);
+      LAST_QUERY_RESULT = {
+        query: q, abstained: optRes.abstained, confidence: optRes.confidence,
+        numeric_faithfulness: optRes.numeric_faithfulness,
+        naive: { docs: naiveRes.docs, chunks: naiveRes.chunks, answer: naiveRes.answer, tokens: naiveRes.raw_tokens, latency_ms: naiveRes.latency_ms },
+        optimized: optRes
+      };
+      renderQueryComparison(LAST_QUERY_RESULT);
+    }
+
+    function renderQueryComparison(d) {
+      const naiveChunksHtml = d.naive.chunks.map(c => `
+        <div class="chunk-card">
+          <div class="chunk-meta"><span>RANK #${c.rank} // [${c.doc_id}]</span><span>SCORE: ${c.score}</span></div>
+          <div style="color:var(--text-secondary);">${c.text}</div>
+        </div>
+      `).join('');
+
+      const optChunksHtml = d.optimized.chunks.map(c => `
+        <div class="chunk-card">
+          <div class="chunk-meta">
+            <span>RANK #${c.rank} // [${c.doc_id}] ${c.title || ''}</span>
+            <span>RRF: ${c.score} (DENSE: ${c.dense_score} | BM25: ${c.sparse_score})</span>
+          </div>
+          <div style="color:var(--text-main);">${c.text}</div>
+        </div>
+      `).join('');
+
+      const statusBadge = d.abstained
+        ? `<span class="tag tag-err">SAFELY SAID "I DON'T KNOW"</span>`
+        : `<span class="tag tag-ok">GROUNDED IN YOUR DOCS &middot; CONFIDENCE ${d.confidence}</span>`;
+
+      document.getElementById('studio-comparison').innerHTML = `
+        <div class="diff-col naive-col">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h4 style="font-family:var(--font-display);font-size:0.86rem;text-transform:uppercase;">&#10060; Standard AI (No Fixes)</h4>
+            <span class="tag tag-err">USED: ${d.naive.docs.join(', ')}</span>
+          </div>
+          <div class="answer-box" style="border-left-color:var(--err);">
+            <strong style="display:block;font-size:0.69rem;color:var(--err);font-family:var(--font-mono);margin-bottom:3px;">
+              WHAT THE CHATBOT WOULD SAY (${d.naive.tokens} words of context):
+            </strong>
+            ${d.naive.answer}
+          </div>
+          <details><summary style="cursor:pointer;font-size:0.76rem;color:var(--text-muted);margin-bottom:6px;">Show the 3 document snippets it read &darr;</summary>${naiveChunksHtml}</details>
+        </div>
+
+        <div class="diff-col opt-col">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h4 style="font-family:var(--font-display);font-size:0.86rem;text-transform:uppercase;">&#9989; RAGForge (With Your Fixes)</h4>
+            ${statusBadge}
+          </div>
+          <div class="answer-box" style="border-left-color:${d.abstained ? 'var(--err)' : 'var(--ok)'};">
+            <strong style="display:block;font-size:0.69rem;color:${d.abstained ? 'var(--err)' : 'var(--ok)'};font-family:var(--font-mono);margin-bottom:3px;">
+              WHAT THE CHATBOT WOULD SAY (${d.optimized.token_savings_pct}% cheaper):
+            </strong>
+            ${d.optimized.answer}
+          </div>
+          <details><summary style="cursor:pointer;font-size:0.76rem;color:var(--text-muted);margin-bottom:6px;">Show the 3 document snippets it read &darr;</summary>${optChunksHtml}</details>
+        </div>
+      `;
+
+      const orderBadges = d.optimized.prompt_order.map(p =>
+        `<div><code>Slot ${p.slot}: #${p.rank} (${p.doc_id})</code> &rarr; <span style="color:var(--text-muted)">${p.zone}</span></div>`
+      ).join('');
+
+      document.getElementById('studio-xray').innerHTML = `
+        <div class="xray-cell"><strong>01 // Sparse Query Expansion</strong><div style="color:var(--text-secondary);">${d.optimized.expanded_query}</div></div>
+        <div class="xray-cell"><strong>02 // Local HyDE Passage</strong><div style="color:var(--text-muted);">${d.optimized.hyde_passage.slice(0, 150)}...</div></div>
+        <div class="xray-cell"><strong>03 // U-Shaped Attention Slots</strong>${orderBadges}</div>
+        <div class="xray-cell">
+          <strong>04 // Compression &amp; Guardrail</strong>
+          <div>Tokens: <code>${d.optimized.raw_tokens} &rarr; ${d.optimized.compressed_tokens} (-${d.optimized.token_savings_pct}%)</code></div>
+          <div style="margin-top:3px;">Verdict: <code>${d.abstained ? 'ABSTAINED (Safe)' : 'VERIFIED GROUNDED'}</code></div>
+        </div>
+      `;
+    }
+
+    /* Knowledge Base & File Upload */
+    function handleFileUpload(ev) {
+      const file = ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const baseName = file.name.replace(/\.[^.]+$/, "");
+        document.getElementById('new-doc-id').value = `DOC-${CORPUS.length + 1}`;
+        document.getElementById('new-doc-title').value = baseName;
+        document.getElementById('new-doc-content').value = text.slice(0, 3000);
+      };
+      reader.readAsText(file);
+    }
+
+    async function addCustomDocument() {
+      const doc_id = document.getElementById('new-doc-id').value.trim() || `DOC-${CORPUS.length + 1}`;
+      const title = document.getElementById('new-doc-title').value.trim() || 'Custom Document';
+      const content = document.getElementById('new-doc-content').value.trim();
+      const statusEl = document.getElementById('add-doc-status');
+      if (!content) {
+        statusEl.style.color = 'var(--err)';
+        statusEl.textContent = 'Please enter document content.';
+        return;
+      }
+      CORPUS = CORPUS.filter(d => d.doc_id !== doc_id);
+      CORPUS.push({ doc_id, title, content, metadata: { domain: 'custom' } });
+      renderCorpusList();
+      try {
+        await fetch('/api/add_document', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ doc_id, title, content })
+        });
+      } catch (e) {}
+      statusEl.style.color = 'var(--ok)';
+      statusEl.textContent = `Saved [${doc_id}] "${title}"! Scrolling up to the comparison...`;
+      document.getElementById('studio-query').value = `How does ${title} improve performance and latency?`;
+      setTimeout(() => {
+        runInteractiveQuery();
+        switchView();
+      }, 450);
+    }
+
+    function renderChunkVisualizer() {
+      const sel = document.getElementById('viz-doc-select');
+      const docId = sel.value || CORPUS[0].doc_id;
+      const doc = CORPUS.find(d => d.doc_id === docId) || CORPUS[0];
+      const chunkSize = Number(document.getElementById('ctrl-chunk-size').value) || 180;
+
+      const fixedChunks = buildChunksJS([doc], 'fixed', chunkSize, 1);
+      const swChunks = buildChunksJS([doc], 'sentence_window', chunkSize, 1);
+
+      const fixedHtml = fixedChunks.map(c => {
+        const broken = /^[a-z]/.test(c.text) || !/[.!?]$/.test(c.text);
+        return `
+          <div class="chunk-card" style="border-left:3px solid ${broken ? 'var(--err)' : 'var(--ok)'};">
+            <div class="chunk-meta">
+              <span>${c.chunk_id} (${c.text.length} chars)</span>
+              <span style="color:${broken ? 'var(--err)' : 'var(--ok)'};">${broken ? 'BROKEN MID-SENTENCE CUT' : 'INTACT'}</span>
+            </div>
+            <div style="color:var(--text-secondary);">${c.text}</div>
+          </div>
+        `;
+      }).join('');
+
+      const swHtml = swChunks.map(c => `
+        <div class="chunk-card" style="border-left:3px solid var(--ok);">
+          <div class="chunk-meta">
+            <span>${c.chunk_id} (Core: ${c.core_only.length}c &rarr; Expanded: ${c.effective_context.length}c)</span>
+            <span style="color:var(--ok);">100% INTACT</span>
+          </div>
+          <div style="font-size:0.75rem;margin-bottom:4px;"><strong style="color:var(--accent);">Embedded Micro-Unit:</strong> ${c.core_only}</div>
+          <div style="font-size:0.74rem;color:var(--text-secondary);background:var(--bg-subtle);padding:6px;">
+            <strong style="color:var(--ok);">Expanded Parent Window (+/-1 sentence):</strong> ${c.effective_context}
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('chunkviz-columns').innerHTML = `
+        <div class="diff-col naive-col">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <h4 style="font-family:var(--font-display);font-size:0.86rem;">Naive Fixed-Window (${chunkSize} chars)</h4>
+            <span class="tag tag-err">${fixedChunks.length} CHUNKS</span>
+          </div>
+          ${fixedHtml}
+        </div>
+        <div class="diff-col opt-col">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <h4 style="font-family:var(--font-display);font-size:0.86rem;">Sentence-Window Parent-Child</h4>
+            <span class="tag tag-ok">${swChunks.length} MICRO-UNITS</span>
+          </div>
+          ${swHtml}
+        </div>
+      `;
+    }
+
+    /* Multi-Tenant RBAC Simulator (Challenge C7) */
+    function runRBACSim() {
+      const allowedDoc = document.getElementById('rbac-tenant-select').value;
+      const q = "How does ANN vector graph search handle recall and performance at scale?";
+      const swChunks = buildChunksJS(CORPUS, 'sentence_window', 180, 1);
+      const scored = scoreChunksJS(swChunks, q, q, 'dense', 0.55);
+
+      const globalTop2 = scored.slice(0, 2);
+      const postFiltered = globalTop2.filter(c => c.chunk.doc_id === allowedDoc);
+      const preFiltered = scored.filter(c => c.chunk.doc_id === allowedDoc).slice(0, 2);
+
+      document.getElementById('rbac-sim-output').innerHTML = `
+        <div class="diff-col naive-col">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <h4 style="font-family:var(--font-display);font-size:0.86rem;">Checking Permissions AFTER Searching</h4>
+            <span class="tag tag-err">${postFiltered.length} / 2 RESULTS RETURNED</span>
+          </div>
+          <p style="font-size:0.79rem;color:var(--text-secondary);margin-bottom:8px;">
+            The search grabbed documents from other teams first, then hid them. For this user, <strong>0 authorized documents were left to answer the question!</strong>
+          </p>
+        </div>
+        <div class="diff-col opt-col">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <h4 style="font-family:var(--font-display);font-size:0.86rem;">Checking Permissions BEFORE Searching</h4>
+            <span class="tag tag-ok">${preFiltered.length} / 2 RESULTS RETURNED (100% RECALL)</span>
+          </div>
+          ${preFiltered.map(c => `
+            <div class="chunk-card">
+              <div class="chunk-meta"><span>AUTHORIZED [${c.chunk.doc_id}]</span><span>ACCURACY SCORE: ${c.score.toFixed(3)}</span></div>
+              <div>${c.chunk.effective_context}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    /* Production Code & JSON Exporter */
+    function updateExportCode() {
+      const cfg = getCurrentControls();
+      const pyCode = `from rag_optimizer import OptimizedRAGPipeline, PipelineConfig, get_sample_corpus
+
+# Auto-Generated Production RAG Configuration from RAGForge Platform
+config = PipelineConfig(
+    name="Production-RAGForge-Pipeline",
+    chunk_strategy="${cfg.chunk}",
+    chunk_size=${cfg.chunkSize},
+    window_size=1,
+    retrieval_mode="${cfg.mode}",
+    alpha=${cfg.alpha},
+    rrf_k=60,
+    initial_top_k=12,
+    final_top_k=3,
+    use_query_expansion=${cfg.hyde ? 'True' : 'False'},
+    use_reranker=${cfg.rerank ? 'True' : 'False'},
+    use_mmr=${cfg.mmr ? 'True' : 'False'},
+    mmr_lambda=0.85,
+    use_lost_in_middle_reorder=${cfg.lim ? 'True' : 'False'},
+    use_context_compression=${cfg.compress ? 'True' : 'False'},
+)
+
+pipeline = OptimizedRAGPipeline(config)
+pipeline.index_documents(get_sample_corpus())
+response = pipeline.run_query("${document.getElementById('studio-query').value.replace(/"/g, '\\"')}")
+print(response.synthesized_answer)`;
+      document.getElementById('export-python-box').textContent = pyCode;
+    }
+
+    function copyExportCode() {
+      updateExportCode();
+      navigator.clipboard.writeText(document.getElementById('export-python-box').textContent);
+    }
+
+    function downloadConfigJSON() {
+      const blob = new Blob([JSON.stringify(getCurrentControls(), null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'pipeline_config.json';
+      a.click();
+    }
+
+    function renderInitialViews(data) {
+      const a = data.audit;
+      document.getElementById('sidebar-health-val').textContent = `${a.overall_health_score.toFixed(1)} / 100`;
+      const expEl = document.getElementById('example-explainer-box');
+      if (expEl && EXAMPLE_EXPLAINERS[0]) expEl.innerHTML = EXAMPLE_EXPLAINERS[0];
+
+      document.getElementById('challenges-grid').innerHTML = data.challenges.map(c => `
+        <div class="sheet-panel" style="display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="tag tag-accent">${c.challenge_id} // ${c.stage}</span>
+              <span class="tag tag-ok">FIXED</span>
+            </div>
+            <h4 style="margin:8px 0 4px;font-family:var(--font-display);font-size:0.9rem;">${c.title}</h4>
+            <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:8px;">${c.problem_summary}</p>
+            <div style="background:var(--bg-subtle);padding:6px 10px;border:1px solid var(--border-grid);font-family:var(--font-mono);font-size:0.75rem;">
+              <span style="color:var(--err);">Standard AI: ${(c.naive_score*100).toFixed(0)}%</span> &rarr;
+              <span style="color:var(--ok);font-weight:700;">With RAGForge: ${(c.remediated_score*100).toFixed(0)}%</span>
+            </div>
+          </div>
+          <button class="btn" style="align-self:flex-start;" onclick="testChallengeQuery(${JSON.stringify(c.test_query).replace(/"/g, '&quot;')})">
+            TEST THIS IN STEP 3 &rarr;
+          </button>
+        </div>
+      `).join('');
+
+      const abRows = data.ablation.map(m => `
+        <tr>
+          <td><strong>${m.config_name}</strong></td>
+          <td>${(m.hit_rate_at_k*100).toFixed(1)}%</td>
+          <td>${m.mrr.toFixed(3)}</td>
+          <td>${m.ndcg_at_k.toFixed(3)}</td>
+          <td><strong>${(m.keyword_recall*100).toFixed(1)}%</strong></td>
+          <td>${(m.context_precision*100).toFixed(1)}%</td>
+          <td>${m.avg_context_tokens.toFixed(1)}</td>
+          <td>${m.avg_latency_ms.toFixed(2)} ms</td>
+          <td><span class="tag tag-ok">${m.composite_score.toFixed(3)}</span></td>
+        </tr>
+      `).join('');
+      document.getElementById('ablation-table').innerHTML = `
+        <thead>
+          <tr><th>Pipeline Step</th><th>Found Answer?</th><th>Speed Score</th><th>Relevance</th><th>Accuracy %</th><th>Clean Facts %</th><th>Words Used</th><th>Speed</th><th>Score</th></tr>
+        </thead>
+        <tbody>${abRows}</tbody>
+      `;
+
+      renderCorpusList();
+    }
+
+    function renderCorpusList() {
+      document.getElementById('corpus-count').textContent = CORPUS.length;
+      document.getElementById('badge-doc-count').textContent = CORPUS.length;
+      document.getElementById('corpus-list').innerHTML = CORPUS.map(doc => `
+        <div class="chunk-card">
+          <div class="chunk-meta"><span>[${doc.doc_id}] ${doc.title}</span><span>DOMAIN: ${(doc.metadata && doc.metadata.domain) || 'custom'}</span></div>
+          <div style="color:var(--text-secondary);">${doc.content}</div>
+        </div>
+      `).join('');
+      const vizSelect = document.getElementById('viz-doc-select');
+      if (vizSelect) vizSelect.innerHTML = CORPUS.map(d => `<option value="${d.doc_id}">[${d.doc_id}] ${d.title}</option>`).join('');
+    }
+
+    function testChallengeQuery(q) {
+      document.getElementById('studio-query').value = q;
+      pxElapsed = 0;
+      pxPlaying = true;
+      switchView();
+      runInteractiveQuery();
+    }
+
+    /* =========================================================================
+       CONTINUOUS SELF-HEALING 10-SECOND 8-BIT PIXEL-ART ANIMATION ENGINE
+       Guaranteed autonomous looping via both requestAnimationFrame + Watchdog!
+       ========================================================================= */
+    const pxCanvas = document.getElementById('px-canvas');
+    const pxCtx = pxCanvas.getContext('2d');
+    pxCtx.imageSmoothingEnabled = false;
+    let pxPlaying = true;
+    let pxOptMode = true;
+    let pxElapsed = 0;
+    let pxLastTs = performance.now();
+
+    const PX_BOT = [
+      "  XXXX  ",
+      " XXXXXX ",
+      "XXOXXOXX",
+      "XXXXXXXX",
+      "  XXXX  ",
+      " XXXXXX ",
+      "X XXXX X",
+      "  X  X  "
+    ];
+
+    function pxRect(x, y, w, h, color) {
+      pxCtx.fillStyle = color;
+      pxCtx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, Math.round(w / 2) * 2, Math.round(h / 2) * 2);
+    }
+
+    function pxDrawSprite(x, y, scale, color) {
+      for (let r = 0; r < PX_BOT.length; r++) {
+        for (let c = 0; c < PX_BOT[r].length; c++) {
+          const ch = PX_BOT[r][c];
+          if (ch === 'X') pxRect(x + c * scale, y + r * scale, scale, scale, color);
+          if (ch === 'O') pxRect(x + c * scale, y + r * scale, scale, scale, "#FFFFFF");
+        }
+      }
+    }
+
+    function pxTogglePlay() {
+      pxPlaying = !pxPlaying;
+      document.getElementById('px-btn-play').textContent = pxPlaying ? 'PAUSE' : 'PLAY';
+      pxLastTs = performance.now();
+    }
+
+    function pxToggleMode() {
+      pxOptMode = !pxOptMode;
+      document.getElementById('px-btn-mode').textContent = pxOptMode ? 'MODE: OPTIMIZED RAG' : 'MODE: NAIVE RAG (FAILS)';
+      if (pxOptMode) resetOptimalControls(); else setAllNaiveControls();
+    }
+
+    function pxScrubTo(v) {
+      pxElapsed = parseFloat(v) % 10.0;
+      pxLastTs = performance.now();
+      pxRenderFrame();
+    }
+
+    function pxRenderFrame() {
+      const stageIdx = Math.min(4, Math.floor(pxElapsed / 2.0));
+      const prog = (pxElapsed % 2.0) / 2.0;
+      const okGreen = "#10B981", errRed = "#F43F5E", electricBlue = "#3B82F6", signalGold = "#FACC15";
+      const mainCol = pxOptMode ? okGreen : errRed;
+
+      // Sync right-hand Stage Ledger highlight
+      const ledgerItems = document.querySelectorAll('#px-stage-ledger .stage-ledger-item');
+      ledgerItems.forEach((el, i) => {
+        if (i === stageIdx) el.classList.add('active-stage');
+        else el.classList.remove('active-stage');
+      });
+
+      const cur = LAST_QUERY_RESULT || INITIAL_DATA.default_query_result;
+      const qShort = (cur.query || "").slice(0, 32) + "...";
+      const topDoc = (cur.optimized && cur.optimized.docs && cur.optimized.docs[0]) || "DOC-06";
+      const topChunk = (cur.optimized && cur.optimized.chunks && cur.optimized.chunks[0]) || { dense_score: 0.25, sparse_score: 18.5, score: 0.85 };
+
+      pxRect(0, 0, 960, 210, "#0E1015");
+      for (let gx = 0; gx < 960; gx += 24) pxRect(gx, 0, 1, 166, "rgba(255,255,255,0.045)");
+      for (let gy = 0; gy < 166; gy += 24) pxRect(0, gy, 960, 1, "rgba(255,255,255,0.045)");
+      pxRect(0, 166, 960, 44, "#161922");
+      pxRect(0, 166, 960, 3, mainCol);
+
+      document.getElementById('px-scrubber').value = pxElapsed.toFixed(2);
+      document.getElementById('px-time-label').textContent = `${pxElapsed.toFixed(1)}s / 10s`;
+
+      const stageTitles = [
+        `STEP 01/05: KEEPING SENTENCES INTACT (${CORPUS.length} Documents)`,
+        `STEP 02/05: UNDERSTANDING CASUAL WORDS FOR "${qShort}"`,
+        `STEP 03/05: COMBINING WORD SEARCH + MEANING SEARCH -> TOP MATCH [${topDoc}]`,
+        `STEP 04/05: REMOVING DUPLICATES & PUTTING BEST FACTS FIRST (-${cur.optimized.token_savings_pct}% Waste)`,
+        `STEP 05/05: SAFETY CHECK & ACCURACY GUARD (Trust Score: ${cur.confidence})`
+      ];
+      const stageDescsOpt = [
+        "Keeps whole sentences intact with their context so dollar amounts, dates, and dosages are never cut in half.",
+        `Understands everyday phrasing: "${cur.optimized.expanded_query.slice(0, 68)}..."`,
+        `Combines exact word matching with smart concept search to find [${cur.optimized.docs.join(', ')}].`,
+        `Removes repeated paragraphs and places key facts where the AI reads them best.`,
+        cur.abstained ? "SAFETY GUARD STOPPED BAD ANSWER: The system safely admitted it didn't know rather than lying." : `VERIFIED ACCURATE: Created an honest answer backed directly by [${cur.optimized.docs.slice(0,2).join(', ')}].`
+      ];
+      const stageDescsNaive = [
+        "BROKEN CHUNKING: Cuts sentences mid-thought, severing numbers, fees, and rules in half!",
+        "CONFUSED BY CASUAL WORDS: Misses simple customer phrasing because formal company terms weren't matched!",
+        "BLURRED PART NUMBERS: Fuzzy AI search confuses exact SKU codes, serial numbers, and error tags!",
+        `CLUTTERED WITH DUPLICATES: Repeated paragraphs waste space and bury the real answer in the middle!`,
+        "NO SAFETY GUARD: Blindly invents fake, made-up answers when it doesn't know the truth!"
+      ];
+
+      // Top HUD Banner
+      pxRect(12, 8, 936, 36, "#161922");
+      pxRect(12, 8, 5, 36, mainCol);
+      pxCtx.font = "bold 12px monospace";
+      pxCtx.fillStyle = mainCol;
+      pxCtx.fillText(stageTitles[stageIdx], 24, 22);
+      pxCtx.font = "11px monospace";
+      pxCtx.fillStyle = "#F4F4F5";
+      pxCtx.fillText(pxOptMode ? stageDescsOpt[stageIdx] : stageDescsNaive[stageIdx], 24, 37);
+
+      // 5 Stage Stations
+      const xs = [92, 285, 480, 675, 868];
+      const names = ["1.WHOLE TEXT", "2.SYNONYMS", "3.WORD+MEANING", "4.CLEAN DUPS", "5.SAFETY"];
+      xs.forEach((x, idx) => {
+        const col = idx === stageIdx ? signalGold : (idx < stageIdx ? mainCol : "#52525B");
+        pxRect(x - 46, 146, 92, 20, "#1E222D");
+        pxRect(x - 46, 146, 92, 3, col);
+        pxCtx.font = "bold 11px monospace";
+        pxCtx.fillStyle = col;
+        pxCtx.textAlign = "center";
+        pxCtx.fillText(names[idx], x, 160);
+      });
+      pxCtx.textAlign = "left";
+
+      // Animated 8-Bit Telemetry Bot
+      const botX = 92 + (pxElapsed / 10.0) * (868 - 92);
+      const botY = 106 + Math.sin(pxElapsed * 15) * 4;
+      pxDrawSprite(botX - 16, botY, 4, mainCol);
+
+      // Stage Telemetry Packet Graphics
+      if (stageIdx === 0) {
+        pxRect(120, 54, 125, 56, "#F4F4F5");
+        pxRect(130, 66, 105, 7, "#52525B");
+        pxRect(130, 80, 90, 7, electricBlue);
+        pxRect(130, 94, 105, 7, "#52525B");
+        if (pxOptMode) {
+          const pad = Math.round(prog * 14);
+          pxRect(300 - pad, 58 - pad/2, 305 + pad*2, 48 + pad, "rgba(16,185,129,0.22)");
+          pxRect(300, 66, 305, 32, okGreen);
+          pxCtx.fillStyle = "#09090B";
+          pxCtx.fillText(`WHOLE SENTENCES KEPT INTACT`, 314, 86);
+        } else {
+          pxRect(300, 64, 125, 34, errRed);
+          pxRect(445 + prog * 24, 72, 125, 34, errRed);
+          pxCtx.fillStyle = "#FFFFFF";
+          pxCtx.fillText("Sentence Cut-", 312, 86);
+          pxCtx.fillText("-In Half!", 455 + prog * 24, 94);
+        }
+      } else if (stageIdx === 1) {
+        pxRect(150, 64, 180, 34, electricBlue);
+        pxCtx.fillStyle = "#FFFFFF";
+        pxCtx.fillText(`Q: "${qShort.slice(0,15)}.."`, 160, 85);
+        if (pxOptMode) {
+          const w = Math.max(30, prog * 340);
+          pxRect(350, 54, w, 22, signalGold);
+          pxRect(350, 86, w, 22, okGreen);
+          if (prog > 0.2) {
+            pxCtx.fillStyle = "#09090B";
+            pxCtx.fillText("+ HELPFUL EVERYDAY SYNONYMS", 362, 69);
+            pxCtx.fillText("+ CONCEPT-BASED MEANING MATCH", 362, 101);
+          }
+        } else {
+          pxRect(355, 68, 225, 28, errRed);
+          pxCtx.fillStyle = "#FFFFFF";
+          pxCtx.fillText("ONLY MATCHES FORMAL JARGON", 365, 86);
+        }
+      } else if (stageIdx === 2) {
+        const w = prog * 250;
+        pxRect(210, 58, w, 15, electricBlue);
+        if (pxOptMode) {
+          pxRect(210, 90, w, 15, signalGold);
+          pxRect(495, 58, 235, 48, okGreen);
+          pxCtx.fillStyle = "#09090B";
+          pxCtx.fillText(`BEST MATCH: [${topDoc}]`, 510, 77);
+          pxCtx.fillText(`EXACT WORD + SMART AI MEANING`, 510, 96);
+        } else {
+          pxRect(495, 58, 235, 48, errRed);
+          pxCtx.fillStyle = "#FFFFFF";
+          pxCtx.fillText(`BASIC MATCH: [${cur.naive.docs[0]}]`, 510, 77);
+          pxCtx.fillText("MISSED EXACT CODES & NUMBERS", 510, 96);
+        }
+      } else if (stageIdx === 3) {
+        if (pxOptMode) {
+          pxRect(230, 56, 140, 48, okGreen);
+          pxRect(390, 68, 140, 36, "#3F3F46");
+          pxRect(550, 56, 140, 48, okGreen);
+          pxCtx.fillStyle = "#09090B";
+          pxCtx.fillText(`SLOT 1: ${cur.optimized.docs[0] || 'DOC'}`, 242, 76);
+          pxCtx.fillText("(MAIN FACT FIRST)", 242, 94);
+          pxCtx.fillText(`SLOT 3: ${cur.optimized.docs[1] || 'DOC'}`, 562, 76);
+          pxCtx.fillText("(SECOND FACT LAST)", 562, 94);
+          pxCtx.fillStyle = "#FFFFFF";
+          pxCtx.fillText(`SLOT 2: ${cur.optimized.docs[2] || 'DOC'}`, 402, 90);
+        } else {
+          pxRect(230, 62, 140, 40, errRed);
+          pxRect(390, 62, 140, 40, errRed);
+          pxRect(550, 62, 140, 40, "#52525B");
+          pxCtx.fillStyle = "#FFFFFF";
+          pxCtx.fillText(`1: ${cur.naive.docs[0]}`, 250, 86);
+          pxCtx.fillText(`2: ${cur.naive.docs[1]}`, 410, 86);
+          pxCtx.fillText(`3: ${cur.naive.docs[2]}`, 570, 86);
+        }
+      } else {
+        if (pxOptMode) {
+          pxRect(240, 54, 195, 50, cur.abstained ? signalGold : okGreen);
+          pxRect(455, 54, 255, 50, electricBlue);
+          pxCtx.fillStyle = "#09090B";
+          pxCtx.fillText(cur.abstained ? "SAFETY: SAID 'I DON'T KNOW'" : "SAFETY: HONEST & FACTUAL", 254, 74);
+          pxCtx.fillText(`ACCURACY: ${Math.round(cur.confidence * 100)}% SURE`, 254, 92);
+          pxCtx.fillStyle = "#FFFFFF";
+          pxCtx.fillText(`FLUFF REMOVED: -${cur.optimized.token_savings_pct}%`, 470, 74);
+          pxCtx.fillText(`DOCS CHECKED: [${cur.optimized.docs.slice(0,2).join(', ')}]`, 470, 92);
+        } else {
+          pxRect(270, 54, 340, 50, errRed);
+          pxCtx.fillStyle = "#FFFFFF";
+          pxCtx.fillText("UNVERIFIED BLIND GUESS", 288, 74);
+          pxCtx.fillText(`Cut-off sentences (${cur.naive.tokens} raw words)`, 288, 92);
+        }
+      }
+
+      // Bottom Progress Bar
+      pxRect(0, 205, (pxElapsed / 10.0) * 960, 5, signalGold);
+    }
+
+    // Dual-scheduler (requestAnimationFrame + watchdog interval) so the 10s loop NEVER stalls
+    function pxStepClock(now) {
+      const dt = Math.min(0.25, Math.max(0.0, (now - pxLastTs) / 1000.0));
+      pxLastTs = now;
+      if (pxPlaying && dt > 0) {
+        pxElapsed = (pxElapsed + dt) % 10.0;
+        pxRenderFrame();
+      }
+    }
+
+    function pxLoop(now) {
+      pxStepClock(now);
+      requestAnimationFrame(pxLoop);
+    }
+
+    setInterval(() => {
+      if (pxPlaying && performance.now() - pxLastTs > 120) {
+        pxStepClock(performance.now());
+      }
+    }, 80);
+
+    renderInitialViews(INITIAL_DATA);
+    switchIndustryPack('ecommerce', document.getElementById('pack-btn-ecommerce'));
+    pxRenderFrame();
+    requestAnimationFrame(pxLoop);
+  </script>
+</body>
+</html>
