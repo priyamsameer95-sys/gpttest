@@ -744,128 +744,188 @@
 </head>
 <body>
 
-  <!-- TOP ACTION BAR: BRAND + PRIMARY CTAS -->
+  <style>
+    .kid-hero { text-align:center; padding:44px 20px 28px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .kid-hero h2 { font-family:var(--font-display); font-size:2.3rem; line-height:1.15; letter-spacing:-0.03em; max-width:760px; }
+    .kid-hero .lead { font-size:1.15rem; font-weight:600; color:var(--text-main); }
+    .kid-hero p { font-size:1rem; color:var(--text-secondary); max-width:620px; line-height:1.55; }
+    .cta-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+    .cta-lg { font-family:var(--font-sans); font-size:0.95rem; font-weight:700; padding:12px 22px; border:2px solid var(--accent); cursor:pointer; background:var(--bg-panel); color:var(--accent); }
+    .cta-lg.solid { background:var(--accent); color:#fff; }
+    .cta-lg:hover { transform:translateY(-1px); }
+    .kid-section { display:flex; flex-direction:column; gap:12px; padding:22px 4px; }
+    .kid-section h3 { font-family:var(--font-display); font-size:1.45rem; letter-spacing:-0.02em; }
+    .kid-section p.sub { font-size:0.98rem; color:var(--text-secondary); line-height:1.55; max-width:720px; }
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+    .kid-card { background:var(--bg-panel); border:1px solid var(--border-grid); padding:16px 18px; display:flex; flex-direction:column; gap:6px; }
+    .kid-card .emoji { font-size:1.6rem; }
+    .kid-card h4 { font-family:var(--font-display); font-size:1.02rem; }
+    .kid-card p { font-size:0.88rem; color:var(--text-secondary); line-height:1.5; }
+    .step-num { display:inline-grid; place-items:center; width:28px; height:28px; background:var(--accent); color:#fff; font-weight:700; font-family:var(--font-mono); font-size:0.85rem; }
+    .work-step { display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:1rem; }
+    .work-step small { font-family:var(--font-sans); font-weight:400; font-size:0.85rem; color:var(--text-muted); }
+    .quote-box { background:var(--bg-panel); border:1px solid var(--border-grid); border-left:4px solid var(--accent); padding:12px 16px; font-size:0.95rem; }
+    .quote-box b { display:block; font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; }
+    .final-cta { text-align:center; background:var(--bg-panel); border:2px solid var(--accent); padding:32px 20px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .fix-pill strong { font-family:var(--font-sans); font-size:0.78rem; }
+  </style>
+
+  <!-- TOP BAR -->
   <header class="app-topbar">
     <div class="topbar-left">
       <div class="brand-mark">
         <div class="brand-sq">RF</div>
         <h1>RAGForge</h1>
       </div>
-      <span class="tag tag-ok" id="engine-mode-badge">91.7% ACCURACY</span>
       <span class="tag tag-accent" id="pack-roi-badge">ONLINE STORE</span>
+      <span class="tag tag-ok" id="engine-mode-badge" style="display:none;"></span>
     </div>
     <div class="topbar-right">
-      <button class="btn btn-ok" onclick="resetOptimalControls()">&#9889; 1-CLICK FIX AI</button>
-      <button class="btn" style="border-color:var(--err);color:var(--err);" onclick="setAllNaiveControls()">&#10060; BREAK AI</button>
-      <button class="btn" onclick="document.getElementById('doc-modal').showModal()">
-        &#9998; PASTE MY DOC (<span id="badge-doc-count">5</span>)
-      </button>
-      <button class="btn btn-primary" onclick="openDeliverableModal('doc')">
-        &#128203; COPY AI-READY DOC
-      </button>
-      <button class="btn" id="theme-btn-light" onclick="setTheme('light')">&#9728;</button>
-      <button class="btn" id="theme-btn-dark" onclick="setTheme('dark')">&#9790;</button>
+      <button class="btn" onclick="document.getElementById('try-it').scrollIntoView({behavior:'smooth'})">Try an example</button>
+      <button class="btn" onclick="document.getElementById('doc-modal').showModal()">Add my document (<span id="badge-doc-count">5</span>)</button>
+      <button class="btn btn-primary" onclick="openDeliverableModal('doc')">Get my files</button>
+      <button class="btn" id="theme-btn-light" onclick="setTheme('light')" aria-label="Light mode">&#9728;</button>
+      <button class="btn" id="theme-btn-dark" onclick="setTheme('dark')" aria-label="Dark mode">&#9790;</button>
     </div>
   </header>
 
   <main class="simple-page-wrap" id="view-playground">
 
-    <!-- ===================================================================
-         1. HERO: 10-SECOND 8-BIT PIXEL ANIMATION (RIGHT AT THE TOP!)
-         =================================================================== -->
+    <!-- HERO -->
+    <section class="kid-hero">
+      <h2>Help your AI find the right answer in your documents</h2>
+      <div class="lead">Your documents have the facts. Your AI needs help finding them.</div>
+      <p>Add your documents, ask a question, and see which changes help your AI find clearer, more useful answers.</p>
+      <div class="cta-row">
+        <button class="cta-lg solid" onclick="document.getElementById('try-it').scrollIntoView({behavior:'smooth'})">Try an example</button>
+        <button class="cta-lg" onclick="document.getElementById('doc-modal').showModal()">Add my document</button>
+      </div>
+    </section>
+
+    <!-- OPEN-BOOK TEST -->
+    <section class="kid-section">
+      <h3>&#128214; Think of it like an open-book test</h3>
+      <p class="sub">Having the textbook doesn't mean you'll find the right answer. You still need to <strong>find the right page</strong>, <strong>read the whole rule</strong>, and <strong>check that it answers the question</strong>.</p>
+      <p class="sub">AI needs those skills too. RAGForge helps you test and improve them. Watch one question travel through the five helpers below &mdash; click the picture to switch between <em>basic search</em> and <em>improved search</em>.</p>
+    </section>
+
+    <!-- PIXEL ANIMATION -->
     <section class="step-card" style="border:2px solid var(--border-strong);padding:10px 12px;">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;" id="px-stage-ledger">
-          <span class="tag tag-ok">10s LIVE PIXEL DEMO</span>
-          <div class="stage-ledger-item active-stage" onclick="pxScrubTo(0.2)">1. Whole Text</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(2.2)">2. Synonyms</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(4.2)">3. Exact Code</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(6.2)">4. Clean Dups</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(8.2)">5. Safety</div>
+          <div class="stage-ledger-item active-stage" onclick="pxScrubTo(0.2)">1. Keep the whole rule</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(2.2)">2. Everyday words</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(4.2)">3. Exact code</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(6.2)">4. Clear repeats</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(8.2)">5. Know when to stop</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-          <button class="btn btn-ok" id="px-btn-mode" onclick="pxToggleMode()">&#9989; MODE: FIXED AI</button>
+          <button class="btn btn-ok" id="px-btn-mode" onclick="pxToggleMode()">Improved search</button>
           <button class="btn" id="px-btn-play" onclick="pxTogglePlay()">&#9208; PAUSE</button>
           <span id="px-time-label" style="font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:var(--accent);min-width:58px;">0.0s/10s</span>
-          <input id="px-scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="pxScrubTo(this.value)" style="width:90px;" />
+          <input id="px-scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="pxScrubTo(this.value)" style="width:90px;" aria-label="Animation time" />
         </div>
       </div>
-
       <div style="border:2px solid var(--border-strong);background:var(--pixel-bg);overflow:hidden;">
-        <canvas id="px-canvas" width="760" height="200" style="width:100%;height:auto;display:block;image-rendering:pixelated;cursor:pointer;" onclick="pxToggleMode()" title="Click canvas to toggle Broken AI vs Fixed AI"></canvas>
+        <canvas id="px-canvas" width="760" height="200" style="width:100%;height:auto;display:block;image-rendering:pixelated;cursor:pointer;" onclick="pxToggleMode()" title="Click to switch between basic and improved search"></canvas>
       </div>
     </section>
 
-    <!-- ===================================================================
-         2. COMPACT ACTION BAR: PICK INDUSTRY + CLICK A QUESTION TO TEST
-         =================================================================== -->
+    <!-- WORKSPACE: 3 STEPS -->
+    <section class="kid-section" id="try-it">
+      <h3>Start with three simple steps</h3>
+    </section>
+
     <section class="step-card" id="step-1-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-        <div class="pack-bar">
-          <button class="pack-btn active" id="pack-btn-ecommerce" onclick="switchIndustryPack('ecommerce', this)">&#128722; Online Store</button>
-          <button class="pack-btn" id="pack-btn-healthcare" onclick="switchIndustryPack('healthcare', this)">&#129658; Medical Clinic</button>
-          <button class="pack-btn" id="pack-btn-saas" onclick="switchIndustryPack('saas', this)">&#128172; IT Helpdesk</button>
-          <button class="pack-btn" id="pack-btn-fintech" onclick="switchIndustryPack('fintech', this)">&#127974; Banking</button>
-          <button class="pack-btn" id="pack-btn-engineering" onclick="switchIndustryPack('engineering', this)">&#9881; Cloud Tech</button>
-          <button class="pack-btn" style="border-color:var(--accent);color:var(--accent);" onclick="document.getElementById('doc-modal').showModal()">+ &#9998; Paste My Doc</button>
-        </div>
-        <span id="pack-examples-heading" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);font-weight:700;">CLICK A TEST QUESTION:</span>
-      </div>
-
-      <!-- 5 Compact 1-Line Question Buttons -->
-      <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:6px;" id="preset-cards-container"></div>
-
-      <!-- Search Input + Big Test CTA -->
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="studio-query" value="" placeholder="Ask any question..." style="font-size:0.86rem;padding:8px 12px;flex:1;" onkeydown="if(event.key==='Enter') runInteractiveQuery();" />
-        <button class="btn btn-primary" style="padding:8px 16px;font-size:0.78rem;white-space:nowrap;" onclick="runInteractiveQuery()">&#9889; TEST QUESTION</button>
+      <div class="work-step"><span class="step-num">1</span> Give it something to read <small>&mdash; pick an example, or use your own return policy, help guide, or team instructions.</small></div>
+      <div class="pack-bar">
+        <button class="pack-btn active" id="pack-btn-ecommerce" onclick="switchIndustryPack('ecommerce', this)">&#128722; Online store</button>
+        <button class="pack-btn" id="pack-btn-healthcare" onclick="switchIndustryPack('healthcare', this)">&#129658; Medical clinic</button>
+        <button class="pack-btn" id="pack-btn-saas" onclick="switchIndustryPack('saas', this)">&#128172; IT help desk</button>
+        <button class="pack-btn" id="pack-btn-fintech" onclick="switchIndustryPack('fintech', this)">&#127974; Bank</button>
+        <button class="pack-btn" id="pack-btn-engineering" onclick="switchIndustryPack('engineering', this)">&#9881; Tech manual</button>
+        <button class="pack-btn" style="border-color:var(--accent);color:var(--accent);" onclick="document.getElementById('doc-modal').showModal()">+ Paste or upload a document</button>
       </div>
     </section>
 
-    <!-- ===================================================================
-         3. SIDE-BY-SIDE VERDICT + 6 FIX SWITCHES + 1-CLICK COPY CTAS
-         =================================================================== -->
     <section class="step-card" style="padding:0;overflow:hidden;">
-      <div style="padding:10px 14px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:8px;">
-        <!-- 6 Compact 1-Line Fix Chips -->
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:10px;">
+        <div class="work-step"><span class="step-num">2</span> Choose what to improve <small>&mdash; each switch changes how the system looks for answers. Click to turn it on or off.</small></div>
         <div class="fix-pills-bar" id="simple-fix-pills">
-          <div class="fix-pill pill-on" id="pill-chunk" onclick="toggleSimpleFix('chunk')">
-            <strong>&#10003; 1. Whole Text</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-hyde" onclick="toggleSimpleFix('hyde')">
-            <strong>&#10003; 2. Synonyms</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-hybrid" onclick="toggleSimpleFix('hybrid')">
-            <strong>&#10003; 3. Exact Codes</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-mmr" onclick="toggleSimpleFix('mmr')">
-            <strong>&#10003; 4. Clean Dups</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-lim" onclick="toggleSimpleFix('lim')">
-            <strong>&#10003; 5. Best First</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-guard" onclick="toggleSimpleFix('guard')">
-            <strong>&#10003; 6. Safety Shield</strong><span></span>
-          </div>
+          <div class="fix-pill pill-on" id="pill-chunk" onclick="toggleSimpleFix('chunk')"><strong>&#10003; Keep the whole rule</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-hyde" onclick="toggleSimpleFix('hyde')"><strong>&#10003; Connect everyday words</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-hybrid" onclick="toggleSimpleFix('hybrid')"><strong>&#10003; Find the exact code</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-mmr" onclick="toggleSimpleFix('mmr')"><strong>&#10003; Clear repeated text</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-lim" onclick="toggleSimpleFix('lim')"><strong>&#10003; Useful passages first</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-guard" onclick="toggleSimpleFix('guard')"><strong>&#10003; Know when to stop</strong><span></span></div>
         </div>
-
-        <!-- 1-Line Visual Cause -> Fix Strip -->
-        <div id="example-explainer-box" style="background:var(--bg-subtle);border:1px solid var(--border-grid);border-left:4px solid var(--accent);padding:6px 10px;font-size:0.78rem;"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-ok" onclick="resetOptimalControls()">Turn all on</button>
+          <button class="btn" onclick="setAllNaiveControls()">Turn all off</button>
+        </div>
       </div>
 
-      <!-- Side-by-Side Comparison Columns -->
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:10px;">
+        <div class="work-step"><span class="step-num">3</span> Ask a question and compare <small id="pack-examples-heading">&mdash; pick one below or type your own.</small></div>
+        <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:6px;" id="preset-cards-container"></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="studio-query" value="" placeholder="Type a question, like: Can I get my money back?" style="font-size:0.92rem;padding:10px 12px;flex:1;" onkeydown="if(event.key==='Enter') runInteractiveQuery();" aria-label="Your question" />
+          <button class="btn btn-primary" style="padding:10px 18px;font-size:0.82rem;white-space:nowrap;" onclick="runInteractiveQuery()">Compare answers</button>
+        </div>
+        <div id="example-explainer-box" style="background:var(--bg-subtle);border:1px solid var(--border-grid);border-left:4px solid var(--accent);padding:8px 12px;font-size:0.85rem;"></div>
+      </div>
+
       <div class="diff-grid" id="studio-comparison" style="border-bottom:1px solid var(--border-grid);"></div>
 
-      <!-- Bottom Primary CTA Strip: Instant Copy Actions -->
-      <div style="padding:10px 14px;background:var(--bg-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <div style="padding:12px 18px;background:var(--bg-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-          <button class="btn btn-ok" onclick="quickCopyDeliverable('doc')">&#128203; COPY AI-READY DOC</button>
-          <button class="btn btn-primary" onclick="quickCopyDeliverable('prompt')">&#128737; COPY SAFETY PROMPT</button>
-          <button class="btn" onclick="quickCopyDeliverable('code')">&#128013; COPY PYTHON CODE</button>
-          <button class="btn" onclick="openDeliverableModal('doc')">&#128065; PREVIEW / DOWNLOAD</button>
+          <span style="font-size:0.85rem;font-weight:700;">Take your work with you:</span>
+          <button class="btn btn-ok" onclick="quickCopyDeliverable('doc')">&#128203; Copy fact cards</button>
+          <button class="btn btn-primary" onclick="quickCopyDeliverable('prompt')">&#128172; Copy chatbot instructions</button>
+          <button class="btn" onclick="quickCopyDeliverable('code')">&#128187; Copy sample code</button>
+          <button class="btn" onclick="openDeliverableModal('doc')">Preview &amp; download</button>
         </div>
         <span id="copy-toast-msg" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--ok);font-weight:700;"></span>
       </div>
+    </section>
+
+    <!-- REAL EXAMPLE -->
+    <section class="kid-section">
+      <h3>See it with a real example</h3>
+      <div class="card-grid">
+        <div class="quote-box"><b>Your customer asks</b>&ldquo;My package arrived broken. Can I get my money back?&rdquo;</div>
+        <div class="quote-box"><b>Your document says</b>&ldquo;For items damaged in transit, submit a photo within 7 days to request a refund.&rdquo;</div>
+      </div>
+      <p class="sub">The words are different, but the meaning is connected. RAGForge helps the search connect <strong>&ldquo;arrived broken&rdquo;</strong> with <strong>&ldquo;damaged in transit&rdquo;</strong> &mdash; while keeping the photo requirement and 7-day deadline together.</p>
+    </section>
+
+    <!-- 6 TOOLS -->
+    <section class="kid-section">
+      <h3>Small changes. Better information.</h3>
+      <div class="card-grid">
+        <div class="kid-card"><span class="emoji">&#9986;&#65039;</span><h4>Keep the whole rule</h4><p>A sentence cut in half can lose an important detail. Keep related sentences together so dates, prices, and conditions stay with the facts they explain.</p></div>
+        <div class="kid-card"><span class="emoji">&#128483;&#65039;</span><h4>Connect everyday words</h4><p>People say &ldquo;money back.&rdquo; Documents say &ldquo;refund.&rdquo; Help the search connect common phrases with the words in your documents.</p></div>
+        <div class="kid-card"><span class="emoji">&#128270;</span><h4>Find the exact code</h4><p>One letter can change which product or error you mean. Use exact word matching alongside meaning-based search.</p></div>
+        <div class="kid-card"><span class="emoji">&#11014;&#65039;</span><h4>Put useful passages first</h4><p>Some passages answer the question better than others. Take another look and move stronger matches toward the top.</p></div>
+        <div class="kid-card"><span class="emoji">&#129529;</span><h4>Clear away repeated text</h4><p>Three copies of the same fact don't give you three different facts. Reduce repetition to make room for other useful information.</p></div>
+        <div class="kid-card"><span class="emoji">&#9995;</span><h4>Know when to stop</h4><p>Sometimes the answer isn't in your documents. A check tries to spot weak evidence and hold back an unsupported answer.</p></div>
+      </div>
+    </section>
+
+    <!-- CLUES + EXPORT + SCORES -->
+    <section class="kid-section">
+      <div class="card-grid">
+        <div class="kid-card"><span class="emoji">&#128373;&#65039;</span><h4>Follow the clues behind the answer</h4><p>Open &ldquo;See the passages it used&rdquo; under each answer. It's easier to spot missing details, weak matches, and places where your documents need more explanation.</p></div>
+        <div class="kid-card"><span class="emoji">&#128230;</span><h4>Take your work with you</h4><p><strong>Fact cards</strong> that make your rules easier to find. <strong>Chatbot instructions</strong> that tell an assistant how to use them. <strong>Settings and sample code</strong> for a developer.</p><button class="btn btn-primary" style="align-self:flex-start;margin-top:4px;" onclick="openDeliverableModal('doc')">Get my files</button></div>
+        <div class="kid-card"><span class="emoji">&#129518;</span><h4>What do the scores mean?</h4><p>Scores are clues to help you compare results. They aren't promises that every answer is correct. Always check answers against the original text.</p></div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta">
+      <h3 style="font-family:var(--font-display);font-size:1.5rem;">Give your AI better clues</h3>
+      <p style="color:var(--text-secondary);max-width:520px;">Start with one document and one question. See what it finds. Change a setting. Check whether the answer gets better.</p>
+      <button class="cta-lg solid" onclick="document.getElementById('doc-modal').showModal()">Test my first document</button>
     </section>
 
     <!-- ===================================================================
@@ -1053,7 +1113,7 @@
   </dialog>
 
   <script>
-    const INITIAL_DATA = {"audit": {"total_documents": 10, "fixed_mid_sentence_split_rate": 0.9777777777777777, "sentence_window_split_rate": 0.0, "exact_identifier_count": 4, "sample_identifiers": ["SQ8", "ERR_SSL_9042", "SKU-8841-X9", "BM25"], "duplicate_chunk_rate_naive": 0.33333333333333337, "duplicate_chunk_rate_mmr": 0.0, "rbac_post_filter_starvation_rate": 0.9, "rbac_pre_filter_recall": 1.0, "abstention_accuracy": 0.6666666666666666, "overall_health_score": 91.66666666666666, "recommendations": ["Replace Fixed-Window Chunking (97.8% broken sentence boundaries) with Sentence-Window Chunking (0.0% broken).", "Enable Hybrid Okapi BM25 + RRF (k=60) to protect 4 alphanumeric identifiers/codes (SQ8, ERR_SSL_9042, SKU-8841-X9, BM25).", "Enforce Single-Stage Metadata Pre-Filtering for multi-tenant RBAC (eliminates 90% post-filter k-starvation).", "Keep AbstentionAndFaithfulnessGuard enabled (min_confidence=0.28) to block out-of-domain hallucinations."]}, "challenges": [{"challenge_id": "C1", "title": "Chunk Boundary Fragmentation ('Relevant Doc, Useless Slice')", "stage": "1. Ingestion & Chunking", "severity": "CRITICAL", "problem_summary": "Fixed character/token windows slice sentences mid-clause, separating entities (e.g., 'Scalar Quantization') from their quantitative metrics ('4x reduction, 98.5% recall@10, Product Quantization').", "test_query": "How do we shrink vector RAM footprint from 61GB using int8 or sub-vector centroids?", "naive_behavior": "Fixed-180 chunker slices DOC-01 mid-sentence; retrieved context captures only 60% of facts.", "naive_metric_label": "Fact Completeness", "naive_score": 0.6, "remediated_behavior": "Sentence-Window chunker matches micro-sentence and expands +/-1 neighbor sentences (100% facts).", "remediated_metric_label": "Fact Completeness", "remediated_score": 1.0, "engineering_fix": "Small-to-Big Sentence-Window Chunking (Parent-Child Context Expansion)", "passed": true}, {"challenge_id": "C2", "title": "The Lexical Gap (Exact Error Codes, SKUs & Proper Nouns)", "stage": "2. Retrieval (Sparse vs Dense)", "severity": "HIGH", "problem_summary": "Dense bi-encoders shatter unseen alphanumeric strings (ERR_SSL_9042, SKU-8841-X9) into noisy subword tokens, causing low cosine similarity on exact identifier lookups.", "test_query": "Lookup exact error code ERR_SSL_9042 and part identifier SKU-8841-X9", "naive_behavior": "Pure Dense cosine score=0.364 (weak signal on unseen alphanumeric SKU).", "naive_metric_label": "Identifier Signal", "naive_score": 0.5458889897477466, "remediated_behavior": "Hybrid Okapi BM25 + RRF (k=60) locks onto exact tokens with BM25=18.67 at Rank #1.", "remediated_metric_label": "Identifier Signal", "remediated_score": 1.0, "engineering_fix": "Hybrid Retrieval (Okapi BM25 + Dense Vectors fused via Reciprocal Rank Fusion k=60)", "passed": true}, {"challenge_id": "C3", "title": "Query-Document Distribution Mismatch (Colloquial vs Technical)", "stage": "3. Query Transformation", "severity": "HIGH", "problem_summary": "Users ask terse, informal questions ('short vague questions') while docs use formal terminology ('Hypothetical Document Embeddings (HyDE)', 'distribution mismatch').", "test_query": "users type short vague questions that fail to match docs", "naive_behavior": "Unexpanded query top-1 dense score=0.214 (zero lexical overlap with 'HyDE').", "naive_metric_label": "Semantic Alignment", "naive_score": 0.55, "remediated_behavior": "QueryOptimizer injects domain synonyms + generates HyDE passage, ranking DOC-07 #1.", "remediated_metric_label": "Semantic Alignment", "remediated_score": 1.0, "engineering_fix": "Multi-Query Synonym Expansion + Local HyDE (Hypothetical Document Embeddings)", "passed": true}, {"challenge_id": "C4", "title": "Bi-Encoder Compression Bottleneck & Rank Inversion", "stage": "4. Post-Retrieval Reranking", "severity": "HIGH", "problem_summary": "Single-vector bi-encoders compress an entire passage into one vector, losing fine-grained token proximity and ranking general overview sentences above the specific quantitative clause.", "test_query": "How much latency does pairwise Cross-Encoder reranking add on a 20-chunk candidate pool?", "naive_behavior": "Bi-encoder initial score=0.480 lacks token-pair cross-attention.", "naive_metric_label": "Precision@1", "naive_score": 0.72, "remediated_behavior": "Cross-Encoder pairwise interaction promotes exact '15-35ms' clause to #1 (score=1.006).", "remediated_metric_label": "Precision@1", "remediated_score": 1.0, "engineering_fix": "Two-Stage Retrieval + Cross-Encoder Pairwise Reranking (ms-marco-MiniLM-L-6-v2)", "passed": true}, {"challenge_id": "C5", "title": "Context Redundancy & Multi-Hop Starvation", "stage": "5. Diversity Selection (MMR)", "severity": "MEDIUM", "problem_summary": "Standard top-k retrieval pulls multiple adjacent chunks from DOC-06, crowding out DOC-05 (MMR) and leaving half of a compound multi-document question unanswered.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Naive top-3 retrieves ['DOC-06', 'DOC-06', 'DOC-03'] (misses DOC-05 completely).", "naive_metric_label": "Multi-Doc Recall", "naive_score": 0.5, "remediated_behavior": "MMR (lambda=0.85) + Hybrid RRF retrieves both ['DOC-06', 'DOC-05', 'DOC-05'] (100% coverage).", "remediated_metric_label": "Multi-Doc Recall", "remediated_score": 1.0, "engineering_fix": "Maximal Marginal Relevance (MMR) Diversification + Cross-Chunk Deduplication", "passed": true}, {"challenge_id": "C6", "title": "'Lost in the Middle' Transformer Attention Decay", "stage": "6. Prompt Context Ordering", "severity": "MEDIUM", "problem_summary": "LLMs exhibit a U-shaped recall curve (Liu et al.): accuracy drops by up to 20% when the 2nd most important evidence chunk is placed in the middle of the prompt instead of the boundaries.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Linear rank order [1, 2, 3] buries Rank #2 in the interior of the context window.", "naive_metric_label": "Boundary Salience", "naive_score": 0.67, "remediated_behavior": "U-Shaped Reorderer arranges ranks as [1, 3, 2] (Rank #1 at start, Rank #2 at end).", "remediated_metric_label": "Boundary Salience", "remediated_score": 1.0, "engineering_fix": "Lost-in-the-Middle U-Shaped Boundary Reordering + Contextual Token Compression (-24.8% tokens)", "passed": true}, {"challenge_id": "C7", "title": "Multi-Tenant RBAC Post-Filtering k-Starvation", "stage": "7. Enterprise Governance & Security", "severity": "CRITICAL", "problem_summary": "Filtering for user ACL permissions AFTER running top-k ANN vector search starves the result set when restricted tenants own only a small slice of the global index.", "test_query": "How does ANN vector graph search handle recall at scale?", "naive_behavior": "Global ANN Top-2 + Post-Filter returns 0/2 authorized chunks (k-starvation).", "naive_metric_label": "Authorized Recall@2", "naive_score": 0.0, "remediated_behavior": "Pre-Filtered Roaring Bitmap Mask returns 2/2 authorized chunks from DOC-08.", "remediated_metric_label": "Authorized Recall@2", "remediated_score": 1.0, "engineering_fix": "Single-Stage Metadata Pre-Filtering (Roaring Bitmap Masks inside ANN Traversal)", "passed": true}, {"challenge_id": "C8", "title": "Silent Confabulation on Unanswerable / Out-of-Scope Queries", "stage": "8. Generation & Faithfulness Guardrails", "severity": "CRITICAL", "problem_summary": "Without calibrated retrieval confidence thresholds, RAG pipelines feed irrelevant top-k chunks to the LLM on out-of-domain questions, triggering confident hallucinations.", "test_query": "What is the BGP ASN autonomous system routing number for the Mars Rover satellite link?", "naive_behavior": "Naive RAG blindly forces synthesis from unrelated chunk [DOC-03].", "naive_metric_label": "Hallucination Defense", "naive_score": 0.0, "remediated_behavior": "ABSTAINED: Retrieval confidence (0.10) & lexical grounding (8%) below safety threshold (0.30). Corpus lacks verified evidence.", "remediated_metric_label": "Hallucination Defense", "remediated_score": 1.0, "engineering_fix": "Calibrated Retrieval Confidence Threshold + Grounded Citation Verification Guard", "passed": true}], "ablation": [{"config_name": "1. Naive-Baseline (Fixed+Dense)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9516433990956823, "keyword_recall": 0.48125, "context_precision": 0.6666666666666667, "avg_context_tokens": 71.625, "avg_latency_ms": 0.8104062499999996, "composite_score": 0.7822858497739206}, {"config_name": "2. Lexical-BM25 (Recursive)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.96875, "context_precision": 0.875, "avg_context_tokens": 102.875, "avg_latency_ms": 0.732197625, "composite_score": 0.9718749999999999}, {"config_name": "3. Hybrid-Alpha (Rec+Convex)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.85, "context_precision": 0.75, "avg_context_tokens": 108.25, "avg_latency_ms": 0.740541500000004, "composite_score": 0.9175}, {"config_name": "4. Hybrid-RRF + SentenceWindow", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 0.95, "context_precision": 0.7500000000000001, "avg_context_tokens": 198.625, "avg_latency_ms": 0.8752238749999974, "composite_score": 0.9449912746608808}, {"config_name": "5. RRF + HyDE + CrossReranker", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 1.0, "context_precision": 0.9583333333333334, "avg_context_tokens": 211.75, "avg_latency_ms": 2.7854842499999837, "composite_score": 0.991241274660881}, {"config_name": "6. Full-Optimized-RAG (All Stages)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 1.0, "context_precision": 0.875, "avg_context_tokens": 157.125, "avg_latency_ms": 10.433823250000014, "composite_score": 0.9812500000000001}], "corpus": [{"doc_id": "DOC-01", "title": "HNSW & Vector Index Memory Quantization", "content": "Hierarchical Navigable Small World (HNSW) graphs deliver sub-10ms approximate nearest neighbor (ANN) search at scale, but store full 32-bit floating point vectors in RAM. A corpus of 10 million 1536-dimensional vectors consumes roughly 61.4 GB of raw memory plus 20-35% graph edge overhead. To reduce RAM consumption without catastrophic recall loss, production systems apply Scalar Quantization (SQ8 / int8), which compresses float32 values to 8-bit integers for a 4x memory reduction while retaining 98.5% recall@10. For extreme compression up to 16x-32x, Product Quantization (PQ) decomposes the vector space into M orthogonal sub-vectors and quantizes each subspace via k-means centroids, though asymmetric distance computation (ADC) requires careful rescoring with raw vectors to recover top-k precision.", "metadata": {"domain": "indexing", "tier": "storage"}}, {"doc_id": "DOC-02", "title": "Hybrid Search: Combining Dense Vectors with Okapi BM25 via RRF", "content": "Pure dense bi-encoder embeddings frequently fail on exact alphanumeric identifiers, error codes like ERR_SSL_9042, part SKUs such as SKU-8841-X9, and rare proper nouns due to subword tokenizer fragmentation. Conversely, sparse Okapi BM25 excels at exact lexical token matching (using saturation parameter k1=1.5 and document length normalization b=0.75) but misses semantic paraphrases. Hybrid retrieval fuses both signals using Reciprocal Rank Fusion (RRF), defined as RRF_score(d) = sum(w_m / (k + rank_m(d))) with smoothing constant k=60, or via min-max normalized convex alpha combination where alpha=0.6 weights dense cosine similarity and 0.4 weights sparse BM25.", "metadata": {"domain": "retrieval", "tier": "search"}}, {"doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "content": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big Sentence-Window chunking decouples the retrieval unit from the synthesis unit. During indexing, each individual sentence or compact 2-sentence micro-unit is embedded separately so its vector representation remains sharp and focused. At retrieval time, once a micro-chunk is matched, the pipeline swaps in its parent window of +/- 2 surrounding sentences before sending context to the LLM, restoring full antecedent pronouns and surrounding causal context.", "metadata": {"domain": "chunking", "tier": "ingestion"}}, {"doc_id": "DOC-04", "title": "Cross-Encoder Reranking & Bi-Encoder Bottlenecks", "content": "Bi-encoders encode queries and documents independently into single vectors, compressing an entire passage into one fixed-size bottleneck and losing fine-grained token-to-token cross-attention. To maximize Precision@3, a two-stage pipeline first retrieves top-20 candidates via fast bi-encoder + BM25 hybrid search, then passes concatenated (Query [SEP] Passage) pairs through a Cross-Encoder such as ms-marco-MiniLM-L-6-v2. Because the Cross-Encoder performs full self-attention across every query token and document token simultaneously, it increases NDCG@3 by 12-18% while adding only 15-35ms of GPU/CPU inference latency on a 20-chunk candidate pool.", "metadata": {"domain": "reranking", "tier": "ranking"}}, {"doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "content": "Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents.", "metadata": {"domain": "reranking", "tier": "diversity"}}, {"doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "content": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior.", "metadata": {"domain": "prompting", "tier": "synthesis"}}, {"doc_id": "DOC-07", "title": "Query Rewriting, Multi-Query Expansion, and HyDE", "content": "Users frequently submit terse, ambiguous, or poorly phrased queries that share minimal lexical or structural similarity with authoritative technical documentation. Hypothetical Document Embeddings (HyDE) resolves this distribution mismatch by generating a hypothetical declarative answer passage from the query and embedding that passage for dense vector lookup. Combined with sparse synonym expansion and multi-query decomposition for compound questions, query transformation boosts Recall@10 on zero-shot domain queries by 15-24%.", "metadata": {"domain": "query", "tier": "transformation"}}, {"doc_id": "DOC-08", "title": "Multi-Tenant RBAC Security & Metadata Pre-Filtering", "content": "In enterprise RAG deployments, applying access-control list (ACL) security filters after vector ANN search (post-filtering) causes severe k-starvation: if a user only has permission to view 2% of the corpus, top-10 ANN search may return zero authorized chunks. Production vector engines enforce RBAC tenant isolation via single-stage pre-filtering using bitmap roaring masks integrated directly into HNSW graph traversal, guaranteeing zero cross-tenant data leakage and full top-k recall.", "metadata": {"domain": "security", "tier": "governance"}}, {"doc_id": "DOC-09", "title": "Semantic Caching & Contextual Compression for Cost Reduction", "content": "Repeated or semantically equivalent user queries account for 30-45% of production RAG traffic. A Redis-backed Semantic Cache indexes historical query embeddings and serves cached responses within 4ms whenever cosine similarity exceeds a strict 0.94 threshold, governed by document-update TTL invalidation hooks. For cache misses, sentence-level Contextual Compression prunes tangential sentences from retrieved chunks, cutting LLM input token costs by 25-40% and reducing time-to-first-token (TTFT).", "metadata": {"domain": "caching", "tier": "efficiency"}}, {"doc_id": "DOC-10", "title": "RAG Evaluation Metrics: MRR, NDCG@K, and Faithfulness", "content": "Optimizing a RAG system requires decoupled retrieval and generation metrics. Retrieval quality is measured via Hit Rate@K, Mean Reciprocal Rank (MRR, which rewards placing the first relevant chunk at rank 1), and Normalized Discounted Cumulative Gain (NDCG@K, which evaluates the full graded ranking order). Generation quality is audited through Context Precision, Answer Relevance, and Grounded Faithfulness (verifying every claim in the answer is entailed by retrieved citations without hallucination).", "metadata": {"domain": "evaluation", "tier": "metrics"}}], "default_query_result": {"query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "abstained": false, "confidence": 0.624, "safety_message": "GROUNDED: Confidence 0.62 (lexical coverage 47%).", "numeric_faithfulness": 33.3, "active_config": {"chunk_strategy": "sentence_window", "chunk_size": 180, "window_size": 1, "retrieval_mode": "hybrid_rrf", "alpha": 0.55, "top_k": 3, "use_query_expansion": true, "use_reranker": true, "use_mmr": true, "use_lost_in_middle": true, "use_compression": true, "use_guardrail": true}, "naive": {"docs": ["DOC-06", "DOC-06", "DOC-03"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.206, "text": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos"}, {"rank": 2, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.196, "text": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t"}, {"rank": 3, "doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "score": 0.17, "text": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big"}], "answer": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos [DOC-06] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t [DOC-06]", "tokens": 83, "latency_ms": 1.07}, "optimized": {"expanded_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? maximal marginal relevance mmr deduplication diversity lost in the middle u-shaped attention curve", "hyde_passage": "Technical Documentation & Engineering Specification: How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? In production systems, addressing How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle requires configuring maximal marginal relevance mmr, diversity, redundant chunks, deduplication, diversity penalty, lost in the middle. Best practices include optimizing metric thresholds, balancing recall and precision, and validating system performance.", "docs": ["DOC-06", "DOC-05", "DOC-05"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.753, "dense_score": 0.179, "sparse_score": 22.86, "text": "[Mitigating Lost-in-the-Middle Attention Degradation] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior."}, {"rank": 2, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.453, "dense_score": 0.236, "sparse_score": 19.15, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents."}, {"rank": 3, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.448, "dense_score": 0.218, "sparse_score": 21.91, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j."}], "prompt_order": [{"slot": 1, "rank": 1, "doc_id": "DOC-06", "zone": "Primacy Zone (High LLM Attention)"}, {"slot": 2, "rank": 3, "doc_id": "DOC-05", "zone": "Middle Zone (Lower LLM Attention)"}, {"slot": 3, "rank": 2, "doc_id": "DOC-05", "zone": "Recency Zone (High LLM Attention)"}], "answer": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. [DOC-06] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. [DOC-05]", "raw_tokens": 218, "compressed_tokens": 164, "token_savings_pct": 24.8, "latency_ms": 10.65}}};
+    const INITIAL_DATA = {"audit": {"total_documents": 10, "fixed_mid_sentence_split_rate": 0.9777777777777777, "sentence_window_split_rate": 0.0, "exact_identifier_count": 4, "sample_identifiers": ["SQ8", "ERR_SSL_9042", "SKU-8841-X9", "BM25"], "duplicate_chunk_rate_naive": 0.33333333333333337, "duplicate_chunk_rate_mmr": 0.0, "rbac_post_filter_starvation_rate": 0.9, "rbac_pre_filter_recall": 1.0, "abstention_accuracy": 0.6666666666666666, "overall_health_score": 91.66666666666666, "recommendations": ["Replace Fixed-Window Chunking (97.8% broken sentence boundaries) with Sentence-Window Chunking (0.0% broken).", "Enable Hybrid Okapi BM25 + RRF (k=60) to protect 4 alphanumeric identifiers/codes (SQ8, ERR_SSL_9042, SKU-8841-X9, BM25).", "Enforce Single-Stage Metadata Pre-Filtering for multi-tenant RBAC (eliminates 90% post-filter k-starvation).", "Keep AbstentionAndFaithfulnessGuard enabled (min_confidence=0.28) to block out-of-domain hallucinations."]}, "challenges": [{"challenge_id": "C1", "title": "Chunk Boundary Fragmentation ('Relevant Doc, Useless Slice')", "stage": "1. Ingestion & Chunking", "severity": "CRITICAL", "problem_summary": "Fixed character/token windows slice sentences mid-clause, separating entities (e.g., 'Scalar Quantization') from their quantitative metrics ('4x reduction, 98.5% recall@10, Product Quantization').", "test_query": "How do we shrink vector RAM footprint from 61GB using int8 or sub-vector centroids?", "naive_behavior": "Fixed-180 chunker slices DOC-01 mid-sentence; retrieved context captures only 60% of facts.", "naive_metric_label": "Fact Completeness", "naive_score": 0.6, "remediated_behavior": "Sentence-Window chunker matches micro-sentence and expands +/-1 neighbor sentences (100% facts).", "remediated_metric_label": "Fact Completeness", "remediated_score": 1.0, "engineering_fix": "Small-to-Big Sentence-Window Chunking (Parent-Child Context Expansion)", "passed": true}, {"challenge_id": "C2", "title": "The Lexical Gap (Exact Error Codes, SKUs & Proper Nouns)", "stage": "2. Retrieval (Sparse vs Dense)", "severity": "HIGH", "problem_summary": "Dense bi-encoders shatter unseen alphanumeric strings (ERR_SSL_9042, SKU-8841-X9) into noisy subword tokens, causing low cosine similarity on exact identifier lookups.", "test_query": "Lookup exact error code ERR_SSL_9042 and part identifier SKU-8841-X9", "naive_behavior": "Pure Dense cosine score=0.364 (weak signal on unseen alphanumeric SKU).", "naive_metric_label": "Identifier Signal", "naive_score": 0.5458889897477466, "remediated_behavior": "Hybrid Okapi BM25 + RRF (k=60) locks onto exact tokens with BM25=18.67 at Rank #1.", "remediated_metric_label": "Identifier Signal", "remediated_score": 1.0, "engineering_fix": "Hybrid Retrieval (Okapi BM25 + Dense Vectors fused via Reciprocal Rank Fusion k=60)", "passed": true}, {"challenge_id": "C3", "title": "Query-Document Distribution Mismatch (Colloquial vs Technical)", "stage": "3. Query Transformation", "severity": "HIGH", "problem_summary": "Users ask terse, informal questions ('short vague questions') while docs use formal terminology ('Hypothetical Document Embeddings (HyDE)', 'distribution mismatch').", "test_query": "users type short vague questions that fail to match docs", "naive_behavior": "Unexpanded query top-1 dense score=0.214 (zero lexical overlap with 'HyDE').", "naive_metric_label": "Semantic Alignment", "naive_score": 0.55, "remediated_behavior": "QueryOptimizer injects domain synonyms + generates HyDE passage, ranking DOC-07 #1.", "remediated_metric_label": "Semantic Alignment", "remediated_score": 1.0, "engineering_fix": "Multi-Query Synonym Expansion + Local HyDE (Hypothetical Document Embeddings)", "passed": true}, {"challenge_id": "C4", "title": "Bi-Encoder Compression Bottleneck & Rank Inversion", "stage": "4. Post-Retrieval Reranking", "severity": "HIGH", "problem_summary": "Single-vector bi-encoders compress an entire passage into one vector, losing fine-grained token proximity and ranking general overview sentences above the specific quantitative clause.", "test_query": "How much latency does pairwise Cross-Encoder reranking add on a 20-chunk candidate pool?", "naive_behavior": "Bi-encoder initial score=0.480 lacks token-pair cross-attention.", "naive_metric_label": "Precision@1", "naive_score": 0.72, "remediated_behavior": "Cross-Encoder pairwise interaction promotes exact '15-35ms' clause to #1 (score=1.006).", "remediated_metric_label": "Precision@1", "remediated_score": 1.0, "engineering_fix": "Two-Stage Retrieval + Cross-Encoder Pairwise Reranking (ms-marco-MiniLM-L-6-v2)", "passed": true}, {"challenge_id": "C5", "title": "Context Redundancy & Multi-Hop Starvation", "stage": "5. Diversity Selection (MMR)", "severity": "MEDIUM", "problem_summary": "Standard top-k retrieval pulls multiple adjacent chunks from DOC-06, crowding out DOC-05 (MMR) and leaving half of a compound multi-document question unanswered.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Naive top-3 retrieves ['DOC-06', 'DOC-06', 'DOC-03'] (misses DOC-05 completely).", "naive_metric_label": "Multi-Doc Recall", "naive_score": 0.5, "remediated_behavior": "MMR (lambda=0.85) + Hybrid RRF retrieves both ['DOC-06', 'DOC-05', 'DOC-05'] (100% coverage).", "remediated_metric_label": "Multi-Doc Recall", "remediated_score": 1.0, "engineering_fix": "Maximal Marginal Relevance (MMR) Diversification + Cross-Chunk Deduplication", "passed": true}, {"challenge_id": "C6", "title": "'Lost in the Middle' Transformer Attention Decay", "stage": "6. Prompt Context Ordering", "severity": "MEDIUM", "problem_summary": "LLMs exhibit a U-shaped recall curve (Liu et al.): accuracy drops by up to 20% when the 2nd most important evidence chunk is placed in the middle of the prompt instead of the boundaries.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Linear rank order [1, 2, 3] buries Rank #2 in the interior of the context window.", "naive_metric_label": "Boundary Salience", "naive_score": 0.67, "remediated_behavior": "U-Shaped Reorderer arranges ranks as [1, 3, 2] (Rank #1 at start, Rank #2 at end).", "remediated_metric_label": "Boundary Salience", "remediated_score": 1.0, "engineering_fix": "Lost-in-the-Middle U-Shaped Boundary Reordering + Contextual Token Compression (-24.8% tokens)", "passed": true}, {"challenge_id": "C7", "title": "Multi-Tenant RBAC Post-Filtering k-Starvation", "stage": "7. Enterprise Governance & Security", "severity": "CRITICAL", "problem_summary": "Filtering for user ACL permissions AFTER running top-k ANN vector search starves the result set when restricted tenants own only a small slice of the global index.", "test_query": "How does ANN vector graph search handle recall at scale?", "naive_behavior": "Global ANN Top-2 + Post-Filter returns 0/2 authorized chunks (k-starvation).", "naive_metric_label": "Authorized Recall@2", "naive_score": 0.0, "remediated_behavior": "Pre-Filtered Roaring Bitmap Mask returns 2/2 authorized chunks from DOC-08.", "remediated_metric_label": "Authorized Recall@2", "remediated_score": 1.0, "engineering_fix": "Single-Stage Metadata Pre-Filtering (Roaring Bitmap Masks inside ANN Traversal)", "passed": true}, {"challenge_id": "C8", "title": "Silent Confabulation on Unanswerable / Out-of-Scope Queries", "stage": "8. Generation & Faithfulness Guardrails", "severity": "CRITICAL", "problem_summary": "Without calibrated retrieval confidence thresholds, RAG pipelines feed irrelevant top-k chunks to the LLM on out-of-domain questions, triggering confident hallucinations.", "test_query": "What is the BGP ASN autonomous system routing number for the Mars Rover satellite link?", "naive_behavior": "Naive RAG blindly forces synthesis from unrelated chunk [DOC-03].", "naive_metric_label": "Hallucination Defense", "naive_score": 0.0, "remediated_behavior": "ABSTAINED: Retrieval confidence (0.10) & lexical grounding (8%) below safety threshold (0.30). Corpus lacks verified evidence.", "remediated_metric_label": "Hallucination Defense", "remediated_score": 1.0, "engineering_fix": "Calibrated Retrieval Confidence Threshold + Grounded Citation Verification Guard", "passed": true}], "ablation": [{"config_name": "1. Naive-Baseline (Fixed+Dense)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9516433990956823, "keyword_recall": 0.48125, "context_precision": 0.6666666666666667, "avg_context_tokens": 71.625, "avg_latency_ms": 0.8210884999999905, "composite_score": 0.7822858497739206}, {"config_name": "2. Lexical-BM25 (Recursive)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.96875, "context_precision": 0.875, "avg_context_tokens": 102.875, "avg_latency_ms": 0.7355676250000027, "composite_score": 0.9718749999999999}, {"config_name": "3. Hybrid-Alpha (Rec+Convex)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.85, "context_precision": 0.75, "avg_context_tokens": 108.25, "avg_latency_ms": 0.7547656250000008, "composite_score": 0.9175}, {"config_name": "4. Hybrid-RRF + SentenceWindow", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 0.95, "context_precision": 0.7500000000000001, "avg_context_tokens": 198.625, "avg_latency_ms": 0.8498230000000273, "composite_score": 0.9449912746608808}, {"config_name": "5. RRF + HyDE + CrossReranker", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 1.0, "context_precision": 0.9583333333333334, "avg_context_tokens": 211.75, "avg_latency_ms": 2.7501300000000315, "composite_score": 0.991241274660881}, {"config_name": "6. Full-Optimized-RAG (All Stages)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 1.0, "context_precision": 0.875, "avg_context_tokens": 157.125, "avg_latency_ms": 10.525296749999997, "composite_score": 0.9812500000000001}], "corpus": [{"doc_id": "DOC-01", "title": "HNSW & Vector Index Memory Quantization", "content": "Hierarchical Navigable Small World (HNSW) graphs deliver sub-10ms approximate nearest neighbor (ANN) search at scale, but store full 32-bit floating point vectors in RAM. A corpus of 10 million 1536-dimensional vectors consumes roughly 61.4 GB of raw memory plus 20-35% graph edge overhead. To reduce RAM consumption without catastrophic recall loss, production systems apply Scalar Quantization (SQ8 / int8), which compresses float32 values to 8-bit integers for a 4x memory reduction while retaining 98.5% recall@10. For extreme compression up to 16x-32x, Product Quantization (PQ) decomposes the vector space into M orthogonal sub-vectors and quantizes each subspace via k-means centroids, though asymmetric distance computation (ADC) requires careful rescoring with raw vectors to recover top-k precision.", "metadata": {"domain": "indexing", "tier": "storage"}}, {"doc_id": "DOC-02", "title": "Hybrid Search: Combining Dense Vectors with Okapi BM25 via RRF", "content": "Pure dense bi-encoder embeddings frequently fail on exact alphanumeric identifiers, error codes like ERR_SSL_9042, part SKUs such as SKU-8841-X9, and rare proper nouns due to subword tokenizer fragmentation. Conversely, sparse Okapi BM25 excels at exact lexical token matching (using saturation parameter k1=1.5 and document length normalization b=0.75) but misses semantic paraphrases. Hybrid retrieval fuses both signals using Reciprocal Rank Fusion (RRF), defined as RRF_score(d) = sum(w_m / (k + rank_m(d))) with smoothing constant k=60, or via min-max normalized convex alpha combination where alpha=0.6 weights dense cosine similarity and 0.4 weights sparse BM25.", "metadata": {"domain": "retrieval", "tier": "search"}}, {"doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "content": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big Sentence-Window chunking decouples the retrieval unit from the synthesis unit. During indexing, each individual sentence or compact 2-sentence micro-unit is embedded separately so its vector representation remains sharp and focused. At retrieval time, once a micro-chunk is matched, the pipeline swaps in its parent window of +/- 2 surrounding sentences before sending context to the LLM, restoring full antecedent pronouns and surrounding causal context.", "metadata": {"domain": "chunking", "tier": "ingestion"}}, {"doc_id": "DOC-04", "title": "Cross-Encoder Reranking & Bi-Encoder Bottlenecks", "content": "Bi-encoders encode queries and documents independently into single vectors, compressing an entire passage into one fixed-size bottleneck and losing fine-grained token-to-token cross-attention. To maximize Precision@3, a two-stage pipeline first retrieves top-20 candidates via fast bi-encoder + BM25 hybrid search, then passes concatenated (Query [SEP] Passage) pairs through a Cross-Encoder such as ms-marco-MiniLM-L-6-v2. Because the Cross-Encoder performs full self-attention across every query token and document token simultaneously, it increases NDCG@3 by 12-18% while adding only 15-35ms of GPU/CPU inference latency on a 20-chunk candidate pool.", "metadata": {"domain": "reranking", "tier": "ranking"}}, {"doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "content": "Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents.", "metadata": {"domain": "reranking", "tier": "diversity"}}, {"doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "content": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior.", "metadata": {"domain": "prompting", "tier": "synthesis"}}, {"doc_id": "DOC-07", "title": "Query Rewriting, Multi-Query Expansion, and HyDE", "content": "Users frequently submit terse, ambiguous, or poorly phrased queries that share minimal lexical or structural similarity with authoritative technical documentation. Hypothetical Document Embeddings (HyDE) resolves this distribution mismatch by generating a hypothetical declarative answer passage from the query and embedding that passage for dense vector lookup. Combined with sparse synonym expansion and multi-query decomposition for compound questions, query transformation boosts Recall@10 on zero-shot domain queries by 15-24%.", "metadata": {"domain": "query", "tier": "transformation"}}, {"doc_id": "DOC-08", "title": "Multi-Tenant RBAC Security & Metadata Pre-Filtering", "content": "In enterprise RAG deployments, applying access-control list (ACL) security filters after vector ANN search (post-filtering) causes severe k-starvation: if a user only has permission to view 2% of the corpus, top-10 ANN search may return zero authorized chunks. Production vector engines enforce RBAC tenant isolation via single-stage pre-filtering using bitmap roaring masks integrated directly into HNSW graph traversal, guaranteeing zero cross-tenant data leakage and full top-k recall.", "metadata": {"domain": "security", "tier": "governance"}}, {"doc_id": "DOC-09", "title": "Semantic Caching & Contextual Compression for Cost Reduction", "content": "Repeated or semantically equivalent user queries account for 30-45% of production RAG traffic. A Redis-backed Semantic Cache indexes historical query embeddings and serves cached responses within 4ms whenever cosine similarity exceeds a strict 0.94 threshold, governed by document-update TTL invalidation hooks. For cache misses, sentence-level Contextual Compression prunes tangential sentences from retrieved chunks, cutting LLM input token costs by 25-40% and reducing time-to-first-token (TTFT).", "metadata": {"domain": "caching", "tier": "efficiency"}}, {"doc_id": "DOC-10", "title": "RAG Evaluation Metrics: MRR, NDCG@K, and Faithfulness", "content": "Optimizing a RAG system requires decoupled retrieval and generation metrics. Retrieval quality is measured via Hit Rate@K, Mean Reciprocal Rank (MRR, which rewards placing the first relevant chunk at rank 1), and Normalized Discounted Cumulative Gain (NDCG@K, which evaluates the full graded ranking order). Generation quality is audited through Context Precision, Answer Relevance, and Grounded Faithfulness (verifying every claim in the answer is entailed by retrieved citations without hallucination).", "metadata": {"domain": "evaluation", "tier": "metrics"}}], "default_query_result": {"query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "abstained": false, "confidence": 0.624, "safety_message": "GROUNDED: Confidence 0.62 (lexical coverage 47%).", "numeric_faithfulness": 33.3, "active_config": {"chunk_strategy": "sentence_window", "chunk_size": 180, "window_size": 1, "retrieval_mode": "hybrid_rrf", "alpha": 0.55, "top_k": 3, "use_query_expansion": true, "use_reranker": true, "use_mmr": true, "use_lost_in_middle": true, "use_compression": true, "use_guardrail": true}, "naive": {"docs": ["DOC-06", "DOC-06", "DOC-03"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.206, "text": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos"}, {"rank": 2, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.196, "text": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t"}, {"rank": 3, "doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "score": 0.17, "text": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big"}], "answer": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos [DOC-06] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t [DOC-06]", "tokens": 83, "latency_ms": 0.85}, "optimized": {"expanded_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? maximal marginal relevance mmr deduplication diversity lost in the middle u-shaped attention curve", "hyde_passage": "Technical Documentation & Engineering Specification: How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? In production systems, addressing How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle requires configuring maximal marginal relevance mmr, diversity, redundant chunks, deduplication, diversity penalty, lost in the middle. Best practices include optimizing metric thresholds, balancing recall and precision, and validating system performance.", "docs": ["DOC-06", "DOC-05", "DOC-05"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.753, "dense_score": 0.179, "sparse_score": 22.86, "text": "[Mitigating Lost-in-the-Middle Attention Degradation] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior."}, {"rank": 2, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.453, "dense_score": 0.236, "sparse_score": 19.15, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents."}, {"rank": 3, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.448, "dense_score": 0.218, "sparse_score": 21.91, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j."}], "prompt_order": [{"slot": 1, "rank": 1, "doc_id": "DOC-06", "zone": "Primacy Zone (High LLM Attention)"}, {"slot": 2, "rank": 3, "doc_id": "DOC-05", "zone": "Middle Zone (Lower LLM Attention)"}, {"slot": 3, "rank": 2, "doc_id": "DOC-05", "zone": "Recency Zone (High LLM Attention)"}], "answer": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. [DOC-06] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. [DOC-05]", "raw_tokens": 218, "compressed_tokens": 164, "token_savings_pct": 24.8, "latency_ms": 10.66}}};
     let CORPUS = JSON.parse(JSON.stringify(INITIAL_DATA.corpus));
     let LAST_QUERY_RESULT = INITIAL_DATA.default_query_result;
 
@@ -1121,11 +1181,11 @@
           { badge: "Q5", tag: "TRICK Q", title: "5. Submarine Delivery?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Drops the 2nd question (customs tax) &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Cleans duplicates &amp; answers both!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off the <strong>$12.50 / 15% fee</strong> mid-sentence &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!",
-          "&#10060; <strong>Broken AI:</strong> Blurs exact code <code>SKU-9941-BLK</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Matches exact product code!",
-          "&#10060; <strong>Broken AI:</strong> Confused by slang <em>'package came broken'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to Refund Policy!",
-          "&#10060; <strong>Broken AI:</strong> Invents fake submarine delivery rule &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
+          "&#10060; <strong>Basic search:</strong> Drops the 2nd question (customs tax) &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Cleans duplicates &amp; answers both!",
+          "&#10060; <strong>Basic search:</strong> Cuts off the <strong>$12.50 / 15% fee</strong> mid-sentence &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full sentence intact!",
+          "&#10060; <strong>Basic search:</strong> Blurs exact code <code>SKU-9941-BLK</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Matches exact product code!",
+          "&#10060; <strong>Basic search:</strong> Confused by slang <em>'package came broken'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Connects slang to Refund Policy!",
+          "&#10060; <strong>Basic search:</strong> Invents fake submarine delivery rule &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       },
       healthcare: {
@@ -1172,11 +1232,11 @@
           { badge: "Q5", tag: "TRICK Q", title: "5. Cat Laser Surgery?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Misses 48-hour restart rule &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Shows both stop &amp; 48h restart rules!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>Vitamin K1 2.5mg</strong> dose &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps exact mg dose intact!",
-          "&#10060; <strong>Broken AI:</strong> Misreads drug code <code>NDC-0069-3150-83</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Pinpoints exact bottle code!",
-          "&#10060; <strong>Broken AI:</strong> Misses home words <em>'pain pills'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Maps slang to NSAID/Warfarin warning!",
-          "&#10060; <strong>Broken AI:</strong> Guesses fake pet surgery advice &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
+          "&#10060; <strong>Basic search:</strong> Misses 48-hour restart rule &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Shows both stop &amp; 48h restart rules!",
+          "&#10060; <strong>Basic search:</strong> Cuts off <strong>Vitamin K1 2.5mg</strong> dose &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps exact mg dose intact!",
+          "&#10060; <strong>Basic search:</strong> Misreads drug code <code>NDC-0069-3150-83</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Pinpoints exact bottle code!",
+          "&#10060; <strong>Basic search:</strong> Misses home words <em>'pain pills'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Maps slang to NSAID/Warfarin warning!",
+          "&#10060; <strong>Basic search:</strong> Guesses fake pet surgery advice &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       },
       saas: {
@@ -1223,11 +1283,11 @@
           { badge: "Q5", tag: "TRICK Q", title: "5. Printer Crypto Mining?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Drops webhook retry count &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Answers both rate limit &amp; 5 retries!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>75% refund &amp; $250 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full fee sentence intact!",
-          "&#10060; <strong>Broken AI:</strong> Misses exact error <code>ERR_OAUTH_504</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Finds exact 180s clock fix!",
-          "&#10060; <strong>Broken AI:</strong> Confused by <em>'kicks me out on phone'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to Mobile Timeout fix!",
-          "&#10060; <strong>Broken AI:</strong> Invents fake printer mining steps &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield blocks nonsense!"
+          "&#10060; <strong>Basic search:</strong> Drops webhook retry count &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Answers both rate limit &amp; 5 retries!",
+          "&#10060; <strong>Basic search:</strong> Cuts off <strong>75% refund &amp; $250 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full fee sentence intact!",
+          "&#10060; <strong>Basic search:</strong> Misses exact error <code>ERR_OAUTH_504</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Finds exact 180s clock fix!",
+          "&#10060; <strong>Basic search:</strong> Confused by <em>'kicks me out on phone'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Connects slang to Mobile Timeout fix!",
+          "&#10060; <strong>Basic search:</strong> Invents fake printer mining steps &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield blocks nonsense!"
         ]
       },
       fintech: {
@@ -1274,11 +1334,11 @@
           { badge: "Q5", tag: "TRICK Q", title: "5. Moon Mortgage Rate?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Forgets 10-day refund SLA &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Quotes $50/$500 cap + 10-day credit!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>$50,000 CFO sign-off &amp; $35 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full wire rule intact!",
-          "&#10060; <strong>Broken AI:</strong> Confuses routing code <code>SWIFT-CHASUS33-882</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Matches exact SWIFT code!",
-          "&#10060; <strong>Broken AI:</strong> Misses panicked <em>'stole my card'</em> wording &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Maps slang to Reg-E Fraud rule!",
-          "&#10060; <strong>Broken AI:</strong> Invents fake Moon mortgage rate &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield blocks fake rate!"
+          "&#10060; <strong>Basic search:</strong> Forgets 10-day refund SLA &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Quotes $50/$500 cap + 10-day credit!",
+          "&#10060; <strong>Basic search:</strong> Cuts off <strong>$50,000 CFO sign-off &amp; $35 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full wire rule intact!",
+          "&#10060; <strong>Basic search:</strong> Confuses routing code <code>SWIFT-CHASUS33-882</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Matches exact SWIFT code!",
+          "&#10060; <strong>Basic search:</strong> Misses panicked <em>'stole my card'</em> wording &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Maps slang to Reg-E Fraud rule!",
+          "&#10060; <strong>Basic search:</strong> Invents fake Moon mortgage rate &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield blocks fake rate!"
         ]
       },
       engineering: {
@@ -1300,11 +1360,11 @@
           { badge: "Q5", tag: "TRICK Q", title: "5. Mars Rover BGP Link?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Clones duplicate chunks &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Deduplicates &amp; puts best facts first!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>61GB &rarr; 15.3GB</strong> RAM math &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!",
-          "&#10060; <strong>Broken AI:</strong> Blurs exact code <code>ERR_SSL_9042</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Exact BM25 + Vector match!",
-          "&#10060; <strong>Broken AI:</strong> Fails on short vague wording &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Expands query with synonyms!",
-          "&#10060; <strong>Broken AI:</strong> Hallucinates Mars Rover routing &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
+          "&#10060; <strong>Basic search:</strong> Clones duplicate chunks &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Deduplicates &amp; puts best facts first!",
+          "&#10060; <strong>Basic search:</strong> Cuts off <strong>61GB &rarr; 15.3GB</strong> RAM math &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full sentence intact!",
+          "&#10060; <strong>Basic search:</strong> Blurs exact code <code>ERR_SSL_9042</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Exact BM25 + Vector match!",
+          "&#10060; <strong>Basic search:</strong> Fails on short vague wording &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Expands query with synonyms!",
+          "&#10060; <strong>Basic search:</strong> Hallucinates Mars Rover routing &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       }
     };
@@ -1450,11 +1510,11 @@
       ];
 
       EXAMPLE_EXPLAINERS = [
-        `&#10060; <strong>Broken AI:</strong> Misses 2nd section &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Answers both sections clearly!`,
-        `&#10060; <strong>Broken AI:</strong> Risk of cutting off <code>${sampleNum}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!`,
-        `&#10060; <strong>Broken AI:</strong> Blurs exact code <code>${sampleCode}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Exact code match!`,
-        `&#10060; <strong>Broken AI:</strong> Misses casual customer slang &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to your doc!`,
-        `&#10060; <strong>Broken AI:</strong> Guesses on outside topics &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!`
+        `&#10060; <strong>Basic search:</strong> Misses 2nd section &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Answers both sections clearly!`,
+        `&#10060; <strong>Basic search:</strong> Risk of cutting off <code>${sampleNum}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full sentence intact!`,
+        `&#10060; <strong>Basic search:</strong> Blurs exact code <code>${sampleCode}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Exact code match!`,
+        `&#10060; <strong>Basic search:</strong> Misses casual customer slang &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Connects slang to your doc!`,
+        `&#10060; <strong>Basic search:</strong> Guesses on outside topics &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield says <em>'I don't know'</em>!`
       ];
 
       renderCompactQuestionButtons(customCards);
@@ -1604,8 +1664,8 @@
     }
 
     const SIMPLE_FIX_LABELS = {
-      chunk: '1. Whole Text', hyde: '2. Synonyms', hybrid: '3. Exact Codes',
-      mmr: '4. Clean Dups', lim: '5. Best First', guard: '6. Safety Shield'
+      chunk: 'Keep the whole rule', hyde: 'Connect everyday words', hybrid: 'Find the exact code',
+      mmr: 'Clear repeated text', lim: 'Useful passages first', guard: 'Know when to stop'
     };
 
     function isSimpleFixOn(key) {
@@ -2021,7 +2081,7 @@
       pxOptMode = false;
       const btnMode = document.getElementById('px-btn-mode');
       if (btnMode) {
-        btnMode.innerHTML = '&#10060; MODE: BROKEN AI';
+        btnMode.innerHTML = 'Basic search';
         btnMode.classList.remove('btn-ok');
       }
       runInteractiveQuery();
@@ -2043,7 +2103,7 @@
       pxOptMode = true;
       const btnMode = document.getElementById('px-btn-mode');
       if (btnMode) {
-        btnMode.innerHTML = '&#9989; MODE: FIXED AI';
+        btnMode.innerHTML = 'Improved search';
         btnMode.classList.add('btn-ok');
       }
       runInteractiveQuery();
@@ -2094,14 +2154,14 @@
           if (res.ok) {
             const data = await res.json();
             LAST_QUERY_RESULT = data;
-            document.getElementById('engine-mode-badge').textContent = '91.7% ACCURACY';
+            
             renderQueryComparison(data);
             return;
           }
         } catch (e) {}
       }
 
-      document.getElementById('engine-mode-badge').textContent = '91.7% ACCURACY';
+      
       const naiveRes = runLocalPipelineJS(q, {
         chunk: 'fixed', chunkSize: 180, mode: 'dense', alpha: 0.55,
         hyde: false, rerank: false, mmr: false, lim: false, compress: false, guard: false
@@ -2135,30 +2195,30 @@
       `).join('');
 
       const statusBadge = d.abstained
-        ? `<span class="tag tag-err">BLOCKED FAKE ANSWER</span>`
-        : `<span class="tag tag-ok">100% VERIFIED &middot; -${d.optimized.token_savings_pct}% COST</span>`;
+        ? `<span class="tag tag-err">HELD BACK: WEAK EVIDENCE</span>`
+        : `<span class="tag tag-ok">${d.optimized.token_savings_pct}% less reading</span>`;
 
       document.getElementById('studio-comparison').innerHTML = `
         <div class="diff-col naive-col" style="padding:10px 14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--err);">&#10060; BROKEN AI (Standard)</h4>
+            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--err);">&#128269; Basic search found</h4>
             <span class="tag tag-err">${d.naive.docs.slice(0,2).join(', ')}</span>
           </div>
           <div class="answer-box" style="border-left-color:var(--err);margin:6px 0;padding:8px 10px;font-size:0.8rem;">
             ${d.naive.answer}
           </div>
-          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">View 3 snippets &darr;</summary>${naiveChunksHtml}</details>
+          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">See the passages it used &darr;</summary>${naiveChunksHtml}</details>
         </div>
 
         <div class="diff-col opt-col" style="padding:10px 14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--ok);">&#9989; FIXED AI (RAGForge)</h4>
+            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--ok);">&#10024; With your improvements</h4>
             ${statusBadge}
           </div>
           <div class="answer-box" style="border-left-color:${d.abstained ? 'var(--err)' : 'var(--ok)'};margin:6px 0;padding:8px 10px;font-size:0.8rem;">
             ${d.optimized.answer}
           </div>
-          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">View 3 snippets &darr;</summary>${optChunksHtml}</details>
+          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">See the passages it used &darr;</summary>${optChunksHtml}</details>
         </div>
       `;
 
@@ -2513,25 +2573,25 @@ print(response.synthesized_answer)`;
       document.getElementById('px-time-label').textContent = `${pxElapsed.toFixed(1)}s/10s`;
 
       const stageTitles = [
-        `STAGE 1: KEEP WHOLE SENTENCES (${CORPUS.length} DOCS)`,
-        `STAGE 2: ADD SLANG SYNONYMS ("${qShort}")`,
-        `STAGE 3: EXACT CODE + MEANING -> [${topDoc}]`,
-        `STAGE 4: REMOVE DUPLICATES (-${cur.optimized.token_savings_pct}% COST)`,
-        `STAGE 5: SAFETY SHIELD (${Math.round(cur.confidence * 100)}% TRUST)`
+        `1. KEEP THE WHOLE RULE`,
+        `2. CONNECT EVERYDAY WORDS`,
+        `3. FIND THE EXACT CODE`,
+        `4. CLEAR REPEATED TEXT`,
+        `5. KNOW WHEN TO STOP`
       ];
       const stageDescsOpt = [
-        "FIXED: Never cuts prices, dosages, or dates in half.",
-        "FIXED: Connects casual customer slang to official rules.",
-        `FIXED: Finds exact code & meaning in [${cur.optimized.docs.slice(0,2).join(', ')}].`,
-        "FIXED: Deletes repeated text & puts best facts first.",
-        cur.abstained ? "FIXED: Safely said 'I don't know' (0% lying)." : `FIXED: 100% verified answer from [${topDoc}].`
+        "Dates and prices stay with the rule they belong to.",
+        "\"Money back\" gets linked to \"refund\".",
+        "Exact letters + meaning, so SKU-9941 is not SKU-9914.",
+        "Copies removed. Best passages move to the top.",
+        cur.abstained ? "Weak evidence, so it holds back instead of guessing." : `Answer comes from [${topDoc}]. Check it there.`
       ];
       const stageDescsNaive = [
-        "BROKEN: Slices sentences in half, losing key numbers!",
-        "BROKEN: Confused by casual customer slang!",
-        "BROKEN: Blurs exact product codes & IDs!",
-        "BROKEN: Cluttered with duplicate paragraphs!",
-        "BROKEN: Invents fake rules when it doesn't know!"
+        "Basic: the sentence gets cut. The deadline falls off.",
+        "Basic: \"money back\" does not match \"refund\".",
+        "Basic: similar-looking codes get mixed up.",
+        "Basic: the same fact shows up three times.",
+        "Basic: no check, so it may guess."
       ];
 
       // Top HUD Banner
@@ -2639,14 +2699,14 @@ print(response.synthesized_answer)`;
           pxRect(190, 50, 180, 44, cur.abstained ? signalGold : okGreen);
           pxRect(390, 50, 210, 44, electricBlue);
           pxCtx.fillStyle = "#0b0f19";
-          pxCtx.fillText(cur.abstained ? "SAID 'I DON'T KNOW'" : "100% VERIFIED", 204, 68);
-          pxCtx.fillText(`TRUST: ${Math.round(cur.confidence * 100)}%`, 204, 84);
+          pxCtx.fillText(cur.abstained ? "SAID 'I DON'T KNOW'" : "FOUND IN DOCS", 204, 68);
+          pxCtx.fillText(`SCORE (A CLUE): ${Math.round(cur.confidence * 100)}%`, 204, 84);
           pxCtx.fillText(`SAVED -${cur.optimized.token_savings_pct}% TOKENS`, 404, 68);
           pxCtx.fillText(`CITED: [${topDoc}]`, 404, 84);
         } else {
           pxRect(210, 50, 310, 44, errRed);
           pxCtx.fillStyle = "#ffffff";
-          pxCtx.fillText("WARNING: FAKE AI ANSWER!", 230, 68);
+          pxCtx.fillText("NO CHECK: MIGHT BE A GUESS", 230, 68);
           pxCtx.fillText(`Unverified guess (${cur.naive.tokens} words)`, 230, 84);
         }
       }

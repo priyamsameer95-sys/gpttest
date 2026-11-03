@@ -1015,128 +1015,188 @@ def build_studio_html(initial_payload: dict) -> str:
 </head>
 <body>
 
-  <!-- TOP ACTION BAR: BRAND + PRIMARY CTAS -->
+  <style>
+    .kid-hero { text-align:center; padding:44px 20px 28px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .kid-hero h2 { font-family:var(--font-display); font-size:2.3rem; line-height:1.15; letter-spacing:-0.03em; max-width:760px; }
+    .kid-hero .lead { font-size:1.15rem; font-weight:600; color:var(--text-main); }
+    .kid-hero p { font-size:1rem; color:var(--text-secondary); max-width:620px; line-height:1.55; }
+    .cta-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+    .cta-lg { font-family:var(--font-sans); font-size:0.95rem; font-weight:700; padding:12px 22px; border:2px solid var(--accent); cursor:pointer; background:var(--bg-panel); color:var(--accent); }
+    .cta-lg.solid { background:var(--accent); color:#fff; }
+    .cta-lg:hover { transform:translateY(-1px); }
+    .kid-section { display:flex; flex-direction:column; gap:12px; padding:22px 4px; }
+    .kid-section h3 { font-family:var(--font-display); font-size:1.45rem; letter-spacing:-0.02em; }
+    .kid-section p.sub { font-size:0.98rem; color:var(--text-secondary); line-height:1.55; max-width:720px; }
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+    .kid-card { background:var(--bg-panel); border:1px solid var(--border-grid); padding:16px 18px; display:flex; flex-direction:column; gap:6px; }
+    .kid-card .emoji { font-size:1.6rem; }
+    .kid-card h4 { font-family:var(--font-display); font-size:1.02rem; }
+    .kid-card p { font-size:0.88rem; color:var(--text-secondary); line-height:1.5; }
+    .step-num { display:inline-grid; place-items:center; width:28px; height:28px; background:var(--accent); color:#fff; font-weight:700; font-family:var(--font-mono); font-size:0.85rem; }
+    .work-step { display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:1rem; }
+    .work-step small { font-family:var(--font-sans); font-weight:400; font-size:0.85rem; color:var(--text-muted); }
+    .quote-box { background:var(--bg-panel); border:1px solid var(--border-grid); border-left:4px solid var(--accent); padding:12px 16px; font-size:0.95rem; }
+    .quote-box b { display:block; font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; }
+    .final-cta { text-align:center; background:var(--bg-panel); border:2px solid var(--accent); padding:32px 20px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .fix-pill strong { font-family:var(--font-sans); font-size:0.78rem; }
+  </style>
+
+  <!-- TOP BAR -->
   <header class="app-topbar">
     <div class="topbar-left">
       <div class="brand-mark">
         <div class="brand-sq">RF</div>
         <h1>RAGForge</h1>
       </div>
-      <span class="tag tag-ok" id="engine-mode-badge">91.7% ACCURACY</span>
       <span class="tag tag-accent" id="pack-roi-badge">ONLINE STORE</span>
+      <span class="tag tag-ok" id="engine-mode-badge" style="display:none;"></span>
     </div>
     <div class="topbar-right">
-      <button class="btn btn-ok" onclick="resetOptimalControls()">&#9889; 1-CLICK FIX AI</button>
-      <button class="btn" style="border-color:var(--err);color:var(--err);" onclick="setAllNaiveControls()">&#10060; BREAK AI</button>
-      <button class="btn" onclick="document.getElementById('doc-modal').showModal()">
-        &#9998; PASTE MY DOC (<span id="badge-doc-count">5</span>)
-      </button>
-      <button class="btn btn-primary" onclick="openDeliverableModal('doc')">
-        &#128203; COPY AI-READY DOC
-      </button>
-      <button class="btn" id="theme-btn-light" onclick="setTheme('light')">&#9728;</button>
-      <button class="btn" id="theme-btn-dark" onclick="setTheme('dark')">&#9790;</button>
+      <button class="btn" onclick="document.getElementById('try-it').scrollIntoView({behavior:'smooth'})">Try an example</button>
+      <button class="btn" onclick="document.getElementById('doc-modal').showModal()">Add my document (<span id="badge-doc-count">5</span>)</button>
+      <button class="btn btn-primary" onclick="openDeliverableModal('doc')">Get my files</button>
+      <button class="btn" id="theme-btn-light" onclick="setTheme('light')" aria-label="Light mode">&#9728;</button>
+      <button class="btn" id="theme-btn-dark" onclick="setTheme('dark')" aria-label="Dark mode">&#9790;</button>
     </div>
   </header>
 
   <main class="simple-page-wrap" id="view-playground">
 
-    <!-- ===================================================================
-         1. HERO: 10-SECOND 8-BIT PIXEL ANIMATION (RIGHT AT THE TOP!)
-         =================================================================== -->
+    <!-- HERO -->
+    <section class="kid-hero">
+      <h2>Help your AI find the right answer in your documents</h2>
+      <div class="lead">Your documents have the facts. Your AI needs help finding them.</div>
+      <p>Add your documents, ask a question, and see which changes help your AI find clearer, more useful answers.</p>
+      <div class="cta-row">
+        <button class="cta-lg solid" onclick="document.getElementById('try-it').scrollIntoView({behavior:'smooth'})">Try an example</button>
+        <button class="cta-lg" onclick="document.getElementById('doc-modal').showModal()">Add my document</button>
+      </div>
+    </section>
+
+    <!-- OPEN-BOOK TEST -->
+    <section class="kid-section">
+      <h3>&#128214; Think of it like an open-book test</h3>
+      <p class="sub">Having the textbook doesn't mean you'll find the right answer. You still need to <strong>find the right page</strong>, <strong>read the whole rule</strong>, and <strong>check that it answers the question</strong>.</p>
+      <p class="sub">AI needs those skills too. RAGForge helps you test and improve them. Watch one question travel through the five helpers below &mdash; click the picture to switch between <em>basic search</em> and <em>improved search</em>.</p>
+    </section>
+
+    <!-- PIXEL ANIMATION -->
     <section class="step-card" style="border:2px solid var(--border-strong);padding:10px 12px;">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;" id="px-stage-ledger">
-          <span class="tag tag-ok">10s LIVE PIXEL DEMO</span>
-          <div class="stage-ledger-item active-stage" onclick="pxScrubTo(0.2)">1. Whole Text</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(2.2)">2. Synonyms</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(4.2)">3. Exact Code</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(6.2)">4. Clean Dups</div>
-          <div class="stage-ledger-item" onclick="pxScrubTo(8.2)">5. Safety</div>
+          <div class="stage-ledger-item active-stage" onclick="pxScrubTo(0.2)">1. Keep the whole rule</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(2.2)">2. Everyday words</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(4.2)">3. Exact code</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(6.2)">4. Clear repeats</div>
+          <div class="stage-ledger-item" onclick="pxScrubTo(8.2)">5. Know when to stop</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-          <button class="btn btn-ok" id="px-btn-mode" onclick="pxToggleMode()">&#9989; MODE: FIXED AI</button>
+          <button class="btn btn-ok" id="px-btn-mode" onclick="pxToggleMode()">Improved search</button>
           <button class="btn" id="px-btn-play" onclick="pxTogglePlay()">&#9208; PAUSE</button>
           <span id="px-time-label" style="font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:var(--accent);min-width:58px;">0.0s/10s</span>
-          <input id="px-scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="pxScrubTo(this.value)" style="width:90px;" />
+          <input id="px-scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="pxScrubTo(this.value)" style="width:90px;" aria-label="Animation time" />
         </div>
       </div>
-
       <div style="border:2px solid var(--border-strong);background:var(--pixel-bg);overflow:hidden;">
-        <canvas id="px-canvas" width="760" height="200" style="width:100%;height:auto;display:block;image-rendering:pixelated;cursor:pointer;" onclick="pxToggleMode()" title="Click canvas to toggle Broken AI vs Fixed AI"></canvas>
+        <canvas id="px-canvas" width="760" height="200" style="width:100%;height:auto;display:block;image-rendering:pixelated;cursor:pointer;" onclick="pxToggleMode()" title="Click to switch between basic and improved search"></canvas>
       </div>
     </section>
 
-    <!-- ===================================================================
-         2. COMPACT ACTION BAR: PICK INDUSTRY + CLICK A QUESTION TO TEST
-         =================================================================== -->
+    <!-- WORKSPACE: 3 STEPS -->
+    <section class="kid-section" id="try-it">
+      <h3>Start with three simple steps</h3>
+    </section>
+
     <section class="step-card" id="step-1-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-        <div class="pack-bar">
-          <button class="pack-btn active" id="pack-btn-ecommerce" onclick="switchIndustryPack('ecommerce', this)">&#128722; Online Store</button>
-          <button class="pack-btn" id="pack-btn-healthcare" onclick="switchIndustryPack('healthcare', this)">&#129658; Medical Clinic</button>
-          <button class="pack-btn" id="pack-btn-saas" onclick="switchIndustryPack('saas', this)">&#128172; IT Helpdesk</button>
-          <button class="pack-btn" id="pack-btn-fintech" onclick="switchIndustryPack('fintech', this)">&#127974; Banking</button>
-          <button class="pack-btn" id="pack-btn-engineering" onclick="switchIndustryPack('engineering', this)">&#9881; Cloud Tech</button>
-          <button class="pack-btn" style="border-color:var(--accent);color:var(--accent);" onclick="document.getElementById('doc-modal').showModal()">+ &#9998; Paste My Doc</button>
-        </div>
-        <span id="pack-examples-heading" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);font-weight:700;">CLICK A TEST QUESTION:</span>
-      </div>
-
-      <!-- 5 Compact 1-Line Question Buttons -->
-      <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:6px;" id="preset-cards-container"></div>
-
-      <!-- Search Input + Big Test CTA -->
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="studio-query" value="" placeholder="Ask any question..." style="font-size:0.86rem;padding:8px 12px;flex:1;" onkeydown="if(event.key==='Enter') runInteractiveQuery();" />
-        <button class="btn btn-primary" style="padding:8px 16px;font-size:0.78rem;white-space:nowrap;" onclick="runInteractiveQuery()">&#9889; TEST QUESTION</button>
+      <div class="work-step"><span class="step-num">1</span> Give it something to read <small>&mdash; pick an example, or use your own return policy, help guide, or team instructions.</small></div>
+      <div class="pack-bar">
+        <button class="pack-btn active" id="pack-btn-ecommerce" onclick="switchIndustryPack('ecommerce', this)">&#128722; Online store</button>
+        <button class="pack-btn" id="pack-btn-healthcare" onclick="switchIndustryPack('healthcare', this)">&#129658; Medical clinic</button>
+        <button class="pack-btn" id="pack-btn-saas" onclick="switchIndustryPack('saas', this)">&#128172; IT help desk</button>
+        <button class="pack-btn" id="pack-btn-fintech" onclick="switchIndustryPack('fintech', this)">&#127974; Bank</button>
+        <button class="pack-btn" id="pack-btn-engineering" onclick="switchIndustryPack('engineering', this)">&#9881; Tech manual</button>
+        <button class="pack-btn" style="border-color:var(--accent);color:var(--accent);" onclick="document.getElementById('doc-modal').showModal()">+ Paste or upload a document</button>
       </div>
     </section>
 
-    <!-- ===================================================================
-         3. SIDE-BY-SIDE VERDICT + 6 FIX SWITCHES + 1-CLICK COPY CTAS
-         =================================================================== -->
     <section class="step-card" style="padding:0;overflow:hidden;">
-      <div style="padding:10px 14px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:8px;">
-        <!-- 6 Compact 1-Line Fix Chips -->
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:10px;">
+        <div class="work-step"><span class="step-num">2</span> Choose what to improve <small>&mdash; each switch changes how the system looks for answers. Click to turn it on or off.</small></div>
         <div class="fix-pills-bar" id="simple-fix-pills">
-          <div class="fix-pill pill-on" id="pill-chunk" onclick="toggleSimpleFix('chunk')">
-            <strong>&#10003; 1. Whole Text</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-hyde" onclick="toggleSimpleFix('hyde')">
-            <strong>&#10003; 2. Synonyms</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-hybrid" onclick="toggleSimpleFix('hybrid')">
-            <strong>&#10003; 3. Exact Codes</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-mmr" onclick="toggleSimpleFix('mmr')">
-            <strong>&#10003; 4. Clean Dups</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-lim" onclick="toggleSimpleFix('lim')">
-            <strong>&#10003; 5. Best First</strong><span></span>
-          </div>
-          <div class="fix-pill pill-on" id="pill-guard" onclick="toggleSimpleFix('guard')">
-            <strong>&#10003; 6. Safety Shield</strong><span></span>
-          </div>
+          <div class="fix-pill pill-on" id="pill-chunk" onclick="toggleSimpleFix('chunk')"><strong>&#10003; Keep the whole rule</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-hyde" onclick="toggleSimpleFix('hyde')"><strong>&#10003; Connect everyday words</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-hybrid" onclick="toggleSimpleFix('hybrid')"><strong>&#10003; Find the exact code</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-mmr" onclick="toggleSimpleFix('mmr')"><strong>&#10003; Clear repeated text</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-lim" onclick="toggleSimpleFix('lim')"><strong>&#10003; Useful passages first</strong><span></span></div>
+          <div class="fix-pill pill-on" id="pill-guard" onclick="toggleSimpleFix('guard')"><strong>&#10003; Know when to stop</strong><span></span></div>
         </div>
-
-        <!-- 1-Line Visual Cause -> Fix Strip -->
-        <div id="example-explainer-box" style="background:var(--bg-subtle);border:1px solid var(--border-grid);border-left:4px solid var(--accent);padding:6px 10px;font-size:0.78rem;"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-ok" onclick="resetOptimalControls()">Turn all on</button>
+          <button class="btn" onclick="setAllNaiveControls()">Turn all off</button>
+        </div>
       </div>
 
-      <!-- Side-by-Side Comparison Columns -->
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border-grid);display:flex;flex-direction:column;gap:10px;">
+        <div class="work-step"><span class="step-num">3</span> Ask a question and compare <small id="pack-examples-heading">&mdash; pick one below or type your own.</small></div>
+        <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:6px;" id="preset-cards-container"></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="studio-query" value="" placeholder="Type a question, like: Can I get my money back?" style="font-size:0.92rem;padding:10px 12px;flex:1;" onkeydown="if(event.key==='Enter') runInteractiveQuery();" aria-label="Your question" />
+          <button class="btn btn-primary" style="padding:10px 18px;font-size:0.82rem;white-space:nowrap;" onclick="runInteractiveQuery()">Compare answers</button>
+        </div>
+        <div id="example-explainer-box" style="background:var(--bg-subtle);border:1px solid var(--border-grid);border-left:4px solid var(--accent);padding:8px 12px;font-size:0.85rem;"></div>
+      </div>
+
       <div class="diff-grid" id="studio-comparison" style="border-bottom:1px solid var(--border-grid);"></div>
 
-      <!-- Bottom Primary CTA Strip: Instant Copy Actions -->
-      <div style="padding:10px 14px;background:var(--bg-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <div style="padding:12px 18px;background:var(--bg-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-          <button class="btn btn-ok" onclick="quickCopyDeliverable('doc')">&#128203; COPY AI-READY DOC</button>
-          <button class="btn btn-primary" onclick="quickCopyDeliverable('prompt')">&#128737; COPY SAFETY PROMPT</button>
-          <button class="btn" onclick="quickCopyDeliverable('code')">&#128013; COPY PYTHON CODE</button>
-          <button class="btn" onclick="openDeliverableModal('doc')">&#128065; PREVIEW / DOWNLOAD</button>
+          <span style="font-size:0.85rem;font-weight:700;">Take your work with you:</span>
+          <button class="btn btn-ok" onclick="quickCopyDeliverable('doc')">&#128203; Copy fact cards</button>
+          <button class="btn btn-primary" onclick="quickCopyDeliverable('prompt')">&#128172; Copy chatbot instructions</button>
+          <button class="btn" onclick="quickCopyDeliverable('code')">&#128187; Copy sample code</button>
+          <button class="btn" onclick="openDeliverableModal('doc')">Preview &amp; download</button>
         </div>
         <span id="copy-toast-msg" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--ok);font-weight:700;"></span>
       </div>
+    </section>
+
+    <!-- REAL EXAMPLE -->
+    <section class="kid-section">
+      <h3>See it with a real example</h3>
+      <div class="card-grid">
+        <div class="quote-box"><b>Your customer asks</b>&ldquo;My package arrived broken. Can I get my money back?&rdquo;</div>
+        <div class="quote-box"><b>Your document says</b>&ldquo;For items damaged in transit, submit a photo within 7 days to request a refund.&rdquo;</div>
+      </div>
+      <p class="sub">The words are different, but the meaning is connected. RAGForge helps the search connect <strong>&ldquo;arrived broken&rdquo;</strong> with <strong>&ldquo;damaged in transit&rdquo;</strong> &mdash; while keeping the photo requirement and 7-day deadline together.</p>
+    </section>
+
+    <!-- 6 TOOLS -->
+    <section class="kid-section">
+      <h3>Small changes. Better information.</h3>
+      <div class="card-grid">
+        <div class="kid-card"><span class="emoji">&#9986;&#65039;</span><h4>Keep the whole rule</h4><p>A sentence cut in half can lose an important detail. Keep related sentences together so dates, prices, and conditions stay with the facts they explain.</p></div>
+        <div class="kid-card"><span class="emoji">&#128483;&#65039;</span><h4>Connect everyday words</h4><p>People say &ldquo;money back.&rdquo; Documents say &ldquo;refund.&rdquo; Help the search connect common phrases with the words in your documents.</p></div>
+        <div class="kid-card"><span class="emoji">&#128270;</span><h4>Find the exact code</h4><p>One letter can change which product or error you mean. Use exact word matching alongside meaning-based search.</p></div>
+        <div class="kid-card"><span class="emoji">&#11014;&#65039;</span><h4>Put useful passages first</h4><p>Some passages answer the question better than others. Take another look and move stronger matches toward the top.</p></div>
+        <div class="kid-card"><span class="emoji">&#129529;</span><h4>Clear away repeated text</h4><p>Three copies of the same fact don't give you three different facts. Reduce repetition to make room for other useful information.</p></div>
+        <div class="kid-card"><span class="emoji">&#9995;</span><h4>Know when to stop</h4><p>Sometimes the answer isn't in your documents. A check tries to spot weak evidence and hold back an unsupported answer.</p></div>
+      </div>
+    </section>
+
+    <!-- CLUES + EXPORT + SCORES -->
+    <section class="kid-section">
+      <div class="card-grid">
+        <div class="kid-card"><span class="emoji">&#128373;&#65039;</span><h4>Follow the clues behind the answer</h4><p>Open &ldquo;See the passages it used&rdquo; under each answer. It's easier to spot missing details, weak matches, and places where your documents need more explanation.</p></div>
+        <div class="kid-card"><span class="emoji">&#128230;</span><h4>Take your work with you</h4><p><strong>Fact cards</strong> that make your rules easier to find. <strong>Chatbot instructions</strong> that tell an assistant how to use them. <strong>Settings and sample code</strong> for a developer.</p><button class="btn btn-primary" style="align-self:flex-start;margin-top:4px;" onclick="openDeliverableModal('doc')">Get my files</button></div>
+        <div class="kid-card"><span class="emoji">&#129518;</span><h4>What do the scores mean?</h4><p>Scores are clues to help you compare results. They aren't promises that every answer is correct. Always check answers against the original text.</p></div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta">
+      <h3 style="font-family:var(--font-display);font-size:1.5rem;">Give your AI better clues</h3>
+      <p style="color:var(--text-secondary);max-width:520px;">Start with one document and one question. See what it finds. Change a setting. Check whether the answer gets better.</p>
+      <button class="cta-lg solid" onclick="document.getElementById('doc-modal').showModal()">Test my first document</button>
     </section>
 
     <!-- ===================================================================
@@ -1392,11 +1452,11 @@ def build_studio_html(initial_payload: dict) -> str:
           { badge: "Q5", tag: "TRICK Q", title: "5. Submarine Delivery?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Drops the 2nd question (customs tax) &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Cleans duplicates &amp; answers both!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off the <strong>$12.50 / 15% fee</strong> mid-sentence &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!",
-          "&#10060; <strong>Broken AI:</strong> Blurs exact code <code>SKU-9941-BLK</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Matches exact product code!",
-          "&#10060; <strong>Broken AI:</strong> Confused by slang <em>'package came broken'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to Refund Policy!",
-          "&#10060; <strong>Broken AI:</strong> Invents fake submarine delivery rule &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
+          "&#10060; <strong>Basic search:</strong> Drops the 2nd question (customs tax) &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Cleans duplicates &amp; answers both!",
+          "&#10060; <strong>Basic search:</strong> Cuts off the <strong>$12.50 / 15% fee</strong> mid-sentence &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full sentence intact!",
+          "&#10060; <strong>Basic search:</strong> Blurs exact code <code>SKU-9941-BLK</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Matches exact product code!",
+          "&#10060; <strong>Basic search:</strong> Confused by slang <em>'package came broken'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Connects slang to Refund Policy!",
+          "&#10060; <strong>Basic search:</strong> Invents fake submarine delivery rule &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       },
       healthcare: {
@@ -1443,11 +1503,11 @@ def build_studio_html(initial_payload: dict) -> str:
           { badge: "Q5", tag: "TRICK Q", title: "5. Cat Laser Surgery?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Misses 48-hour restart rule &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Shows both stop &amp; 48h restart rules!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>Vitamin K1 2.5mg</strong> dose &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps exact mg dose intact!",
-          "&#10060; <strong>Broken AI:</strong> Misreads drug code <code>NDC-0069-3150-83</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Pinpoints exact bottle code!",
-          "&#10060; <strong>Broken AI:</strong> Misses home words <em>'pain pills'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Maps slang to NSAID/Warfarin warning!",
-          "&#10060; <strong>Broken AI:</strong> Guesses fake pet surgery advice &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
+          "&#10060; <strong>Basic search:</strong> Misses 48-hour restart rule &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Shows both stop &amp; 48h restart rules!",
+          "&#10060; <strong>Basic search:</strong> Cuts off <strong>Vitamin K1 2.5mg</strong> dose &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps exact mg dose intact!",
+          "&#10060; <strong>Basic search:</strong> Misreads drug code <code>NDC-0069-3150-83</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Pinpoints exact bottle code!",
+          "&#10060; <strong>Basic search:</strong> Misses home words <em>'pain pills'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Maps slang to NSAID/Warfarin warning!",
+          "&#10060; <strong>Basic search:</strong> Guesses fake pet surgery advice &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       },
       saas: {
@@ -1494,11 +1554,11 @@ def build_studio_html(initial_payload: dict) -> str:
           { badge: "Q5", tag: "TRICK Q", title: "5. Printer Crypto Mining?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Drops webhook retry count &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Answers both rate limit &amp; 5 retries!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>75% refund &amp; $250 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full fee sentence intact!",
-          "&#10060; <strong>Broken AI:</strong> Misses exact error <code>ERR_OAUTH_504</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Finds exact 180s clock fix!",
-          "&#10060; <strong>Broken AI:</strong> Confused by <em>'kicks me out on phone'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to Mobile Timeout fix!",
-          "&#10060; <strong>Broken AI:</strong> Invents fake printer mining steps &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield blocks nonsense!"
+          "&#10060; <strong>Basic search:</strong> Drops webhook retry count &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Answers both rate limit &amp; 5 retries!",
+          "&#10060; <strong>Basic search:</strong> Cuts off <strong>75% refund &amp; $250 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full fee sentence intact!",
+          "&#10060; <strong>Basic search:</strong> Misses exact error <code>ERR_OAUTH_504</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Finds exact 180s clock fix!",
+          "&#10060; <strong>Basic search:</strong> Confused by <em>'kicks me out on phone'</em> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Connects slang to Mobile Timeout fix!",
+          "&#10060; <strong>Basic search:</strong> Invents fake printer mining steps &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield blocks nonsense!"
         ]
       },
       fintech: {
@@ -1545,11 +1605,11 @@ def build_studio_html(initial_payload: dict) -> str:
           { badge: "Q5", tag: "TRICK Q", title: "5. Moon Mortgage Rate?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Forgets 10-day refund SLA &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Quotes $50/$500 cap + 10-day credit!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>$50,000 CFO sign-off &amp; $35 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full wire rule intact!",
-          "&#10060; <strong>Broken AI:</strong> Confuses routing code <code>SWIFT-CHASUS33-882</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Matches exact SWIFT code!",
-          "&#10060; <strong>Broken AI:</strong> Misses panicked <em>'stole my card'</em> wording &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Maps slang to Reg-E Fraud rule!",
-          "&#10060; <strong>Broken AI:</strong> Invents fake Moon mortgage rate &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield blocks fake rate!"
+          "&#10060; <strong>Basic search:</strong> Forgets 10-day refund SLA &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Quotes $50/$500 cap + 10-day credit!",
+          "&#10060; <strong>Basic search:</strong> Cuts off <strong>$50,000 CFO sign-off &amp; $35 fee</strong> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full wire rule intact!",
+          "&#10060; <strong>Basic search:</strong> Confuses routing code <code>SWIFT-CHASUS33-882</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Matches exact SWIFT code!",
+          "&#10060; <strong>Basic search:</strong> Misses panicked <em>'stole my card'</em> wording &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Maps slang to Reg-E Fraud rule!",
+          "&#10060; <strong>Basic search:</strong> Invents fake Moon mortgage rate &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield blocks fake rate!"
         ]
       },
       engineering: {
@@ -1571,11 +1631,11 @@ def build_studio_html(initial_payload: dict) -> str:
           { badge: "Q5", tag: "TRICK Q", title: "5. Mars Rover BGP Link?", desc: "" }
         ],
         explainers: [
-          "&#10060; <strong>Broken AI:</strong> Clones duplicate chunks &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Deduplicates &amp; puts best facts first!",
-          "&#10060; <strong>Broken AI:</strong> Cuts off <strong>61GB &rarr; 15.3GB</strong> RAM math &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!",
-          "&#10060; <strong>Broken AI:</strong> Blurs exact code <code>ERR_SSL_9042</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Exact BM25 + Vector match!",
-          "&#10060; <strong>Broken AI:</strong> Fails on short vague wording &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Expands query with synonyms!",
-          "&#10060; <strong>Broken AI:</strong> Hallucinates Mars Rover routing &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!"
+          "&#10060; <strong>Basic search:</strong> Clones duplicate chunks &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Deduplicates &amp; puts best facts first!",
+          "&#10060; <strong>Basic search:</strong> Cuts off <strong>61GB &rarr; 15.3GB</strong> RAM math &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full sentence intact!",
+          "&#10060; <strong>Basic search:</strong> Blurs exact code <code>ERR_SSL_9042</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Exact BM25 + Vector match!",
+          "&#10060; <strong>Basic search:</strong> Fails on short vague wording &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Expands query with synonyms!",
+          "&#10060; <strong>Basic search:</strong> Hallucinates Mars Rover routing &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield says <em>'I don't know'</em>!"
         ]
       }
     };
@@ -1721,11 +1781,11 @@ def build_studio_html(initial_payload: dict) -> str:
       ];
 
       EXAMPLE_EXPLAINERS = [
-        `&#10060; <strong>Broken AI:</strong> Misses 2nd section &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Answers both sections clearly!`,
-        `&#10060; <strong>Broken AI:</strong> Risk of cutting off <code>${sampleNum}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Keeps full sentence intact!`,
-        `&#10060; <strong>Broken AI:</strong> Blurs exact code <code>${sampleCode}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Exact code match!`,
-        `&#10060; <strong>Broken AI:</strong> Misses casual customer slang &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Connects slang to your doc!`,
-        `&#10060; <strong>Broken AI:</strong> Guesses on outside topics &nbsp;&rarr;&nbsp; &#9989; <strong>Fixed AI:</strong> Safety shield says <em>'I don't know'</em>!`
+        `&#10060; <strong>Basic search:</strong> Misses 2nd section &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Answers both sections clearly!`,
+        `&#10060; <strong>Basic search:</strong> Risk of cutting off <code>${sampleNum}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Keeps full sentence intact!`,
+        `&#10060; <strong>Basic search:</strong> Blurs exact code <code>${sampleCode}</code> &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Exact code match!`,
+        `&#10060; <strong>Basic search:</strong> Misses casual customer slang &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Connects slang to your doc!`,
+        `&#10060; <strong>Basic search:</strong> Guesses on outside topics &nbsp;&rarr;&nbsp; &#9989; <strong>Improved:</strong> Safety shield says <em>'I don't know'</em>!`
       ];
 
       renderCompactQuestionButtons(customCards);
@@ -1875,8 +1935,8 @@ def build_studio_html(initial_payload: dict) -> str:
     }
 
     const SIMPLE_FIX_LABELS = {
-      chunk: '1. Whole Text', hyde: '2. Synonyms', hybrid: '3. Exact Codes',
-      mmr: '4. Clean Dups', lim: '5. Best First', guard: '6. Safety Shield'
+      chunk: 'Keep the whole rule', hyde: 'Connect everyday words', hybrid: 'Find the exact code',
+      mmr: 'Clear repeated text', lim: 'Useful passages first', guard: 'Know when to stop'
     };
 
     function isSimpleFixOn(key) {
@@ -2292,7 +2352,7 @@ def build_studio_html(initial_payload: dict) -> str:
       pxOptMode = false;
       const btnMode = document.getElementById('px-btn-mode');
       if (btnMode) {
-        btnMode.innerHTML = '&#10060; MODE: BROKEN AI';
+        btnMode.innerHTML = 'Basic search';
         btnMode.classList.remove('btn-ok');
       }
       runInteractiveQuery();
@@ -2314,7 +2374,7 @@ def build_studio_html(initial_payload: dict) -> str:
       pxOptMode = true;
       const btnMode = document.getElementById('px-btn-mode');
       if (btnMode) {
-        btnMode.innerHTML = '&#9989; MODE: FIXED AI';
+        btnMode.innerHTML = 'Improved search';
         btnMode.classList.add('btn-ok');
       }
       runInteractiveQuery();
@@ -2365,14 +2425,14 @@ def build_studio_html(initial_payload: dict) -> str:
           if (res.ok) {
             const data = await res.json();
             LAST_QUERY_RESULT = data;
-            document.getElementById('engine-mode-badge').textContent = '91.7% ACCURACY';
+            
             renderQueryComparison(data);
             return;
           }
         } catch (e) {}
       }
 
-      document.getElementById('engine-mode-badge').textContent = '91.7% ACCURACY';
+      
       const naiveRes = runLocalPipelineJS(q, {
         chunk: 'fixed', chunkSize: 180, mode: 'dense', alpha: 0.55,
         hyde: false, rerank: false, mmr: false, lim: false, compress: false, guard: false
@@ -2406,30 +2466,30 @@ def build_studio_html(initial_payload: dict) -> str:
       `).join('');
 
       const statusBadge = d.abstained
-        ? `<span class="tag tag-err">BLOCKED FAKE ANSWER</span>`
-        : `<span class="tag tag-ok">100% VERIFIED &middot; -${d.optimized.token_savings_pct}% COST</span>`;
+        ? `<span class="tag tag-err">HELD BACK: WEAK EVIDENCE</span>`
+        : `<span class="tag tag-ok">${d.optimized.token_savings_pct}% less reading</span>`;
 
       document.getElementById('studio-comparison').innerHTML = `
         <div class="diff-col naive-col" style="padding:10px 14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--err);">&#10060; BROKEN AI (Standard)</h4>
+            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--err);">&#128269; Basic search found</h4>
             <span class="tag tag-err">${d.naive.docs.slice(0,2).join(', ')}</span>
           </div>
           <div class="answer-box" style="border-left-color:var(--err);margin:6px 0;padding:8px 10px;font-size:0.8rem;">
             ${d.naive.answer}
           </div>
-          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">View 3 snippets &darr;</summary>${naiveChunksHtml}</details>
+          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">See the passages it used &darr;</summary>${naiveChunksHtml}</details>
         </div>
 
         <div class="diff-col opt-col" style="padding:10px 14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--ok);">&#9989; FIXED AI (RAGForge)</h4>
+            <h4 style="font-family:var(--font-display);font-size:0.84rem;color:var(--ok);">&#10024; With your improvements</h4>
             ${statusBadge}
           </div>
           <div class="answer-box" style="border-left-color:${d.abstained ? 'var(--err)' : 'var(--ok)'};margin:6px 0;padding:8px 10px;font-size:0.8rem;">
             ${d.optimized.answer}
           </div>
-          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">View 3 snippets &darr;</summary>${optChunksHtml}</details>
+          <details><summary style="cursor:pointer;font-size:0.72rem;color:var(--text-muted);">See the passages it used &darr;</summary>${optChunksHtml}</details>
         </div>
       `;
 
@@ -2784,25 +2844,25 @@ print(response.synthesized_answer)`;
       document.getElementById('px-time-label').textContent = `${pxElapsed.toFixed(1)}s/10s`;
 
       const stageTitles = [
-        `STAGE 1: KEEP WHOLE SENTENCES (${CORPUS.length} DOCS)`,
-        `STAGE 2: ADD SLANG SYNONYMS ("${qShort}")`,
-        `STAGE 3: EXACT CODE + MEANING -> [${topDoc}]`,
-        `STAGE 4: REMOVE DUPLICATES (-${cur.optimized.token_savings_pct}% COST)`,
-        `STAGE 5: SAFETY SHIELD (${Math.round(cur.confidence * 100)}% TRUST)`
+        `1. KEEP THE WHOLE RULE`,
+        `2. CONNECT EVERYDAY WORDS`,
+        `3. FIND THE EXACT CODE`,
+        `4. CLEAR REPEATED TEXT`,
+        `5. KNOW WHEN TO STOP`
       ];
       const stageDescsOpt = [
-        "FIXED: Never cuts prices, dosages, or dates in half.",
-        "FIXED: Connects casual customer slang to official rules.",
-        `FIXED: Finds exact code & meaning in [${cur.optimized.docs.slice(0,2).join(', ')}].`,
-        "FIXED: Deletes repeated text & puts best facts first.",
-        cur.abstained ? "FIXED: Safely said 'I don't know' (0% lying)." : `FIXED: 100% verified answer from [${topDoc}].`
+        "Dates and prices stay with the rule they belong to.",
+        "\"Money back\" gets linked to \"refund\".",
+        "Exact letters + meaning, so SKU-9941 is not SKU-9914.",
+        "Copies removed. Best passages move to the top.",
+        cur.abstained ? "Weak evidence, so it holds back instead of guessing." : `Answer comes from [${topDoc}]. Check it there.`
       ];
       const stageDescsNaive = [
-        "BROKEN: Slices sentences in half, losing key numbers!",
-        "BROKEN: Confused by casual customer slang!",
-        "BROKEN: Blurs exact product codes & IDs!",
-        "BROKEN: Cluttered with duplicate paragraphs!",
-        "BROKEN: Invents fake rules when it doesn't know!"
+        "Basic: the sentence gets cut. The deadline falls off.",
+        "Basic: \"money back\" does not match \"refund\".",
+        "Basic: similar-looking codes get mixed up.",
+        "Basic: the same fact shows up three times.",
+        "Basic: no check, so it may guess."
       ];
 
       // Top HUD Banner
@@ -2910,14 +2970,14 @@ print(response.synthesized_answer)`;
           pxRect(190, 50, 180, 44, cur.abstained ? signalGold : okGreen);
           pxRect(390, 50, 210, 44, electricBlue);
           pxCtx.fillStyle = "#0b0f19";
-          pxCtx.fillText(cur.abstained ? "SAID 'I DON'T KNOW'" : "100% VERIFIED", 204, 68);
-          pxCtx.fillText(`TRUST: ${Math.round(cur.confidence * 100)}%`, 204, 84);
+          pxCtx.fillText(cur.abstained ? "SAID 'I DON'T KNOW'" : "FOUND IN DOCS", 204, 68);
+          pxCtx.fillText(`SCORE (A CLUE): ${Math.round(cur.confidence * 100)}%`, 204, 84);
           pxCtx.fillText(`SAVED -${cur.optimized.token_savings_pct}% TOKENS`, 404, 68);
           pxCtx.fillText(`CITED: [${topDoc}]`, 404, 84);
         } else {
           pxRect(210, 50, 310, 44, errRed);
           pxCtx.fillStyle = "#ffffff";
-          pxCtx.fillText("WARNING: FAKE AI ANSWER!", 230, 68);
+          pxCtx.fillText("NO CHECK: MIGHT BE A GUESS", 230, 68);
           pxCtx.fillText(`Unverified guess (${cur.naive.tokens} words)`, 230, 84);
         }
       }
