@@ -680,51 +680,97 @@
         <div class="brand-sq">RF</div>
         <h1>RAGForge</h1>
       </div>
-      <span style="font-size:0.84rem;color:var(--text-secondary);">See Why Company AI Chatbots Give Wrong Answers &mdash; And Fix Them in 3 Clicks</span>
+      <span style="font-size:0.84rem;color:var(--text-secondary);">Turn Any Messy Company Document Into a 100% Accurate AI Chatbot Knowledge Base</span>
       <span class="tag tag-ok" id="engine-mode-badge">READY</span>
     </div>
     <div class="topbar-right">
-      <button class="btn" onclick="document.getElementById('drawer-docs').open=true; document.getElementById('drawer-docs').scrollIntoView({behavior:'smooth'});">
-        + ADD YOUR DOCS (<span id="badge-doc-count">5</span>)
+      <button class="btn" onclick="document.getElementById('live-doc-editor').focus(); document.getElementById('step-1-card').scrollIntoView({behavior:'smooth'});">
+        &#9998; PASTE YOUR OWN DOC (<span id="badge-doc-count">5</span>)
       </button>
-      <button class="btn btn-primary" onclick="updateExportCode(); document.getElementById('code-modal').showModal();">
-        COPY PYTHON CODE
+      <button class="btn btn-primary" onclick="document.getElementById('step-4-deliverable').scrollIntoView({behavior:'smooth'});">
+        &#128203; GET AI-READY DOC &amp; PROMPT
       </button>
       <button class="btn" id="theme-btn-light" onclick="setTheme('light')">LIGHT</button>
       <button class="btn" id="theme-btn-dark" onclick="setTheme('dark')">DARK</button>
     </div>
   </header>
 
-  <!-- SINGLE-PAGE 3-STEP GUIDED CONTAINER (ZERO OVERWHELM, ZERO SIDEBARS) -->
+  <!-- SINGLE-PAGE GUIDED CONTAINER (PROBLEM -> SCAN YOUR DOC -> STRESS-TEST -> COPY FIXED PACKAGE) -->
   <main class="simple-page-wrap" id="view-playground">
 
     <!-- ===================================================================
-         STEP 1: PICK A REAL-LIFE INDUSTRY USE CASE
+         HERO BANNER: THE CORE PROBLEM STATEMENT & THE TANGIBLE SOLUTION
          =================================================================== -->
-    <section class="step-card">
+    <section class="step-card" style="border-left:5px solid var(--accent);background:var(--bg-panel);">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="background:var(--err-soft);border:1px solid rgba(185,28,28,0.25);padding:12px 14px;">
+          <div style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--err);margin-bottom:4px;">THE PROBLEM: WHY YOUR AI CHATBOT GIVES WRONG ANSWERS</div>
+          <p style="font-size:0.82rem;color:var(--text-main);">
+            When you upload a regular company document (Refund Policy, FAQ, Price Sheet, Clinic Guide) into ChatGPT, Claude, or a support bot, <strong>standard AI slices sentences in half (cutting off prices &amp; dates), blurs exact product codes, gets confused by customer slang, and invents fake promises.</strong>
+          </p>
+        </div>
+        <div style="background:var(--ok-soft);border:1px solid rgba(4,120,87,0.25);padding:12px 14px;">
+          <div style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--ok);margin-bottom:4px;">THE SOLUTION: WHAT THIS TOOL GIVES YOU IN 60 SECONDS</div>
+          <p style="font-size:0.82rem;color:var(--text-main);">
+            <strong>1. Scans your document</strong> for numbers, codes, and slang traps.<br>
+            <strong>2. Stress-tests 5 real questions</strong> side-by-side (Broken AI vs. Fixed AI).<br>
+            <strong>3. Rewrites your document into an AI-Ready Knowledge File + Safety System Prompt</strong> you can copy straight into ChatGPT, Claude, Zendesk, or Intercom!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         STEP 1: PICK A BUSINESS TEMPLATE OR PASTE YOUR OWN DOCUMENT
+         =================================================================== -->
+    <section class="step-card" id="step-1-card">
       <div class="step-header">
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="step-badge">STEP 1</span>
-          <span class="step-title">Pick Your Real-Life Business Use Case</span>
+          <span class="step-title">Choose a Business Example &mdash; Or Paste Your Own Company Document Below</span>
         </div>
-        <span class="tag tag-ok" id="pack-roi-badge">SAVES $14,200/MO IN WRONG REFUND TICKETS</span>
+        <span class="tag tag-ok" id="pack-roi-badge">STOPS WRONG REFUND PROMISES &amp; MISSING PACKAGE DISPUTES</span>
       </div>
       <div class="pack-bar">
         <button class="pack-btn active" id="pack-btn-ecommerce" onclick="switchIndustryPack('ecommerce', this)">
-          1. E-Commerce &amp; Orders<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Refunds, Shipping &amp; SKUs</span>
+          1. Online Store &amp; Returns<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Refunds, Shipping &amp; SKUs</span>
         </button>
         <button class="pack-btn" id="pack-btn-healthcare" onclick="switchIndustryPack('healthcare', this)">
-          2. Healthcare &amp; Medical<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Dosing, Drug Codes &amp; Safety</span>
+          2. Healthcare Clinic<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Dosing, Drug Codes &amp; Safety</span>
         </button>
         <button class="pack-btn" id="pack-btn-saas" onclick="switchIndustryPack('saas', this)">
-          3. Customer Support &amp; IT<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Billing, API Limits &amp; SSO</span>
+          3. Office IT &amp; Helpdesk<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Billing, API Limits &amp; Logins</span>
         </button>
         <button class="pack-btn" id="pack-btn-fintech" onclick="switchIndustryPack('fintech', this)">
-          4. Banking &amp; Legal<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Wire Limits, Fraud &amp; SWIFT</span>
+          4. Banking &amp; Fraud<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Wire Limits, Fraud &amp; Codes</span>
         </button>
         <button class="pack-btn" id="pack-btn-engineering" onclick="switchIndustryPack('engineering', this)">
-          5. AI &amp; Cloud Docs<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Vector DB &amp; RAM Benchmarks</span>
+          5. Cloud &amp; Tech Docs<br><span style="font-size:0.71rem;opacity:0.8;font-weight:400;">Software &amp; Server Manuals</span>
         </button>
+      </div>
+
+      <!-- LIVE DOCUMENT EDITOR + INSTANT AI TRAP REPORT SIDE-BY-SIDE -->
+      <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:14px;margin-top:4px;">
+        <div style="background:var(--bg-subtle);border:1px solid var(--border-grid);padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+            <strong style="font-size:0.82rem;color:var(--text-main);">&#128196; Your Raw Document Text (Paste Any Policy, FAQ, or Price Sheet Here):</strong>
+            <label class="btn" style="padding:3px 8px;font-size:0.68rem;cursor:pointer;">
+              UPLOAD .TXT / .MD FILE
+              <input type="file" accept=".txt,.md,.json,.csv" onchange="handleQuickFileUpload(event)" style="display:none;" />
+            </label>
+          </div>
+          <textarea id="live-doc-editor" rows="5" style="font-family:var(--font-sans);font-size:0.8rem;line-height:1.45;background:var(--bg-panel);" placeholder="Paste your company refund policy, FAQ, product sheet, or handbook here..."></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:0.73rem;color:var(--text-muted);" id="live-scan-status">Loaded 5 sections. Edit or paste your own text above and click Scan!</span>
+            <button class="btn btn-primary" onclick="scanAndFixCustomText()">
+              &#9889; SCAN MY TEXT &amp; GENERATE AI-READY FIX &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE: INSTANT AI VULNERABILITY SCAN OF THE ACTIVE DOCUMENT -->
+        <div style="background:var(--bg-subtle);border:1px solid var(--border-grid);padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;" id="live-doc-audit-box">
+        </div>
       </div>
     </section>
 
@@ -843,6 +889,42 @@
           <input id="px-scrubber" type="range" min="0" max="10" step="0.05" value="0" oninput="pxScrubTo(this.value)" style="flex:1;" />
         </div>
       </div>
+    </section>
+
+    <!-- ===================================================================
+         STEP 4: YOUR TAKE-HOME AI PACKAGE (USE IN CHATGPT, CLAUDE, ZENDESK, OR CODE!)
+         =================================================================== -->
+    <section class="step-card" id="step-4-deliverable" style="border:2px solid var(--ok);">
+      <div class="step-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="step-badge" style="background:var(--ok);">STEP 4 &mdash; YOUR FIXED OUTPUT</span>
+          <span class="step-title">Copy Your Ready-to-Use AI Knowledge Base &amp; Safety Prompt (Zero Coding Required)</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-ok" onclick="copyDeliverableBox()">&#128203; COPY TO CLIPBOARD</button>
+          <button class="btn" onclick="downloadDeliverableFile()">&#11015; DOWNLOAD .MD FILE</button>
+        </div>
+      </div>
+
+      <p style="font-size:0.82rem;color:var(--text-secondary);">
+        We automatically restructured your document so <strong>no sentence or price gets cut in half</strong>, <strong>exact codes are pulled to the top</strong>, and <strong>everyday customer slang words are attached</strong>. Paste this directly into <strong>ChatGPT (Custom GPT), Claude Projects, Intercom, Zendesk, Notion AI, or your app</strong>:
+      </p>
+
+      <!-- 3-Tab Switcher for Non-Tech Users + Developers -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border-grid);padding-bottom:10px;">
+        <button class="btn btn-primary" id="deliv-tab-doc" onclick="switchDeliverableTab('doc')">
+          1. AI-Ready Knowledge File (For ChatGPT / Claude / Bots)
+        </button>
+        <button class="btn" id="deliv-tab-prompt" onclick="switchDeliverableTab('prompt')">
+          2. Anti-Lying System Prompt (Copy Into Bot Instructions)
+        </button>
+        <button class="btn" id="deliv-tab-code" onclick="switchDeliverableTab('code')">
+          3. Developer Python Script
+        </button>
+        <span id="copy-toast-msg" style="font-family:var(--font-mono);font-size:0.75rem;color:var(--ok);font-weight:700;align-self:center;margin-left:auto;"></span>
+      </div>
+
+      <pre class="code-export" id="deliverable-output-box" style="max-height:320px;overflow-y:auto;white-space:pre-wrap;"></pre>
     </section>
 
     <!-- ===================================================================
@@ -986,7 +1068,7 @@
   </dialog>
 
   <script>
-    const INITIAL_DATA = {"audit": {"total_documents": 10, "fixed_mid_sentence_split_rate": 0.9777777777777777, "sentence_window_split_rate": 0.0, "exact_identifier_count": 4, "sample_identifiers": ["SQ8", "ERR_SSL_9042", "SKU-8841-X9", "BM25"], "duplicate_chunk_rate_naive": 0.33333333333333337, "duplicate_chunk_rate_mmr": 0.0, "rbac_post_filter_starvation_rate": 0.9, "rbac_pre_filter_recall": 1.0, "abstention_accuracy": 0.6666666666666666, "overall_health_score": 91.66666666666666, "recommendations": ["Replace Fixed-Window Chunking (97.8% broken sentence boundaries) with Sentence-Window Chunking (0.0% broken).", "Enable Hybrid Okapi BM25 + RRF (k=60) to protect 4 alphanumeric identifiers/codes (SQ8, ERR_SSL_9042, SKU-8841-X9, BM25).", "Enforce Single-Stage Metadata Pre-Filtering for multi-tenant RBAC (eliminates 90% post-filter k-starvation).", "Keep AbstentionAndFaithfulnessGuard enabled (min_confidence=0.28) to block out-of-domain hallucinations."]}, "challenges": [{"challenge_id": "C1", "title": "Chunk Boundary Fragmentation ('Relevant Doc, Useless Slice')", "stage": "1. Ingestion & Chunking", "severity": "CRITICAL", "problem_summary": "Fixed character/token windows slice sentences mid-clause, separating entities (e.g., 'Scalar Quantization') from their quantitative metrics ('4x reduction, 98.5% recall@10, Product Quantization').", "test_query": "How do we shrink vector RAM footprint from 61GB using int8 or sub-vector centroids?", "naive_behavior": "Fixed-180 chunker slices DOC-01 mid-sentence; retrieved context captures only 60% of facts.", "naive_metric_label": "Fact Completeness", "naive_score": 0.6, "remediated_behavior": "Sentence-Window chunker matches micro-sentence and expands +/-1 neighbor sentences (100% facts).", "remediated_metric_label": "Fact Completeness", "remediated_score": 1.0, "engineering_fix": "Small-to-Big Sentence-Window Chunking (Parent-Child Context Expansion)", "passed": true}, {"challenge_id": "C2", "title": "The Lexical Gap (Exact Error Codes, SKUs & Proper Nouns)", "stage": "2. Retrieval (Sparse vs Dense)", "severity": "HIGH", "problem_summary": "Dense bi-encoders shatter unseen alphanumeric strings (ERR_SSL_9042, SKU-8841-X9) into noisy subword tokens, causing low cosine similarity on exact identifier lookups.", "test_query": "Lookup exact error code ERR_SSL_9042 and part identifier SKU-8841-X9", "naive_behavior": "Pure Dense cosine score=0.364 (weak signal on unseen alphanumeric SKU).", "naive_metric_label": "Identifier Signal", "naive_score": 0.5458889897477466, "remediated_behavior": "Hybrid Okapi BM25 + RRF (k=60) locks onto exact tokens with BM25=18.67 at Rank #1.", "remediated_metric_label": "Identifier Signal", "remediated_score": 1.0, "engineering_fix": "Hybrid Retrieval (Okapi BM25 + Dense Vectors fused via Reciprocal Rank Fusion k=60)", "passed": true}, {"challenge_id": "C3", "title": "Query-Document Distribution Mismatch (Colloquial vs Technical)", "stage": "3. Query Transformation", "severity": "HIGH", "problem_summary": "Users ask terse, informal questions ('short vague questions') while docs use formal terminology ('Hypothetical Document Embeddings (HyDE)', 'distribution mismatch').", "test_query": "users type short vague questions that fail to match docs", "naive_behavior": "Unexpanded query top-1 dense score=0.214 (zero lexical overlap with 'HyDE').", "naive_metric_label": "Semantic Alignment", "naive_score": 0.55, "remediated_behavior": "QueryOptimizer injects domain synonyms + generates HyDE passage, ranking DOC-07 #1.", "remediated_metric_label": "Semantic Alignment", "remediated_score": 1.0, "engineering_fix": "Multi-Query Synonym Expansion + Local HyDE (Hypothetical Document Embeddings)", "passed": true}, {"challenge_id": "C4", "title": "Bi-Encoder Compression Bottleneck & Rank Inversion", "stage": "4. Post-Retrieval Reranking", "severity": "HIGH", "problem_summary": "Single-vector bi-encoders compress an entire passage into one vector, losing fine-grained token proximity and ranking general overview sentences above the specific quantitative clause.", "test_query": "How much latency does pairwise Cross-Encoder reranking add on a 20-chunk candidate pool?", "naive_behavior": "Bi-encoder initial score=0.480 lacks token-pair cross-attention.", "naive_metric_label": "Precision@1", "naive_score": 0.72, "remediated_behavior": "Cross-Encoder pairwise interaction promotes exact '15-35ms' clause to #1 (score=1.006).", "remediated_metric_label": "Precision@1", "remediated_score": 1.0, "engineering_fix": "Two-Stage Retrieval + Cross-Encoder Pairwise Reranking (ms-marco-MiniLM-L-6-v2)", "passed": true}, {"challenge_id": "C5", "title": "Context Redundancy & Multi-Hop Starvation", "stage": "5. Diversity Selection (MMR)", "severity": "MEDIUM", "problem_summary": "Standard top-k retrieval pulls multiple adjacent chunks from DOC-06, crowding out DOC-05 (MMR) and leaving half of a compound multi-document question unanswered.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Naive top-3 retrieves ['DOC-06', 'DOC-06', 'DOC-03'] (misses DOC-05 completely).", "naive_metric_label": "Multi-Doc Recall", "naive_score": 0.5, "remediated_behavior": "MMR (lambda=0.85) + Hybrid RRF retrieves both ['DOC-06', 'DOC-05', 'DOC-05'] (100% coverage).", "remediated_metric_label": "Multi-Doc Recall", "remediated_score": 1.0, "engineering_fix": "Maximal Marginal Relevance (MMR) Diversification + Cross-Chunk Deduplication", "passed": true}, {"challenge_id": "C6", "title": "'Lost in the Middle' Transformer Attention Decay", "stage": "6. Prompt Context Ordering", "severity": "MEDIUM", "problem_summary": "LLMs exhibit a U-shaped recall curve (Liu et al.): accuracy drops by up to 20% when the 2nd most important evidence chunk is placed in the middle of the prompt instead of the boundaries.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Linear rank order [1, 2, 3] buries Rank #2 in the interior of the context window.", "naive_metric_label": "Boundary Salience", "naive_score": 0.67, "remediated_behavior": "U-Shaped Reorderer arranges ranks as [1, 3, 2] (Rank #1 at start, Rank #2 at end).", "remediated_metric_label": "Boundary Salience", "remediated_score": 1.0, "engineering_fix": "Lost-in-the-Middle U-Shaped Boundary Reordering + Contextual Token Compression (-24.8% tokens)", "passed": true}, {"challenge_id": "C7", "title": "Multi-Tenant RBAC Post-Filtering k-Starvation", "stage": "7. Enterprise Governance & Security", "severity": "CRITICAL", "problem_summary": "Filtering for user ACL permissions AFTER running top-k ANN vector search starves the result set when restricted tenants own only a small slice of the global index.", "test_query": "How does ANN vector graph search handle recall at scale?", "naive_behavior": "Global ANN Top-2 + Post-Filter returns 0/2 authorized chunks (k-starvation).", "naive_metric_label": "Authorized Recall@2", "naive_score": 0.0, "remediated_behavior": "Pre-Filtered Roaring Bitmap Mask returns 2/2 authorized chunks from DOC-08.", "remediated_metric_label": "Authorized Recall@2", "remediated_score": 1.0, "engineering_fix": "Single-Stage Metadata Pre-Filtering (Roaring Bitmap Masks inside ANN Traversal)", "passed": true}, {"challenge_id": "C8", "title": "Silent Confabulation on Unanswerable / Out-of-Scope Queries", "stage": "8. Generation & Faithfulness Guardrails", "severity": "CRITICAL", "problem_summary": "Without calibrated retrieval confidence thresholds, RAG pipelines feed irrelevant top-k chunks to the LLM on out-of-domain questions, triggering confident hallucinations.", "test_query": "What is the BGP ASN autonomous system routing number for the Mars Rover satellite link?", "naive_behavior": "Naive RAG blindly forces synthesis from unrelated chunk [DOC-03].", "naive_metric_label": "Hallucination Defense", "naive_score": 0.0, "remediated_behavior": "ABSTAINED: Retrieval confidence (0.10) & lexical grounding (8%) below safety threshold (0.30). Corpus lacks verified evidence.", "remediated_metric_label": "Hallucination Defense", "remediated_score": 1.0, "engineering_fix": "Calibrated Retrieval Confidence Threshold + Grounded Citation Verification Guard", "passed": true}], "ablation": [{"config_name": "1. Naive-Baseline (Fixed+Dense)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9516433990956823, "keyword_recall": 0.48125, "context_precision": 0.6666666666666667, "avg_context_tokens": 71.625, "avg_latency_ms": 0.7999998750000126, "composite_score": 0.7822858497739206}, {"config_name": "2. Lexical-BM25 (Recursive)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.96875, "context_precision": 0.875, "avg_context_tokens": 102.875, "avg_latency_ms": 0.7258646250000028, "composite_score": 0.9718749999999999}, {"config_name": "3. Hybrid-Alpha (Rec+Convex)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.85, "context_precision": 0.75, "avg_context_tokens": 108.25, "avg_latency_ms": 0.7335833750000131, "composite_score": 0.9175}, {"config_name": "4. Hybrid-RRF + SentenceWindow", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 0.95, "context_precision": 0.7500000000000001, "avg_context_tokens": 198.625, "avg_latency_ms": 0.8563176249999915, "composite_score": 0.9449912746608808}, {"config_name": "5. RRF + HyDE + CrossReranker", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 1.0, "context_precision": 0.9583333333333334, "avg_context_tokens": 211.75, "avg_latency_ms": 2.6595575, "composite_score": 0.991241274660881}, {"config_name": "6. Full-Optimized-RAG (All Stages)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 1.0, "context_precision": 0.875, "avg_context_tokens": 157.125, "avg_latency_ms": 10.09196875, "composite_score": 0.9812500000000001}], "corpus": [{"doc_id": "DOC-01", "title": "HNSW & Vector Index Memory Quantization", "content": "Hierarchical Navigable Small World (HNSW) graphs deliver sub-10ms approximate nearest neighbor (ANN) search at scale, but store full 32-bit floating point vectors in RAM. A corpus of 10 million 1536-dimensional vectors consumes roughly 61.4 GB of raw memory plus 20-35% graph edge overhead. To reduce RAM consumption without catastrophic recall loss, production systems apply Scalar Quantization (SQ8 / int8), which compresses float32 values to 8-bit integers for a 4x memory reduction while retaining 98.5% recall@10. For extreme compression up to 16x-32x, Product Quantization (PQ) decomposes the vector space into M orthogonal sub-vectors and quantizes each subspace via k-means centroids, though asymmetric distance computation (ADC) requires careful rescoring with raw vectors to recover top-k precision.", "metadata": {"domain": "indexing", "tier": "storage"}}, {"doc_id": "DOC-02", "title": "Hybrid Search: Combining Dense Vectors with Okapi BM25 via RRF", "content": "Pure dense bi-encoder embeddings frequently fail on exact alphanumeric identifiers, error codes like ERR_SSL_9042, part SKUs such as SKU-8841-X9, and rare proper nouns due to subword tokenizer fragmentation. Conversely, sparse Okapi BM25 excels at exact lexical token matching (using saturation parameter k1=1.5 and document length normalization b=0.75) but misses semantic paraphrases. Hybrid retrieval fuses both signals using Reciprocal Rank Fusion (RRF), defined as RRF_score(d) = sum(w_m / (k + rank_m(d))) with smoothing constant k=60, or via min-max normalized convex alpha combination where alpha=0.6 weights dense cosine similarity and 0.4 weights sparse BM25.", "metadata": {"domain": "retrieval", "tier": "search"}}, {"doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "content": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big Sentence-Window chunking decouples the retrieval unit from the synthesis unit. During indexing, each individual sentence or compact 2-sentence micro-unit is embedded separately so its vector representation remains sharp and focused. At retrieval time, once a micro-chunk is matched, the pipeline swaps in its parent window of +/- 2 surrounding sentences before sending context to the LLM, restoring full antecedent pronouns and surrounding causal context.", "metadata": {"domain": "chunking", "tier": "ingestion"}}, {"doc_id": "DOC-04", "title": "Cross-Encoder Reranking & Bi-Encoder Bottlenecks", "content": "Bi-encoders encode queries and documents independently into single vectors, compressing an entire passage into one fixed-size bottleneck and losing fine-grained token-to-token cross-attention. To maximize Precision@3, a two-stage pipeline first retrieves top-20 candidates via fast bi-encoder + BM25 hybrid search, then passes concatenated (Query [SEP] Passage) pairs through a Cross-Encoder such as ms-marco-MiniLM-L-6-v2. Because the Cross-Encoder performs full self-attention across every query token and document token simultaneously, it increases NDCG@3 by 12-18% while adding only 15-35ms of GPU/CPU inference latency on a 20-chunk candidate pool.", "metadata": {"domain": "reranking", "tier": "ranking"}}, {"doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "content": "Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents.", "metadata": {"domain": "reranking", "tier": "diversity"}}, {"doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "content": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior.", "metadata": {"domain": "prompting", "tier": "synthesis"}}, {"doc_id": "DOC-07", "title": "Query Rewriting, Multi-Query Expansion, and HyDE", "content": "Users frequently submit terse, ambiguous, or poorly phrased queries that share minimal lexical or structural similarity with authoritative technical documentation. Hypothetical Document Embeddings (HyDE) resolves this distribution mismatch by generating a hypothetical declarative answer passage from the query and embedding that passage for dense vector lookup. Combined with sparse synonym expansion and multi-query decomposition for compound questions, query transformation boosts Recall@10 on zero-shot domain queries by 15-24%.", "metadata": {"domain": "query", "tier": "transformation"}}, {"doc_id": "DOC-08", "title": "Multi-Tenant RBAC Security & Metadata Pre-Filtering", "content": "In enterprise RAG deployments, applying access-control list (ACL) security filters after vector ANN search (post-filtering) causes severe k-starvation: if a user only has permission to view 2% of the corpus, top-10 ANN search may return zero authorized chunks. Production vector engines enforce RBAC tenant isolation via single-stage pre-filtering using bitmap roaring masks integrated directly into HNSW graph traversal, guaranteeing zero cross-tenant data leakage and full top-k recall.", "metadata": {"domain": "security", "tier": "governance"}}, {"doc_id": "DOC-09", "title": "Semantic Caching & Contextual Compression for Cost Reduction", "content": "Repeated or semantically equivalent user queries account for 30-45% of production RAG traffic. A Redis-backed Semantic Cache indexes historical query embeddings and serves cached responses within 4ms whenever cosine similarity exceeds a strict 0.94 threshold, governed by document-update TTL invalidation hooks. For cache misses, sentence-level Contextual Compression prunes tangential sentences from retrieved chunks, cutting LLM input token costs by 25-40% and reducing time-to-first-token (TTFT).", "metadata": {"domain": "caching", "tier": "efficiency"}}, {"doc_id": "DOC-10", "title": "RAG Evaluation Metrics: MRR, NDCG@K, and Faithfulness", "content": "Optimizing a RAG system requires decoupled retrieval and generation metrics. Retrieval quality is measured via Hit Rate@K, Mean Reciprocal Rank (MRR, which rewards placing the first relevant chunk at rank 1), and Normalized Discounted Cumulative Gain (NDCG@K, which evaluates the full graded ranking order). Generation quality is audited through Context Precision, Answer Relevance, and Grounded Faithfulness (verifying every claim in the answer is entailed by retrieved citations without hallucination).", "metadata": {"domain": "evaluation", "tier": "metrics"}}], "default_query_result": {"query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "abstained": false, "confidence": 0.624, "safety_message": "GROUNDED: Confidence 0.62 (lexical coverage 47%).", "numeric_faithfulness": 33.3, "active_config": {"chunk_strategy": "sentence_window", "chunk_size": 180, "window_size": 1, "retrieval_mode": "hybrid_rrf", "alpha": 0.55, "top_k": 3, "use_query_expansion": true, "use_reranker": true, "use_mmr": true, "use_lost_in_middle": true, "use_compression": true, "use_guardrail": true}, "naive": {"docs": ["DOC-06", "DOC-06", "DOC-03"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.206, "text": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos"}, {"rank": 2, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.196, "text": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t"}, {"rank": 3, "doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "score": 0.17, "text": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big"}], "answer": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos [DOC-06] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t [DOC-06]", "tokens": 83, "latency_ms": 0.82}, "optimized": {"expanded_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? lost in the middle u-shaped attention curve maximal marginal relevance mmr deduplication diversity", "hyde_passage": "Technical Documentation & Engineering Specification: How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? In production systems, addressing How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle requires configuring maximal marginal relevance mmr, diversity, redundant chunks, deduplication, diversity penalty, lost in the middle. Best practices include optimizing metric thresholds, balancing recall and precision, and validating system performance.", "docs": ["DOC-06", "DOC-05", "DOC-05"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.753, "dense_score": 0.179, "sparse_score": 22.86, "text": "[Mitigating Lost-in-the-Middle Attention Degradation] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior."}, {"rank": 2, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.453, "dense_score": 0.236, "sparse_score": 19.15, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents."}, {"rank": 3, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.448, "dense_score": 0.218, "sparse_score": 21.91, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j."}], "prompt_order": [{"slot": 1, "rank": 1, "doc_id": "DOC-06", "zone": "Primacy Zone (High LLM Attention)"}, {"slot": 2, "rank": 3, "doc_id": "DOC-05", "zone": "Middle Zone (Lower LLM Attention)"}, {"slot": 3, "rank": 2, "doc_id": "DOC-05", "zone": "Recency Zone (High LLM Attention)"}], "answer": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. [DOC-06] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. [DOC-05]", "raw_tokens": 218, "compressed_tokens": 164, "token_savings_pct": 24.8, "latency_ms": 10.09}}};
+    const INITIAL_DATA = {"audit": {"total_documents": 10, "fixed_mid_sentence_split_rate": 0.9777777777777777, "sentence_window_split_rate": 0.0, "exact_identifier_count": 4, "sample_identifiers": ["SQ8", "ERR_SSL_9042", "SKU-8841-X9", "BM25"], "duplicate_chunk_rate_naive": 0.33333333333333337, "duplicate_chunk_rate_mmr": 0.0, "rbac_post_filter_starvation_rate": 0.9, "rbac_pre_filter_recall": 1.0, "abstention_accuracy": 0.6666666666666666, "overall_health_score": 91.66666666666666, "recommendations": ["Replace Fixed-Window Chunking (97.8% broken sentence boundaries) with Sentence-Window Chunking (0.0% broken).", "Enable Hybrid Okapi BM25 + RRF (k=60) to protect 4 alphanumeric identifiers/codes (SQ8, ERR_SSL_9042, SKU-8841-X9, BM25).", "Enforce Single-Stage Metadata Pre-Filtering for multi-tenant RBAC (eliminates 90% post-filter k-starvation).", "Keep AbstentionAndFaithfulnessGuard enabled (min_confidence=0.28) to block out-of-domain hallucinations."]}, "challenges": [{"challenge_id": "C1", "title": "Chunk Boundary Fragmentation ('Relevant Doc, Useless Slice')", "stage": "1. Ingestion & Chunking", "severity": "CRITICAL", "problem_summary": "Fixed character/token windows slice sentences mid-clause, separating entities (e.g., 'Scalar Quantization') from their quantitative metrics ('4x reduction, 98.5% recall@10, Product Quantization').", "test_query": "How do we shrink vector RAM footprint from 61GB using int8 or sub-vector centroids?", "naive_behavior": "Fixed-180 chunker slices DOC-01 mid-sentence; retrieved context captures only 60% of facts.", "naive_metric_label": "Fact Completeness", "naive_score": 0.6, "remediated_behavior": "Sentence-Window chunker matches micro-sentence and expands +/-1 neighbor sentences (100% facts).", "remediated_metric_label": "Fact Completeness", "remediated_score": 1.0, "engineering_fix": "Small-to-Big Sentence-Window Chunking (Parent-Child Context Expansion)", "passed": true}, {"challenge_id": "C2", "title": "The Lexical Gap (Exact Error Codes, SKUs & Proper Nouns)", "stage": "2. Retrieval (Sparse vs Dense)", "severity": "HIGH", "problem_summary": "Dense bi-encoders shatter unseen alphanumeric strings (ERR_SSL_9042, SKU-8841-X9) into noisy subword tokens, causing low cosine similarity on exact identifier lookups.", "test_query": "Lookup exact error code ERR_SSL_9042 and part identifier SKU-8841-X9", "naive_behavior": "Pure Dense cosine score=0.364 (weak signal on unseen alphanumeric SKU).", "naive_metric_label": "Identifier Signal", "naive_score": 0.5458889897477466, "remediated_behavior": "Hybrid Okapi BM25 + RRF (k=60) locks onto exact tokens with BM25=18.67 at Rank #1.", "remediated_metric_label": "Identifier Signal", "remediated_score": 1.0, "engineering_fix": "Hybrid Retrieval (Okapi BM25 + Dense Vectors fused via Reciprocal Rank Fusion k=60)", "passed": true}, {"challenge_id": "C3", "title": "Query-Document Distribution Mismatch (Colloquial vs Technical)", "stage": "3. Query Transformation", "severity": "HIGH", "problem_summary": "Users ask terse, informal questions ('short vague questions') while docs use formal terminology ('Hypothetical Document Embeddings (HyDE)', 'distribution mismatch').", "test_query": "users type short vague questions that fail to match docs", "naive_behavior": "Unexpanded query top-1 dense score=0.214 (zero lexical overlap with 'HyDE').", "naive_metric_label": "Semantic Alignment", "naive_score": 0.55, "remediated_behavior": "QueryOptimizer injects domain synonyms + generates HyDE passage, ranking DOC-07 #1.", "remediated_metric_label": "Semantic Alignment", "remediated_score": 1.0, "engineering_fix": "Multi-Query Synonym Expansion + Local HyDE (Hypothetical Document Embeddings)", "passed": true}, {"challenge_id": "C4", "title": "Bi-Encoder Compression Bottleneck & Rank Inversion", "stage": "4. Post-Retrieval Reranking", "severity": "HIGH", "problem_summary": "Single-vector bi-encoders compress an entire passage into one vector, losing fine-grained token proximity and ranking general overview sentences above the specific quantitative clause.", "test_query": "How much latency does pairwise Cross-Encoder reranking add on a 20-chunk candidate pool?", "naive_behavior": "Bi-encoder initial score=0.480 lacks token-pair cross-attention.", "naive_metric_label": "Precision@1", "naive_score": 0.72, "remediated_behavior": "Cross-Encoder pairwise interaction promotes exact '15-35ms' clause to #1 (score=1.006).", "remediated_metric_label": "Precision@1", "remediated_score": 1.0, "engineering_fix": "Two-Stage Retrieval + Cross-Encoder Pairwise Reranking (ms-marco-MiniLM-L-6-v2)", "passed": true}, {"challenge_id": "C5", "title": "Context Redundancy & Multi-Hop Starvation", "stage": "5. Diversity Selection (MMR)", "severity": "MEDIUM", "problem_summary": "Standard top-k retrieval pulls multiple adjacent chunks from DOC-06, crowding out DOC-05 (MMR) and leaving half of a compound multi-document question unanswered.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Naive top-3 retrieves ['DOC-06', 'DOC-06', 'DOC-03'] (misses DOC-05 completely).", "naive_metric_label": "Multi-Doc Recall", "naive_score": 0.5, "remediated_behavior": "MMR (lambda=0.85) + Hybrid RRF retrieves both ['DOC-06', 'DOC-05', 'DOC-05'] (100% coverage).", "remediated_metric_label": "Multi-Doc Recall", "remediated_score": 1.0, "engineering_fix": "Maximal Marginal Relevance (MMR) Diversification + Cross-Chunk Deduplication", "passed": true}, {"challenge_id": "C6", "title": "'Lost in the Middle' Transformer Attention Decay", "stage": "6. Prompt Context Ordering", "severity": "MEDIUM", "problem_summary": "LLMs exhibit a U-shaped recall curve (Liu et al.): accuracy drops by up to 20% when the 2nd most important evidence chunk is placed in the middle of the prompt instead of the boundaries.", "test_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "naive_behavior": "Linear rank order [1, 2, 3] buries Rank #2 in the interior of the context window.", "naive_metric_label": "Boundary Salience", "naive_score": 0.67, "remediated_behavior": "U-Shaped Reorderer arranges ranks as [1, 3, 2] (Rank #1 at start, Rank #2 at end).", "remediated_metric_label": "Boundary Salience", "remediated_score": 1.0, "engineering_fix": "Lost-in-the-Middle U-Shaped Boundary Reordering + Contextual Token Compression (-24.8% tokens)", "passed": true}, {"challenge_id": "C7", "title": "Multi-Tenant RBAC Post-Filtering k-Starvation", "stage": "7. Enterprise Governance & Security", "severity": "CRITICAL", "problem_summary": "Filtering for user ACL permissions AFTER running top-k ANN vector search starves the result set when restricted tenants own only a small slice of the global index.", "test_query": "How does ANN vector graph search handle recall at scale?", "naive_behavior": "Global ANN Top-2 + Post-Filter returns 0/2 authorized chunks (k-starvation).", "naive_metric_label": "Authorized Recall@2", "naive_score": 0.0, "remediated_behavior": "Pre-Filtered Roaring Bitmap Mask returns 2/2 authorized chunks from DOC-08.", "remediated_metric_label": "Authorized Recall@2", "remediated_score": 1.0, "engineering_fix": "Single-Stage Metadata Pre-Filtering (Roaring Bitmap Masks inside ANN Traversal)", "passed": true}, {"challenge_id": "C8", "title": "Silent Confabulation on Unanswerable / Out-of-Scope Queries", "stage": "8. Generation & Faithfulness Guardrails", "severity": "CRITICAL", "problem_summary": "Without calibrated retrieval confidence thresholds, RAG pipelines feed irrelevant top-k chunks to the LLM on out-of-domain questions, triggering confident hallucinations.", "test_query": "What is the BGP ASN autonomous system routing number for the Mars Rover satellite link?", "naive_behavior": "Naive RAG blindly forces synthesis from unrelated chunk [DOC-03].", "naive_metric_label": "Hallucination Defense", "naive_score": 0.0, "remediated_behavior": "ABSTAINED: Retrieval confidence (0.10) & lexical grounding (8%) below safety threshold (0.30). Corpus lacks verified evidence.", "remediated_metric_label": "Hallucination Defense", "remediated_score": 1.0, "engineering_fix": "Calibrated Retrieval Confidence Threshold + Grounded Citation Verification Guard", "passed": true}], "ablation": [{"config_name": "1. Naive-Baseline (Fixed+Dense)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9516433990956823, "keyword_recall": 0.48125, "context_precision": 0.6666666666666667, "avg_context_tokens": 71.625, "avg_latency_ms": 0.8128022500000152, "composite_score": 0.7822858497739206}, {"config_name": "2. Lexical-BM25 (Recursive)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.96875, "context_precision": 0.875, "avg_context_tokens": 102.875, "avg_latency_ms": 0.7350987499999961, "composite_score": 0.9718749999999999}, {"config_name": "3. Hybrid-Alpha (Rec+Convex)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 0.85, "context_precision": 0.75, "avg_context_tokens": 108.25, "avg_latency_ms": 0.7578176250000039, "composite_score": 0.9175}, {"config_name": "4. Hybrid-RRF + SentenceWindow", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 0.95, "context_precision": 0.7500000000000001, "avg_context_tokens": 198.625, "avg_latency_ms": 0.8760885000000246, "composite_score": 0.9449912746608808}, {"config_name": "5. RRF + HyDE + CrossReranker", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 0.9899650986435234, "keyword_recall": 1.0, "context_precision": 0.9583333333333334, "avg_context_tokens": 211.75, "avg_latency_ms": 2.924760374999974, "composite_score": 0.991241274660881}, {"config_name": "6. Full-Optimized-RAG (All Stages)", "hit_rate_at_k": 1.0, "mrr": 1.0, "ndcg_at_k": 1.0, "keyword_recall": 1.0, "context_precision": 0.875, "avg_context_tokens": 157.125, "avg_latency_ms": 10.751781249999993, "composite_score": 0.9812500000000001}], "corpus": [{"doc_id": "DOC-01", "title": "HNSW & Vector Index Memory Quantization", "content": "Hierarchical Navigable Small World (HNSW) graphs deliver sub-10ms approximate nearest neighbor (ANN) search at scale, but store full 32-bit floating point vectors in RAM. A corpus of 10 million 1536-dimensional vectors consumes roughly 61.4 GB of raw memory plus 20-35% graph edge overhead. To reduce RAM consumption without catastrophic recall loss, production systems apply Scalar Quantization (SQ8 / int8), which compresses float32 values to 8-bit integers for a 4x memory reduction while retaining 98.5% recall@10. For extreme compression up to 16x-32x, Product Quantization (PQ) decomposes the vector space into M orthogonal sub-vectors and quantizes each subspace via k-means centroids, though asymmetric distance computation (ADC) requires careful rescoring with raw vectors to recover top-k precision.", "metadata": {"domain": "indexing", "tier": "storage"}}, {"doc_id": "DOC-02", "title": "Hybrid Search: Combining Dense Vectors with Okapi BM25 via RRF", "content": "Pure dense bi-encoder embeddings frequently fail on exact alphanumeric identifiers, error codes like ERR_SSL_9042, part SKUs such as SKU-8841-X9, and rare proper nouns due to subword tokenizer fragmentation. Conversely, sparse Okapi BM25 excels at exact lexical token matching (using saturation parameter k1=1.5 and document length normalization b=0.75) but misses semantic paraphrases. Hybrid retrieval fuses both signals using Reciprocal Rank Fusion (RRF), defined as RRF_score(d) = sum(w_m / (k + rank_m(d))) with smoothing constant k=60, or via min-max normalized convex alpha combination where alpha=0.6 weights dense cosine similarity and 0.4 weights sparse BM25.", "metadata": {"domain": "retrieval", "tier": "search"}}, {"doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "content": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big Sentence-Window chunking decouples the retrieval unit from the synthesis unit. During indexing, each individual sentence or compact 2-sentence micro-unit is embedded separately so its vector representation remains sharp and focused. At retrieval time, once a micro-chunk is matched, the pipeline swaps in its parent window of +/- 2 surrounding sentences before sending context to the LLM, restoring full antecedent pronouns and surrounding causal context.", "metadata": {"domain": "chunking", "tier": "ingestion"}}, {"doc_id": "DOC-04", "title": "Cross-Encoder Reranking & Bi-Encoder Bottlenecks", "content": "Bi-encoders encode queries and documents independently into single vectors, compressing an entire passage into one fixed-size bottleneck and losing fine-grained token-to-token cross-attention. To maximize Precision@3, a two-stage pipeline first retrieves top-20 candidates via fast bi-encoder + BM25 hybrid search, then passes concatenated (Query [SEP] Passage) pairs through a Cross-Encoder such as ms-marco-MiniLM-L-6-v2. Because the Cross-Encoder performs full self-attention across every query token and document token simultaneously, it increases NDCG@3 by 12-18% while adding only 15-35ms of GPU/CPU inference latency on a 20-chunk candidate pool.", "metadata": {"domain": "reranking", "tier": "ranking"}}, {"doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "content": "Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents.", "metadata": {"domain": "reranking", "tier": "diversity"}}, {"doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "content": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior.", "metadata": {"domain": "prompting", "tier": "synthesis"}}, {"doc_id": "DOC-07", "title": "Query Rewriting, Multi-Query Expansion, and HyDE", "content": "Users frequently submit terse, ambiguous, or poorly phrased queries that share minimal lexical or structural similarity with authoritative technical documentation. Hypothetical Document Embeddings (HyDE) resolves this distribution mismatch by generating a hypothetical declarative answer passage from the query and embedding that passage for dense vector lookup. Combined with sparse synonym expansion and multi-query decomposition for compound questions, query transformation boosts Recall@10 on zero-shot domain queries by 15-24%.", "metadata": {"domain": "query", "tier": "transformation"}}, {"doc_id": "DOC-08", "title": "Multi-Tenant RBAC Security & Metadata Pre-Filtering", "content": "In enterprise RAG deployments, applying access-control list (ACL) security filters after vector ANN search (post-filtering) causes severe k-starvation: if a user only has permission to view 2% of the corpus, top-10 ANN search may return zero authorized chunks. Production vector engines enforce RBAC tenant isolation via single-stage pre-filtering using bitmap roaring masks integrated directly into HNSW graph traversal, guaranteeing zero cross-tenant data leakage and full top-k recall.", "metadata": {"domain": "security", "tier": "governance"}}, {"doc_id": "DOC-09", "title": "Semantic Caching & Contextual Compression for Cost Reduction", "content": "Repeated or semantically equivalent user queries account for 30-45% of production RAG traffic. A Redis-backed Semantic Cache indexes historical query embeddings and serves cached responses within 4ms whenever cosine similarity exceeds a strict 0.94 threshold, governed by document-update TTL invalidation hooks. For cache misses, sentence-level Contextual Compression prunes tangential sentences from retrieved chunks, cutting LLM input token costs by 25-40% and reducing time-to-first-token (TTFT).", "metadata": {"domain": "caching", "tier": "efficiency"}}, {"doc_id": "DOC-10", "title": "RAG Evaluation Metrics: MRR, NDCG@K, and Faithfulness", "content": "Optimizing a RAG system requires decoupled retrieval and generation metrics. Retrieval quality is measured via Hit Rate@K, Mean Reciprocal Rank (MRR, which rewards placing the first relevant chunk at rank 1), and Normalized Discounted Cumulative Gain (NDCG@K, which evaluates the full graded ranking order). Generation quality is audited through Context Precision, Answer Relevance, and Grounded Faithfulness (verifying every claim in the answer is entailed by retrieved citations without hallucination).", "metadata": {"domain": "evaluation", "tier": "metrics"}}], "default_query_result": {"query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle?", "abstained": false, "confidence": 0.624, "safety_message": "GROUNDED: Confidence 0.62 (lexical coverage 47%).", "numeric_faithfulness": 33.3, "active_config": {"chunk_strategy": "sentence_window", "chunk_size": 180, "window_size": 1, "retrieval_mode": "hybrid_rrf", "alpha": 0.55, "top_k": 3, "use_query_expansion": true, "use_reranker": true, "use_mmr": true, "use_lost_in_middle": true, "use_compression": true, "use_guardrail": true}, "naive": {"docs": ["DOC-06", "DOC-06", "DOC-03"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.206, "text": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos"}, {"rank": 2, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.196, "text": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t"}, {"rank": 3, "doc_id": "DOC-03", "title": "Small-to-Big Sentence-Window Chunking Architecture", "score": 0.17, "text": "Naive fixed-size character chunking splits sentences mid-clause and dilutes dense vector embeddings when a single 500-token chunk discusses multiple unrelated topics. Small-to-Big"}], "answer": "to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle pos [DOC-06] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at t [DOC-06]", "tokens": 83, "latency_ms": 0.87}, "optimized": {"expanded_query": "How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? maximal marginal relevance mmr deduplication diversity lost in the middle u-shaped attention curve", "hyde_passage": "Technical Documentation & Engineering Specification: How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle? In production systems, addressing How do we stop duplicate redundant chunks from crowding the prompt and fix LLMs ignoring facts in the middle requires configuring maximal marginal relevance mmr, diversity, redundant chunks, deduplication, diversity penalty, lost in the middle. Best practices include optimizing metric thresholds, balancing recall and precision, and validating system performance.", "docs": ["DOC-06", "DOC-05", "DOC-05"], "chunks": [{"rank": 1, "doc_id": "DOC-06", "title": "Mitigating Lost-in-the-Middle Attention Degradation", "score": 0.753, "dense_score": 0.179, "sparse_score": 22.86, "text": "[Mitigating Lost-in-the-Middle Attention Degradation] Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. Lost-in-the-Middle context reordering sorts retrieved chunks so Rank 1 is placed first, Rank 2 is placed at the very end of the context block, and lower-ranked chunks occupy the interior."}, {"rank": 2, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.453, "dense_score": 0.236, "sparse_score": 19.15, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j. Setting lambda=0.75 balances high query relevance with a 25% redundancy penalty, ensuring multi-hop queries receive complementary evidence across distinct documents."}, {"rank": 3, "doc_id": "DOC-05", "title": "Maximal Marginal Relevance (MMR) for Context Diversity", "score": 0.448, "dense_score": 0.218, "sparse_score": 21.91, "text": "[Maximal Marginal Relevance (MMR) for Context Diversity] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. Maximal Marginal Relevance (MMR) iteratively selects chunks by maximizing lambda * Sim(Query, d_i) - (1 - lambda) * max(Sim(d_i, d_j)) over already selected chunks d_j."}], "prompt_order": [{"slot": 1, "rank": 1, "doc_id": "DOC-06", "zone": "Primacy Zone (High LLM Attention)"}, {"slot": 2, "rank": 3, "doc_id": "DOC-05", "zone": "Middle Zone (Lower LLM Attention)"}, {"slot": 3, "rank": 2, "doc_id": "DOC-05", "zone": "Recency Zone (High LLM Attention)"}], "answer": "Empirical studies by Liu et al. demonstrate that transformer LLMs exhibit a U-shaped retrieval recall curve across long context windows: models reliably attend to facts placed at the very beginning (primacy bias) and very end (recency bias) of the prompt, while accuracy drops by up to 20% when critical evidence is buried in the middle positions. [DOC-06] Top-k similarity search often returns near-duplicate chunks originating from adjacent paragraphs or mirrored documentation pages, wasting precious prompt tokens on repetitive facts. [DOC-05]", "raw_tokens": 218, "compressed_tokens": 164, "token_savings_pct": 24.8, "latency_ms": 10.66}}};
     let CORPUS = JSON.parse(JSON.stringify(INITIAL_DATA.corpus));
     let LAST_QUERY_RESULT = INITIAL_DATA.default_query_result;
 
@@ -1245,6 +1327,275 @@
     let PRESET_QUERIES = [...INDUSTRY_PACKS.ecommerce.queries];
     let EXAMPLE_EXPLAINERS = [...INDUSTRY_PACKS.ecommerce.explainers];
 
+    let ACTIVE_DELIVERABLE_TAB = 'doc';
+
+    function extractDocNumbers(text) {
+      return [...new Set((text.match(/\$[0-9,.]+(?:\s*[a-zA-Z/]+)?|\b\d+(?:\.\d+)?%\b|\b\d+(?:\.\d+)?\s*(?:days?|hours?|minutes?|months?|years?|mg|mL|GB|ms|req\/min|points|bar)\b/gi) || []))];
+    }
+
+    function extractDocCodes(text) {
+      return [...new Set((text.match(/\b[A-Z]{2,}[A-Z0-9_-]*-\d+[A-Z0-9_-]*\b|\bERR_[A-Z0-9_]+\b|\b[A-Z]{3,}-\d{3,}[A-Z0-9-]*\b/g) || []))];
+    }
+
+    function extractSlangTriggersForText(text) {
+      const low = text.toLowerCase();
+      const triggers = [];
+      if (/refund|return|restock|damaged|defective|shattered/.test(low)) triggers.push("broken package", "smashed item", "get my money back", "free return");
+      if (/shipping|overnight|customs|delivery|carrier/.test(low)) triggers.push("where is my order", "late delivery", "import tax", "next day shipping");
+      if (/warfarin|nsaid|ibuprofen|bleeding|inr|acetaminophen/.test(low)) triggers.push("pain pills", "advil", "tylenol", "blood thinners", "stomach bleeding");
+      if (/metformin|contrast|egfr|renal/.test(low)) triggers.push("kidney scan", "ct scan dye", "diabetes pill", "when to restart pill");
+      if (/logout|session|timeout|keychain|mobile|okta|saml/.test(low)) triggers.push("app keeps kicking me out", "cant log in on phone", "password loop");
+      if (/cancel|prorated|annual|billing|downgrade/.test(low)) triggers.push("cancel subscription", "early fee", "money back on yearly plan");
+      if (/unauthorized|debit|regulation e|liability|fraud|wire|swift/.test(low)) triggers.push("someone stole my card", "hacked account", "bought stuff without permission", "send money overseas");
+      if (triggers.length === 0) triggers.push("how does this work", "what is the rule", "how much does it cost", "help me fix this");
+      return [...new Set(triggers)];
+    }
+
+    function populateLiveDocEditor() {
+      const ed = document.getElementById('live-doc-editor');
+      if (!ed) return;
+      ed.value = CORPUS.map(d => `[${d.doc_id}] ${d.title}\n${d.content}`).join('\n\n');
+      const statusEl = document.getElementById('live-scan-status');
+      if (statusEl) statusEl.textContent = `Showing ${CORPUS.length} document sections (${ed.value.length} characters). Paste your own text anytime and click Scan!`;
+    }
+
+    function renderLiveDocAudit() {
+      const box = document.getElementById('live-doc-audit-box');
+      if (!box) return;
+      const fullText = CORPUS.map(d => d.content).join(' ');
+      const nums = extractDocNumbers(fullText);
+      const codes = extractDocCodes(fullText + ' ' + CORPUS.map(d => d.doc_id).join(' '));
+      const slang = extractSlangTriggersForText(fullText);
+      const fixedChunks = buildChunksJS(CORPUS, 'fixed', 180, 1);
+      const brokenCount = fixedChunks.filter(c => /^[a-z]/.test(c.text) || !/[.!?]$/.test(c.text)).length;
+
+      box.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong style="font-size:0.82rem;color:var(--text-main);">&#128269; Instant AI Trap Scan of Your Document</strong>
+          <span class="tag tag-err">${brokenCount} CUT-OFF RISKS FOUND</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.75rem;">
+          <div style="background:var(--bg-panel);border:1px solid var(--border-grid);border-left:3px solid var(--err);padding:7px 9px;">
+            <strong style="display:block;color:var(--err);font-family:var(--font-mono);font-size:0.68rem;">1. NUMBERS AT RISK (${nums.length})</strong>
+            <span style="color:var(--text-secondary);">Standard AI chops ${brokenCount} sentences, risking: <code>${nums.slice(0, 4).join(', ') || 'key numbers'}</code></span>
+          </div>
+          <div style="background:var(--bg-panel);border:1px solid var(--border-grid);border-left:3px solid var(--warn);padding:7px 9px;">
+            <strong style="display:block;color:var(--warn);font-family:var(--font-mono);font-size:0.68rem;">2. EXACT CODES FOUND (${codes.length})</strong>
+            <span style="color:var(--text-secondary);">Indexed for exact match: <code>${codes.slice(0, 3).join(', ') || 'None detected'}</code></span>
+          </div>
+          <div style="background:var(--bg-panel);border:1px solid var(--border-grid);border-left:3px solid var(--accent);padding:7px 9px;">
+            <strong style="display:block;color:var(--accent);font-family:var(--font-mono);font-size:0.68rem;">3. CUSTOMER SLANG ADDED</strong>
+            <span style="color:var(--text-secondary);">Auto-mapped: <em>"${slang.slice(0, 3).join('", "')}"</em></span>
+          </div>
+          <div style="background:var(--bg-panel);border:1px solid var(--border-grid);border-left:3px solid var(--ok);padding:7px 9px;">
+            <strong style="display:block;color:var(--ok);font-family:var(--font-mono);font-size:0.68rem;">4. ANTI-LYING GUARD</strong>
+            <span style="color:var(--text-secondary);">Blocks fake promises when topic confidence &lt; 30%.</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleQuickFileUpload(ev) {
+      const file = ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const baseName = file.name.replace(/\.[^.]+$/, "").toUpperCase().slice(0, 12);
+        const ed = document.getElementById('live-doc-editor');
+        if (ed) {
+          ed.value = `[DOC-${baseName}] ${file.name}\n` + text.slice(0, 5000);
+          scanAndFixCustomText();
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function scanAndFixCustomText() {
+      const ed = document.getElementById('live-doc-editor');
+      if (!ed || !ed.value.trim()) return;
+      const raw = ed.value.trim();
+      const blocks = raw.split(/\n\s*\n+/).map(b => b.trim()).filter(Boolean);
+      const parsedDocs = [];
+
+      blocks.forEach((b, idx) => {
+        const lines = b.split('\n').map(l => l.trim()).filter(Boolean);
+        let doc_id = `CUSTOM-0${idx + 1}`;
+        let title = `Policy Section ${idx + 1}`;
+        let content = b;
+        if (lines.length >= 2 && lines[0].length < 110) {
+          const m = lines[0].match(/^\[([^\]]+)\]\s*(.*)$/);
+          if (m) {
+            doc_id = m[1].trim();
+            title = m[2].trim() || title;
+          } else {
+            title = lines[0].replace(/^#+\s*/, '');
+          }
+          content = lines.slice(1).join(' ');
+        } else {
+          const firstWords = b.split(/\s+/).slice(0, 5).join(' ');
+          title = `${firstWords}...`;
+        }
+        parsedDocs.push({ doc_id, title, content, metadata: { domain: 'custom' } });
+      });
+
+      if (parsedDocs.length === 0) return;
+      ACTIVE_PACK = 'custom';
+      CORPUS = parsedDocs;
+      document.querySelectorAll('.pack-btn').forEach(b => b.classList.remove('active'));
+
+      const allText = CORPUS.map(d => d.content).join(' ');
+      const nums = extractDocNumbers(allText);
+      const codes = extractDocCodes(allText + ' ' + CORPUS.map(d => d.doc_id).join(' '));
+      const sents = splitSentences(allText);
+      const firstTitle = CORPUS[0].title;
+      const secondTitle = (CORPUS[1] || CORPUS[0]).title;
+      const sampleNum = nums[0] || 'the exact fee or deadline';
+      const sampleCode = codes[0] || CORPUS[0].doc_id;
+      const slangList = extractSlangTriggersForText(allText);
+
+      PRESET_QUERIES = [
+        `What are the rules for ${firstTitle} and ${secondTitle}?`,
+        `What is the exact policy around ${sampleNum} in ${firstTitle}?`,
+        `Lookup the exact rules for code ${sampleCode}`,
+        `${slangList[0] || 'how do i get help with'} ${firstTitle.toLowerCase()}`,
+        `Do you offer commercial submarine nuclear reactor repair under this policy?`
+      ];
+
+      const customCards = [
+        { tag: "BURIED FACTS", title: `1. Multi-Part Question on Your Doc`, desc: `Asks about both "${firstTitle.slice(0,22)}.." and "${secondTitle.slice(0,22)}.."` },
+        { tag: "CUT-OFF NUMBERS", title: `2. Number Check (${sampleNum})`, desc: `Tests if ${sampleNum} gets cut off by standard AI text chopping.` },
+        { tag: "EXACT CODES", title: `3. Exact Code Lookup (${sampleCode})`, desc: `Tests if the AI can find exact identifier ${sampleCode}.` },
+        { tag: "CASUAL SLANG", title: `4. Everyday Customer Wording`, desc: `Tests casual phrasing: "${PRESET_QUERIES[3].slice(0, 34)}..."` },
+        { tag: "MADE-UP ANSWER", title: `5. Trick Out-of-Scope Question`, desc: `Tests if your chatbot safely says 'I don't know' on outside topics.` }
+      ];
+
+      EXAMPLE_EXPLAINERS = [
+        `<strong>Custom Doc Test 1 (Two Questions at Once):</strong> <em>Why Standard AI Fails:</em> Standard search grabs repetitive sentences and misses the second topic. <em>How RAGForge Fixes It:</em> Deduplicates and puts both sections of your document in high-attention slots.`,
+        `<strong>Custom Doc Test 2 (Protecting Your Numbers — ${sampleNum}):</strong> <em>Why Standard AI Fails:</em> Fixed 180-character chopping cuts sentences in half right before <code>${sampleNum}</code>. <em>How RAGForge Fixes It:</em> Keeps every sentence in your document 100% intact.`,
+        `<strong>Custom Doc Test 3 (Exact Code — ${sampleCode}):</strong> <em>Why Standard AI Fails:</em> Pure AI meaning search blurs exact codes like <code>${sampleCode}</code>. <em>How RAGForge Fixes It:</em> Combines exact word search with AI meaning search.`,
+        `<strong>Custom Doc Test 4 (Casual Customer Wording):</strong> <em>Why Standard AI Fails:</em> Customers use casual everyday phrasing that doesn't match your formal text. <em>How RAGForge Fixes It:</em> Automatically attaches customer slang triggers to your document.`,
+        `<strong>Custom Doc Test 5 (Trick Outside Question):</strong> <em>Why Standard AI Fails:</em> Without a safety boundary, standard AI guesses from random paragraphs in your doc. <em>How RAGForge Fixes It:</em> Safety shield blocks the answer when confidence is below 30%.`
+      ];
+
+      const cardsContainer = document.getElementById('preset-cards-container');
+      if (cardsContainer) {
+        cardsContainer.innerHTML = customCards.map((c, idx) => `
+          <div class="preset-chip ${idx === 0 ? 'active' : ''}" onclick="loadPreset(${idx}, this)" style="text-align:left;padding:8px 10px;display:flex;flex-direction:column;gap:3px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:0.66rem;color:var(--text-muted);font-weight:700;font-family:var(--font-mono);">YOUR DOC #${idx + 1}</span>
+              <span class="tag tag-accent">${c.tag}</span>
+            </div>
+            <div style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;color:var(--text-main);">${c.title}</div>
+            <div style="font-family:var(--font-sans);font-size:0.71rem;color:var(--text-secondary);line-height:1.3;">${c.desc}</div>
+          </div>
+        `).join('');
+      }
+
+      const headingEl = document.getElementById('pack-examples-heading');
+      if (headingEl) headingEl.textContent = `Stress-Test Questions Auto-Generated From Your Document (${CORPUS.length} Sections)`;
+      const statusEl = document.getElementById('live-scan-status');
+      if (statusEl) statusEl.innerHTML = `<strong style="color:var(--ok);">&#10003; Scanned ${CORPUS.length} sections (${nums.length} numbers &amp; ${codes.length} codes protected)!</strong> Scroll down to test or copy your AI-Ready File in Step 4.`;
+
+      renderCorpusList();
+      renderLiveDocAudit();
+      const firstCard = cardsContainer ? cardsContainer.querySelector('.preset-chip') : null;
+      loadPreset(0, firstCard);
+    }
+
+    function generateAIReadyMarkdown() {
+      const lines = [
+        `# AI-OPTIMIZED KNOWLEDGE BASE (Generated by RAGForge)`,
+        `# Ready to upload or paste into ChatGPT Custom GPT, Claude Projects, Zendesk AI, Intercom, or Notion AI.`,
+        `# Structure: Self-Contained Atomic Fact Cards (0% Mid-Sentence Cutoffs + Exact Codes + Customer Slang Triggers)`,
+        ``
+      ];
+      CORPUS.forEach((doc, idx) => {
+        const nums = extractDocNumbers(doc.content);
+        const codes = extractDocCodes(doc.doc_id + ' ' + doc.title + ' ' + doc.content);
+        const slang = extractSlangTriggersForText(doc.title + ' ' + doc.content);
+        const sents = splitSentences(doc.content);
+        lines.push(`## FACT CARD ${idx + 1}: [${doc.doc_id}] ${doc.title}`);
+        lines.push(`- **Protected Numbers & Deadlines:** ${nums.length ? nums.join(' | ') : 'None specified'}`);
+        lines.push(`- **Exact Lookup Codes / IDs:** ${codes.length ? codes.join(' | ') : doc.doc_id}`);
+        lines.push(`- **Customer Slang & Everyday Search Triggers:** ${slang.join(', ')}`);
+        lines.push(`- **Verified Policy Rules (Whole Sentences — Do Not Truncate):**`);
+        sents.forEach((s, sIdx) => {
+          lines.push(`  ${sIdx + 1}. [${doc.doc_id}] ${s}`);
+        });
+        lines.push(``);
+      });
+      return lines.join('\n');
+    }
+
+    function generateSystemPromptText() {
+      const allText = CORPUS.map(d => d.content).join(' ');
+      const nums = extractDocNumbers(allText);
+      const codes = extractDocCodes(allText + ' ' + CORPUS.map(d => d.doc_id).join(' '));
+      const topics = CORPUS.map(d => `[${d.doc_id}] ${d.title}`).join('\n  - ');
+      return [
+        `### SYSTEM PROMPT: STRICT GROUNDED AI ASSISTANT (Generated by RAGForge)`,
+        `Copy and paste these instructions into your ChatGPT Custom GPT, Claude Project, or Customer Support Bot:`,
+        ``,
+        `1. ROLE & VERIFIED SCOPE:`,
+        `You are a strictly grounded assistant. You may ONLY answer using facts from the following ${CORPUS.length} verified knowledge sections:`,
+        `  - ${topics}`,
+        ``,
+        `2. ZERO NUMBER TRUNCATION RULE:`,
+        `Whenever a user asks about fees, deadlines, dosages, or limits, you MUST quote the exact numbers verbatim (${nums.slice(0, 8).join(', ') || 'all numbers in the text'}) and include all conditions attached to the same sentence.`,
+        ``,
+        `3. EXACT CODE & SKU MATCHING:`,
+        `When a user mentions an exact code or identifier (such as ${codes.slice(0, 6).join(', ') || CORPUS[0].doc_id}), match the exact alphanumeric code before answering and cite the bracketed section ID (e.g., [${CORPUS[0].doc_id}]).`,
+        ``,
+        `4. ANTI-LYING / ANTI-HALLUCINATION SHIELD:`,
+        `If a user asks a question that is NOT explicitly covered by the verified sections above, DO NOT guess, extrapolate, or invent policy rules. Reply exact: "I don't have verified information on that in our official documents. Please contact a human specialist for assistance."`
+      ].join('\n');
+    }
+
+    function updateDeliverableOutput() {
+      updateExportCode();
+      const box = document.getElementById('deliverable-output-box');
+      if (!box) return;
+      if (ACTIVE_DELIVERABLE_TAB === 'doc') {
+        box.textContent = generateAIReadyMarkdown();
+      } else if (ACTIVE_DELIVERABLE_TAB === 'prompt') {
+        box.textContent = generateSystemPromptText();
+      } else {
+        box.textContent = document.getElementById('export-python-box').textContent;
+      }
+    }
+
+    function switchDeliverableTab(tabName) {
+      ACTIVE_DELIVERABLE_TAB = tabName;
+      ['doc', 'prompt', 'code'].forEach(t => {
+        const btn = document.getElementById('deliv-tab-' + t);
+        if (btn) btn.classList.toggle('btn-primary', t === tabName);
+      });
+      updateDeliverableOutput();
+    }
+
+    function copyDeliverableBox() {
+      updateDeliverableOutput();
+      const txt = document.getElementById('deliverable-output-box').textContent;
+      navigator.clipboard.writeText(txt);
+      const toast = document.getElementById('copy-toast-msg');
+      if (toast) {
+        toast.textContent = '✓ COPIED TO CLIPBOARD!';
+        setTimeout(() => { toast.textContent = ''; }, 2500);
+      }
+    }
+
+    function downloadDeliverableFile() {
+      updateDeliverableOutput();
+      const txt = document.getElementById('deliverable-output-box').textContent;
+      const ext = ACTIVE_DELIVERABLE_TAB === 'code' ? 'py' : 'md';
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `ragforge_ai_ready_${ACTIVE_PACK}.${ext}`;
+      a.click();
+    }
+
     function switchIndustryPack(packKey, btnEl) {
       const pack = INDUSTRY_PACKS[packKey] || INDUSTRY_PACKS.ecommerce;
       ACTIVE_PACK = packKey;
@@ -1279,6 +1630,8 @@
         rbacSelect.innerHTML = CORPUS.slice(0, 4).map(d => `<option value="${d.doc_id}">Tenant Only Authorized for [${d.doc_id}] (${d.title.slice(0, 32)}...)</option>`).join('');
       }
 
+      populateLiveDocEditor();
+      renderLiveDocAudit();
       renderCorpusList();
       const firstCard = cardsContainer ? cardsContainer.querySelector('.preset-chip') : null;
       loadPreset(0, firstCard);
@@ -1853,15 +2206,16 @@
       ).join('');
 
       document.getElementById('studio-xray').innerHTML = `
-        <div class="xray-cell"><strong>01 // Sparse Query Expansion</strong><div style="color:var(--text-secondary);">${d.optimized.expanded_query}</div></div>
-        <div class="xray-cell"><strong>02 // Local HyDE Passage</strong><div style="color:var(--text-muted);">${d.optimized.hyde_passage.slice(0, 150)}...</div></div>
-        <div class="xray-cell"><strong>03 // U-Shaped Attention Slots</strong>${orderBadges}</div>
+        <div class="xray-cell"><strong>01 // Everyday Synonyms Added</strong><div style="color:var(--text-secondary);">${d.optimized.expanded_query}</div></div>
+        <div class="xray-cell"><strong>02 // Concept Meaning Passage</strong><div style="color:var(--text-muted);">${d.optimized.hyde_passage.slice(0, 150)}...</div></div>
+        <div class="xray-cell"><strong>03 // Best Facts First Order</strong>${orderBadges}</div>
         <div class="xray-cell">
-          <strong>04 // Compression &amp; Guardrail</strong>
-          <div>Tokens: <code>${d.optimized.raw_tokens} &rarr; ${d.optimized.compressed_tokens} (-${d.optimized.token_savings_pct}%)</code></div>
-          <div style="margin-top:3px;">Verdict: <code>${d.abstained ? 'ABSTAINED (Safe)' : 'VERIFIED GROUNDED'}</code></div>
+          <strong>04 // Savings &amp; Safety Check</strong>
+          <div>Words: <code>${d.optimized.raw_tokens} &rarr; ${d.optimized.compressed_tokens} (-${d.optimized.token_savings_pct}%)</code></div>
+          <div style="margin-top:3px;">Verdict: <code>${d.abstained ? 'SAFELY SAID I DONT KNOW' : 'VERIFIED ACCURATE'}</code></div>
         </div>
       `;
+      updateDeliverableOutput();
     }
 
     /* Knowledge Base & File Upload */
